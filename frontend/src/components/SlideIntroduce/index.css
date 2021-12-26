@@ -1,0 +1,69 @@
+.container-slide-hot-place .slick-list .slick-track .slick-slide > div {
+  margin: 0 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.black-screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: #00080f6e;
+  z-index: 3;
+  cursor: pointer;
+  display: none;
+}
+
+.card-hot-place:hover{
+  box-shadow: 5px 10px 10px 1px rgba(94, 89, 89, 0.63);
+}
+.card-hot-place:hover .image-slide-place{
+  transform: scale(1.2);
+  transition: 1s;
+}
+.card-hot-place:hover .black-screen{
+  display: block;
+}
+.card-hot-place:hover .text-place-name{
+  left: 10%;
+}
+h2, h4{
+  font-family:'Roboto Mono',monospace;
+  font-weight:initial;
+  color:dimgray;
+}
+
+
+/* -------------------tour slide */
+.hot-tour-slide-wrapper{
+  margin-top: 120px;
+  padding-bottom: 50px;
+  height: 700px;
+  background-color: cadetblue;
+  background-image:url(http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//pexels-photo-92090.jpeg);
+}
+.container-slide-hot-tour .slick-list .slick-track .slick-slide > div {
+  margin: 0 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+.container-slide-hot-tour h2{
+  padding-top: 50px;
+}
+.container-slide-hot-tour h4{
+  padding-bottom: 50px;
+}
+.card-hot-place{
+  transition: 1s;
+}
+.image-slide-place{
+  cursor: pointer;
+  transition: 1s;
+}
+.text-place-name{
+  position: absolute;
+  bottom: 10%;
+  left: -50%;
+  z-index: 10;
+  transition: 1s;
+  color: white;
+}
