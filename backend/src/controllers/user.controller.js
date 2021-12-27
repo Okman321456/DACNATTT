@@ -8,6 +8,11 @@ const createUser = catchAsync(async(req, res) => {
     res.status(httpStatus.CREATED).send(user)
 })
 
+const signUp = catchAsync(async(req, res) => {
+    const userAccount = await userService.signUp(req.body)
+    res.send(userAccount);
+})
+
 const getAllUser = catchAsync(async(req, res) => {
     const users = await userService.getAllUser
 
@@ -38,5 +43,5 @@ module.exports = {
     getAllUser,
     getUserById,
     updateUserById,
-    deleteUserById
+    deleteUserById,
 }
