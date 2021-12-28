@@ -1,4 +1,5 @@
 const { Tour } = require('../models');
+const catchAsync = require('../utils/catchAsync');
 
 const createTour = async(tourBody) => {
     const tour = await Tour.create(tourBody)
@@ -29,10 +30,33 @@ const deleteTourById = async(id) => {
     return tour
 }
 
+/* Get tour region*/
+
+const getTourRegion = async(regionId, perPage, page) => {
+    return await Tour
+        .find({ region: regionId })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+}
+
+const getTourRegionById = async(id, regionId) => {
+    return await Tour.find({ region: regionId, _id: id })
+}
+
+/* sort tour */
+const sortTour = async(max, min) => {
+    return await Tour
+        .find({ price: { $gte: max, $lte: min } })
+        .sort({ price: 1 })
+}
+
 module.exports = {
     createTour,
     getAllTour,
     getTourById,
     updateTourById,
-    deleteTourById
+    deleteTourById,
+    getTourRegion,
+    getTourRegionById,
+    sortTour
 }
