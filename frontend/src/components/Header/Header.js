@@ -63,7 +63,7 @@ const Header = () => {
 
     React.useEffect(()=>{
         const setNavigation = ()=>{
-            if(window.pageYOffset>300){
+            if(window.pageYOffset>200){
                 setNav({
                     height:'70px',
                     color:'white'
@@ -119,7 +119,7 @@ const Header = () => {
                             onClick={handleOpenSideBar}
                             color="inherit"
                         >
-                            <MenuIcon />
+                            <MenuIcon style={{color:'black'}}/>
                         </IconButton>
                         <Paper
                             sx={paperStyle}
@@ -145,7 +145,7 @@ const Header = () => {
                                 onClick={handleOpenSearchField}
                                 color="inherit"
                             >
-                                <SearchOutlined />
+                                <SearchOutlined style={{color:'black'}}/>
                             </IconButton>
                             <IconButton
                                 size="large"
@@ -153,7 +153,7 @@ const Header = () => {
                                 color="inherit"
                                 sx={{display:{xs:'none', md:'inline-block'}}}
                             >
-                                <WorkOutlineOutlinedIcon />
+                                <WorkOutlineOutlinedIcon style={{color:'black'}}/>
                             </IconButton>
                             <IconButton
                                 size="large"
@@ -161,7 +161,7 @@ const Header = () => {
                                 color="inherit"
                                 sx={{display:{xs:'none', md:'inline-block'}}}
                             >
-                                <ManageAccountsOutlinedIcon/>
+                                <ManageAccountsOutlinedIcon style={{color:'black'}}/>
                             </IconButton>
                             <TextField
                                 variant="standard"

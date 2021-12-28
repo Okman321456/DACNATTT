@@ -1,20 +1,21 @@
 import './App.css';
 import Home from './page/Home';
 import Header from './components/Header/Header';
-// import Filter from './components/Filter/Filter';
-// import HotPlacesSlide from './components/SlideIntroduce/HotPlacesSlide';
-// import HotTourSlide from './components/SlideIntroduce/HotTourSlide';
-// import SlideIntroduce from './components/SlideIntroduce/SlideIntroduce';
+import Footer from './components/Footer/Footer';
+import TourList from './page/TourList';
+import NewsList from './page/NewsList';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
     <div className="App">
       <Header/>
-      {/* <SlideIntroduce/>
-      <Filter/>
-      <HotPlacesSlide/>
-      <HotTourSlide/> */}
-      <Home/>
+      <Routes>
+        <Route path="/" exact element={<Home/>} />
+        <Route path="/tourlist" element={<TourList region="BẮC"/>} />
+        <Route path="/news" element={<NewsList/>} />
+      </Routes>
+      <Footer/>
     </div>
   );
 }

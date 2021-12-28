@@ -45,6 +45,7 @@ function HotPlacesSlide() {
             window.removeEventListener("resize", updateSize);
         }
     }, []);
+
     const Cards = ({ src, text, index }) => (
         <div style={{
             width: '100%',

@@ -11,7 +11,6 @@ export default function NewsCard({title, description, image}) {
             sx={{
                 boxSizing: 'border-box',
                 ':hover': {
-                    marginTop: '2px',
                     transition: '0.4s',
                     boxShadow: '5px 3px 10px 1px #715c5cd1'
                 },
