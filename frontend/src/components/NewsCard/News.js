@@ -22,7 +22,7 @@ function News(props) {
     return (
         <div className='news-wrapper' style={{marginTop:'90px'}}>
             <Container maxWidth="xl">
-                <h2>CẨM NAN DU LỊCH</h2>
+                <h2>TIN TỨC & TRẢI NGHIỆM DU LỊCH</h2>
                 <h4>CHO BẠN NHỮNG KIẾN THỨC TUYỆT VỜI</h4>
                 <Box sx={{ flexGrow: 1, padding:'0 20px', marginTop:'50px' }}>
                     <Grid container spacing={2} justifyContent="center">

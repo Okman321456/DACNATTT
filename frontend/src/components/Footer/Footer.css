@@ -1,0 +1,11 @@
+.students li a{
+    text-decoration: none;
+    color: white;
+}
+.students li :hover{
+    text-decoration: none;
+    color: cornflowerblue;
+}
+li{
+    color: white;
+}

@@ -4,6 +4,7 @@ import Filter from '../components/Filter/Filter';
 import HotPlacesSlide from '../components/SlideIntroduce/HotPlacesSlide';
 import HotTourSlide from '../components/SlideIntroduce/HotTourSlide';
 import News from '../components/NewsCard/News';
+import AdvantageCard from '../components/AdvantageCard/AdvantageCard';
 
 function Home(props) {
     return (
@@ -13,6 +14,7 @@ function Home(props) {
             <HotPlacesSlide />
             <HotTourSlide />
             <News/>
+            <AdvantageCard/>
         </div>
     );
 }

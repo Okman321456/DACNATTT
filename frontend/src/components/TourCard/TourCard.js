@@ -26,8 +26,10 @@ export default function TourCard({name, description, image, price}) {
                 cursor:'pointer',
                 borderRadius:'10px',
                 maxWidth:345,
+                height:450,
                 marginLeft: 'auto',
-                marginRight:'auto'
+                marginRight:'auto',
+                minWidth:200,
             }}
         >
             <CardMedia
@@ -43,14 +45,14 @@ export default function TourCard({name, description, image, price}) {
                     transition:'1s',
                 }}
             />
-            <CardContent>
+            <CardContent sx={{padding:'0 16px'}}>
                 <Typography gutterBottom variant="h5" component="div">
                     {name}
                 </Typography>
                 <Typography gutterBottom sx={{ fontSize: 16 }} color="blueviolet" align="left">
-                    {price}
+                    {`Giá: ${price}`}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" align="left">
+                <Typography variant="body2" color="text.secondary" align="left" height={80} style={{overflow:'hidden'}}>
                     {description}
                 </Typography>
             </CardContent>

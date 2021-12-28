@@ -75,7 +75,7 @@ function Filter() {
                                 </div>
                             </div>
                         </div>
-                        <button type='submit' className='button-search'>Tìm kiếm</button>
+                        <button type='submit' className='button-search' style={{cursor:'pointer'}}>Tìm kiếm</button>
 
                     </Grid>
                 </form>
