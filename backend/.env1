@@ -6,12 +6,12 @@ MONGODB_URL=mongodb://127.0.0.1:27017/Travel_Booking
 
 # JWT
 # JWT secret key
-JWT_SECRET=travelbooking
+JWT_SECRET=thisisasamplesecret
 # Number of minutes after which an access token expires
 JWT_ACCESS_EXPIRATION_MINUTES=30
 # Number of days after which a refresh token expires
 JWT_REFRESH_EXPIRATION_DAYS=30
 
 # config email
-EMAIL=hoangpham2k1608@gmail.com
-EMAILPASS=huuhoang1616
+EMAIL=yourEmail
+EMAILPASS=yourEmailPass

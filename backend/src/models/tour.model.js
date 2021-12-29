@@ -35,7 +35,7 @@ const tourSchema = mongoose.Schema({
     amount: {
         type: Number,
         require: true,
-        min: 0,
+        min: 1,
         max: 50,
         default: 50
     },
