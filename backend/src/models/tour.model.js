@@ -36,9 +36,10 @@ const tourSchema = mongoose.Schema({
         type: Number,
         require: true,
         min: 1,
-        max: 50
+        max: 50,
+        default: 50
     },
-    hotel_name: {
+    hotelName: {
         type: String,
         minlength: 0,
         maxlength: 100,
@@ -50,12 +51,12 @@ const tourSchema = mongoose.Schema({
         max: 3,
         required: true,
     },
-    type_place: {
+    typePlace: {
         type: String,
         minlength: 0,
         required: true,
     },
-    list_feedback: {
+    listFeedback: {
         type: [mongoose.SchemaTypes.ObjectId],
         ref: 'Feedback',
     },
@@ -63,6 +64,7 @@ const tourSchema = mongoose.Schema({
         type: Number,
         min: 0,
         max: 1,
+        default: 0,
         require: true
     }
 }, {
