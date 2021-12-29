@@ -16,9 +16,10 @@ const ticketSchema = mongoose.Schema({
         min: 0,
         max: 3
     },
-    discount: {
-        type: Boolean,
-        default: false,
+    numberPeople: {
+        type: Number,
+        min: 1,
+        max: 5
     }
 }, {
     timestamps: true

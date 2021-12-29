@@ -1,6 +1,7 @@
 const express = require('express');
-const tourRoute = require('./tour.route');
+const tourRoute = require('./tour.route')
 const userRoute = require('./user.route')
+const ticketRoute = require('./ticket.route')
 
 const router = express.Router();
 
@@ -10,6 +11,9 @@ const defaultRoutes = [{
 }, {
     path: '/users',
     route: userRoute,
+}, {
+    path:'/tickets',
+    route: ticketRoute
 }];
 
 
