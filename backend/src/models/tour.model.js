@@ -65,7 +65,7 @@ const tourSchema = mongoose.Schema({
         min: 0,
         max: 1,
         default: 0,
-        require: true
+        required: true,
     }
 }, {
     timestamps: true

@@ -37,10 +37,39 @@ const deleteTourById = catchAsync(async(req, res) => {
     res.status(httpStatus.NO_CONTENT).send("Tour has been deleted")
 })
 
+/*Get tour region */
+const getTourRegion = (regionId) => async(req, res) => {
+    const perPage = 6;
+    let page = parseInt(req.query.page) || 1;
+    const tours = await tourService.getTourRegion(regionId, perPage, page)
+    if (!tours) {
+        res.status(httpStatus.NOT_FOUND).send("Tour region not found")
+    } else res.send(tours);
+}
+
+const getTourRegionById = (regionId) => async(req, res) => {
+    const tour = await tourService.getTourRegionById(req.params.tourId, regionId)
+
+    if (!tour) {
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
+    } else res.send(tour);
+}
+
+const sortTour = catchAsync(async(req, res) => {
+    if (req.query.min >= req.query.max) req.status(httpStatus.BAD_REQUEST).send("Can't query price")
+    const tours = await tourService.sortTour(req.query.min, req.query.max)
+    if (!tours) {
+        res.status(httpStatus.NOT_FOUND).send("Tour region not found")
+    } else res.send(tours);
+})
+
 module.exports = {
     createTour,
     getAllTour,
     getTourById,
     updateTourById,
-    deleteTourById
+    deleteTourById,
+    getTourRegion,
+    getTourRegionById,
+    sortTour
 }

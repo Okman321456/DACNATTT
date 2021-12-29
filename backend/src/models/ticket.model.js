@@ -11,17 +11,26 @@ const ticketSchema = mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    numberPeople: {
+        type: Number,
+        min: 1,
+        max: 5,
+        required: true,
+    },
     status: {
         type: Number,
         min: 0,
-        max: 3
+        max: 3,
+        required: true,
     },
+
     numberPeople: {
         type: Number,
         min: 1,
         max: 5,
         required: true
     }
+
 }, {
     timestamps: true
 })

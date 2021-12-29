@@ -7,7 +7,8 @@ import './index.css';
 import TourCard from "../TourCard/TourCard";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-
+import axios from "axios";
+    
 const infos = [{
     name: 'Hoi An',
     description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
@@ -98,8 +99,12 @@ const NextArrow = (props) => {
         </div>
     );
 }
-
 function HotTourSlide(props) {
+    const [data, setData] = useState([]);
+    useEffect(async () => {
+        const result = await axios('http://localhost:3001/tours');
+        setData(result.data);
+      },[]);
     const settings = {
         dots: false,
         arrows: true,
@@ -146,14 +151,14 @@ function HotTourSlide(props) {
                 <div className="container-slide-hot-tour">
                     <h2> TOUR ĐƯỢC ƯA THÍCH NHẤT</h2>
                     <h4>ĐƠN GIẢN HÓA LỊCH TRÌNH KHÁM PHÁ</h4>
-                    <Slider {...settings} style={{padding:'0 30px'}}>
+                    <Slider {...settings} style={{ padding: '30px' }}>
                         {
-                            infos.map((info, index) => (
+                            data.map((info, index) => (
                                 <TourCard
                                     name={info.name}
                                     description={info.description}
-                                    image={info.image}
-                                    price={info.price}
+                                    image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
+                                    price={`${info.price} VND`}
                                     key={index} />
                             ))
                         }
