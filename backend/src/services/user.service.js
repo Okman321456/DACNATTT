@@ -59,10 +59,10 @@ const transporter = nodeMailer.createTransport({
     port: mailPort,
     secure: false, // nếu các bạn dùng port 465 (smtps) thì để true, còn lại hãy để false cho tất cả các port khác
     auth: {
-      user: adminEmail,
-      pass: adminPassword
+        user: adminEmail,
+        pass: adminPassword
     }
-  });
+});
 
 
 

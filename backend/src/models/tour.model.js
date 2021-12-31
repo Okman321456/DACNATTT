@@ -35,7 +35,7 @@ const tourSchema = mongoose.Schema({
     amount: {
         type: Number,
         require: true,
-        min: 1,
+        min: 0,
         max: 50,
         default: 50
     },
@@ -66,6 +66,12 @@ const tourSchema = mongoose.Schema({
         max: 1,
         default: 0,
         required: true,
+    },
+    schedule: {
+        type: String,
+        minlength: 20,
+        maxlength: 1024,
+        required: true
     }
 }, {
     timestamps: true
