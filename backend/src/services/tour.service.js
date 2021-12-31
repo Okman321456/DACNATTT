@@ -31,6 +31,9 @@ const deleteTourById = async(id) => {
 }
 
 /* Get tour region*/
+const countTourRegion = async(regionId) => {
+    return await Tour.find({ region: regionId }).count()
+}
 
 const getTourRegion = async(regionId, perPage, page) => {
     return await Tour
@@ -50,6 +53,7 @@ const sortTour = async(max, min) => {
         .sort({ price: 1 })
 }
 
+
 module.exports = {
     createTour,
     getAllTour,
@@ -57,6 +61,7 @@ module.exports = {
     updateTourById,
     deleteTourById,
     getTourRegion,
+    countTourRegion,
     getTourRegionById,
     sortTour
 }

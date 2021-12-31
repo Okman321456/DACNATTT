@@ -6,9 +6,22 @@ const ticketSchema = mongoose.Schema({
         ref: 'Tour',
         required: true,
     },
-    idUser: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User',
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
+        // validate(value) {
+        //   if (!validator.isEmail(value)) {
+        //     throw new Error('Invalid email');
+        //   }
+        // },
+    },
+    phone: {
+        type: String,
+        minlength: 0,
+        maxlength: 10,
         required: true,
     },
     numberPeople: {
@@ -23,14 +36,6 @@ const ticketSchema = mongoose.Schema({
         max: 3,
         required: true,
     },
-
-    numberPeople: {
-        type: Number,
-        min: 1,
-        max: 5,
-        required: true
-    }
-
 }, {
     timestamps: true
 })
