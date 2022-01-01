@@ -13,6 +13,37 @@ const getAllTour = async(perPage, page) => {
         .limit(perPage)
 }
 
+const filterTour = async(regionId, typePlace, max, min, perPage, page) => {
+    return await Tour
+        .find({
+            region: regionId,
+            typePlace: typePlace,
+            price: { $gte: min, $lte: max }
+        })
+        .sort({ price: 1 })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+}
+
+const countTourFilter = async(regionId, typePlace, max, min) => {
+    return await Tour
+        .find({
+            region: regionId,
+            typePlace: typePlace,
+            price: { $gte: min, $lte: max }
+        }).count()
+}
+
+const getMinMaxPrice = async() => {
+    return await Tour.aggregate([{
+        "$group": {
+            "_id": null,
+            "max": { "$max": "$price" },
+            "min": { "$min": "$price" }
+        }
+    }])
+}
+
 const getTourById = async(id) => {
     return await Tour.findById(id)
 }
@@ -36,18 +67,32 @@ const countTourRegion = async(regionId) => {
 }
 
 const countTourSearchRegion = async(regionId, searchString) => {
-    return await Tour.find({ region: regionId, name: { $regex: new RegExp(searchString, "i") } }).count()
+    return await Tour
+        .find({
+            region: regionId,
+            name: { $regex: new RegExp(searchString, "i") }
+        })
+        .count()
 }
 
 const getTourRegion = async(regionId, perPage, page, searchString) => {
     return await Tour
-        .find({ region: regionId, name: { $regex: new RegExp(searchString, "i") } })
+        .find({
+            region: regionId,
+            name: { $regex: new RegExp(searchString, "i") }
+        })
         .skip((perPage * page) - perPage)
         .limit(perPage)
 }
 
 //name: { $regex: searchString }
 // description: { $regex: new RegExp(searchString, "i") }
+
+const searchFull = async(searchString) => {
+    return await Tour.find({
+        name: /đà/
+    })
+}
 
 const getTourRegionById = async(id, regionId) => {
     return await Tour.find({ region: regionId, _id: id })
@@ -68,12 +113,6 @@ const sortTourRegion = async(regionId, status, typeSort, perPage, page) => {
         .limit(perPage)
 }
 
-// const sortTour = async(max, min) => {
-//     return await Tour
-//         .find({ price: { $gte: max, $lte: min } })
-//         .sort({ price: 1 })
-// }
-
 module.exports = {
     createTour,
     getAllTour,
@@ -85,4 +124,8 @@ module.exports = {
     countTourSearchRegion,
     getTourRegionById,
     sortTourRegion,
+    filterTour,
+    countTourFilter,
+    getMinMaxPrice,
+    searchFull
 }

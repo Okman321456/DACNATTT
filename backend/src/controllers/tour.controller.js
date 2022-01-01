@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { tourService } = require('../services')
+const configFilter = require('../config/filter')
 
 const createTour = catchAsync(async(req, res) => {
     const tour = await tourService.createTour(
@@ -12,11 +13,41 @@ const createTour = catchAsync(async(req, res) => {
 const getAllTour = catchAsync(async(req, res) => {
     const perPage = 6;
     let page = parseInt(req.query.page) || 1;
+    let search = req.query.search || ''
 
     const tours = await tourService.getAllTour(perPage, page);
+    //const tours = await tourService.searchFull(search)
     if (!tours) {
         res.status(httpStatus.NOT_FOUND).send("Tour not found")
     } else res.status(200).send(tours);
+})
+
+const filterTour = catchAsync(async(req, res) => {
+    const perPage = 6;
+    const groupMinMaxPrice = await tourService.getMinMaxPrice()
+    var regionId
+    let page = parseInt(req.query.page) || 1;
+    let typePlace = req.query.type || configFilter.typePlace
+    let minPrice = parseInt(req.query.min) || groupMinMaxPrice[0].min
+    let maxPrice = parseInt(req.query.max) || groupMinMaxPrice[0].max
+    if (req.query.region) {
+        switch (req.query.region) {
+            case 'bac':
+                regionId = 1
+                break
+            case 'trung':
+                regionId = 2
+                break
+            case 'nam':
+                regionId = 3
+                break
+        }
+    } else regionId = configFilter.regionId
+    const tours = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, perPage, page)
+    const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice)
+    if (totalTourFilter == 0) {
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
+    } else res.status(200).json({ tours, totalTourFilter });
 })
 
 const getTourById = catchAsync(async(req, res) => {
@@ -71,17 +102,10 @@ const sortTourRegion = (regionId, status, typeSort) => catchAsync(async(req, res
     } else res.status(200).json({ tours, totalTourRegion })
 })
 
-// const sortTour = catchAsync(async(req, res) => {
-//     if (req.query.min >= req.query.max) req.status(httpStatus.BAD_REQUEST).send("Can't query price")
-//     const tours = await tourService.sortTour(req.query.min, req.query.max)
-//     if (!tours) {
-//         res.status(httpStatus.NOT_FOUND).send("Tour region not found")
-//     } else res.send(tours);
-// })
-
 module.exports = {
     createTour,
     getAllTour,
+    filterTour,
     getTourById,
     updateTourById,
     deleteTourById,

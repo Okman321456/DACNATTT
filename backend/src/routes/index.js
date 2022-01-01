@@ -6,6 +6,8 @@ const newsRoute = require('./news.route')
 const ticketRoute = require('./ticket.route')
 const authRoute = require('./auth.route')
 
+const storeRoute = require('./store.route')
+
 const router = express.Router();
 
 const defaultRoutes = [{
@@ -23,6 +25,9 @@ const defaultRoutes = [{
 }, {
     path: '/admin',
     route: userRoute,
+}, {
+    path: '/cua-hang',
+    route: storeRoute
 }, {
     path: '/',
     route: tourRoute,
