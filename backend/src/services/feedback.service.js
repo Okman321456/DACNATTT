@@ -23,7 +23,7 @@ const showFeedbackPerTour = async(idTour) => {
     feedback.forEach(element => {
         if(element.idTour._id == idTour){
             feedbackPerTour.push({
-                idUser: element.idUser,
+                email: element.email,
                 rating: element.rating,
                 comment: element.comment
             })

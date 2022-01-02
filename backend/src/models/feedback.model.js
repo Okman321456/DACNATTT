@@ -1,15 +1,17 @@
 const mongoose = require('mongoose')
 
-const feedbackSchema = mongoose.Schema({
+const ticketSchema = mongoose.Schema({
     idTour: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'Tour',
         required: true,
     },
-    idUser: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User',
+    email: {
+        type: String,
         required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
     },
     rating: {
         type: Number,
@@ -22,9 +24,9 @@ const feedbackSchema = mongoose.Schema({
         maxlength: 300,
     }
 }, {
-    timestamps: true 
+    timestamps: true
 })
 
-const Feedback = mongoose.model('Feedback', feedbackSchema)
+const Feedback = mongoose.model('Feedback', ticketSchema)
 
 module.exports = Feedback
