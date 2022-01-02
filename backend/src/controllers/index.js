@@ -1,3 +1,4 @@
 module.exports.tourController = require('./tour.controller')
 module.exports.userController = require('./user.controller')
 module.exports.ticketController = require('./ticket.controller')
+module.exports.feedbackController = require('./feedback.controller')

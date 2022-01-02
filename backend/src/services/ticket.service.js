@@ -3,21 +3,24 @@ const {User} = require('../models')
 const {Tour} = require('../models')
 
 const bookTicket = async(id, ticketBody) => {
-    const user = await User.findOne({email: ticketBody.email})
-    if(user){
-        const userId = user._id
+    // const user = await User.findOne({email: ticketBody.email})
+    // if(user){
+        // const userId = user._id
         const ticket = await Ticket.create({
             idTour: id,
-            idUser: userId,
+            nameUser = ticketBody.name,
+            emailUser = ticketBody.email,
+            phone = ticketBody.phone,
+            // idUser: userId,
             status: 0,
             numberPeople: ticketBody.numberPeople
         })
         return ticket
-    }
-    else {
-        console.log('Email Không Chính Xác')
-        return null
-    }
+    // }
+    // else {
+    //     console.log('Email Không Chính Xác')
+    //     return null
+    // }
 
 }
 
