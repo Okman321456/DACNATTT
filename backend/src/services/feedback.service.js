@@ -3,22 +3,13 @@ const {User} = require('../models')
 const {Tour} = require('../models')
 
 const createFeedback = async(idTour, feedbackBody) => {
-    const user = await User.findOne({email: feedbackBody.email})
-    if(user) {
-        const userId = user._id
-        const feedback = await Feedback.create({
-            idTour: idTour,
-            idUser: userId,
-            rating: feedbackBody.rating,
-            comment: feedbackBody.comment
-        })
-        return feedback
-    }
-    else {
-        console.log('Email Không Chính Xác')
-        return null
-    }
-
+    const feedback = await Feedback.create({
+        idTour: idTour,
+        email: feedbackBody.email,
+        rating: feedbackBody.rating,
+        comment: feedbackBody.comment
+    })
+    return feedback
 }
 
 const showListFeedback = async() => {
@@ -41,8 +32,14 @@ const showFeedbackPerTour = async(idTour) => {
     return feedbackPerTour
 }
 
+const deleteFeedback = async(idFeedback) => {
+    const res = await Feedback.deleteOne({ _id: idFeedback})
+    return res.deletedCount
+}
+
 module.exports = {
     createFeedback,
     showListFeedback,
-    showFeedbackPerTour
+    showFeedbackPerTour,
+    deleteFeedback
 }
