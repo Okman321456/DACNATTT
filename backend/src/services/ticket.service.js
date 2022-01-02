@@ -3,37 +3,31 @@ const {User} = require('../models')
 const {Tour} = require('../models')
 
 const bookTicket = async(id, ticketBody) => {
-    const user = await User.findOne({email: ticketBody.email})
-    if(user){
-        const userId = user._id
         const ticket = await Ticket.create({
             idTour: id,
-            idUser: userId,
+            name: ticketBody.name,
+            email: ticketBody.email,
+            phone: ticketBody.phone,
             status: 0,
             numberPeople: ticketBody.numberPeople
         })
         return ticket
-    }
-    else {
-        console.log('Email Không Chính Xác')
-        return null
-    }
 
 }
 
 const viewDetailTicket = async(id) => {
     const ticketDetail = {}
-    const ticketUser = await Ticket.findById(id).populate({path: 'idUser'})
+    const ticket = await Ticket.findById(id)
     const ticketTour = await Ticket.findById(id).populate({path: 'idTour'})
-    ticketDetail.userName = ticketUser.idUser.name
-    ticketDetail.userEmail = ticketUser.idUser.email
-    ticketDetail.userPhone = ticketUser.idUser.phone
+    ticketDetail.userName = ticket.name
+    ticketDetail.userEmail = ticket.email
+    ticketDetail.userPhone = ticket.phone
     ticketDetail.tourName = ticketTour.idTour.name
     ticketDetail.timeStart = ticketTour.idTour.timeStart
     ticketDetail.timeEnd = ticketTour.idTour.timeEnd
     ticketDetail.price = ticketTour.idTour.price
-    ticketDetail.hotelName = ticketTour.idTour.hotel_name
-    ticketDetail.numberPeople = ticketUser.numberPeople
+    ticketDetail.hotelName = ticketTour.idTour.hotelName
+    ticketDetail.numberPeople = ticket.numberPeople
     ticketDetail.status = ticketUser.status
     return ticketDetail
 }
