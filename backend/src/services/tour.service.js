@@ -13,24 +13,26 @@ const getAllTour = async(perPage, page) => {
         .limit(perPage)
 }
 
-const filterTour = async(regionId, typePlace, max, min, perPage, page) => {
+const filterTour = async(regionId, typePlace, max, min, disValue, perPage, page) => {
     return await Tour
         .find({
             region: regionId,
             typePlace: typePlace,
-            price: { $gte: min, $lte: max }
+            price: { $gte: min, $lte: max },
+            discount: { $gte: disValue, $lte: 1 }
         })
         .sort({ price: 1 })
         .skip((perPage * page) - perPage)
         .limit(perPage)
 }
 
-const countTourFilter = async(regionId, typePlace, max, min) => {
+const countTourFilter = async(regionId, typePlace, max, min, disValue) => {
     return await Tour
         .find({
             region: regionId,
             typePlace: typePlace,
-            price: { $gte: min, $lte: max }
+            price: { $gte: min, $lte: max },
+            discount: { $gte: disValue, $lte: 1 }
         }).count()
 }
 

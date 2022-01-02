@@ -26,10 +26,13 @@ const filterTour = catchAsync(async(req, res) => {
     const perPage = 6;
     const groupMinMaxPrice = await tourService.getMinMaxPrice()
     var regionId
+    var disValue = 0
     let page = parseInt(req.query.page) || 1;
     let typePlace = req.query.type || configFilter.typePlace
     let minPrice = parseInt(req.query.min) || groupMinMaxPrice[0].min
     let maxPrice = parseInt(req.query.max) || groupMinMaxPrice[0].max
+    let discount = req.query.dis || false
+    if (discount) disValue = 0.0001
     if (req.query.region) {
         switch (req.query.region) {
             case 'bac':
@@ -43,8 +46,9 @@ const filterTour = catchAsync(async(req, res) => {
                 break
         }
     } else regionId = configFilter.regionId
-    const tours = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, perPage, page)
-    const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice)
+
+    const tours = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, disValue, perPage, page)
+    const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice, disValue)
     if (totalTourFilter == 0) {
         res.status(httpStatus.NOT_FOUND).send("Tour not found")
     } else res.status(200).json({ tours, totalTourFilter });
