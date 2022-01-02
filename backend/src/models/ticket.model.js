@@ -12,11 +12,13 @@ const ticketSchema = mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        // validate(value) {
-        //   if (!validator.isEmail(value)) {
-        //     throw new Error('Invalid email');
-        //   }
-        // },
+    },
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
     },
     phone: {
         type: String,
