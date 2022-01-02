@@ -16,7 +16,7 @@ function AdvantageCard(props) {
                 <h4>NHỮNG ĐIỀU CHÚNG TÔI MANG ĐẾN CHO BẠN</h4>
                 <Box sx={{ flexGrow: 1, padding: '0 20px', marginTop: '50px' }}>
                     <Grid container spacing={2} justifyContent="center">
-                        <Grid item xs={12} md={4} sm={6} spacing={2} >
+                        <Grid item xs={12} md={4} sm={6} >
                             <Card sx={{backgroundColor:'mintcream',}}>
                                 <CardContent>
                                     <Typography gutterBottom variant="subtitle1" component="div" align='center'>
@@ -31,7 +31,7 @@ function AdvantageCard(props) {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} md={4} sm={6} spacing={2} >
+                        <Grid item xs={12} md={4} sm={6} >
                             <Card sx={{backgroundColor:'mintcream',}}>
                                 <CardContent>
                                     <Typography gutterBottom variant="subtitle1" component="div" align='center'>
@@ -46,7 +46,7 @@ function AdvantageCard(props) {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} md={4} sm={6} spacing={2} >
+                        <Grid item xs={12} md={4} sm={6}>
                             <Card sx={{backgroundColor:'mintcream',}}>
                                 <CardContent>
                                     <Typography gutterBottom variant="subtitle1" component="div" align='center'>
