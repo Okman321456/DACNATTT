@@ -8,44 +8,7 @@ import TourCard from "../TourCard/TourCard";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import axios from "axios";
-    
-const infos = [{
-    name: 'Hoi An',
-    description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
-    image: 'http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//hoa-dang.jpg',
-    alt: 'Hoi An',
-    price: '$1000',
-}, {
-    name: 'Hoi An',
-    description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
-    image: 'http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//hoa-dang.jpg',
-    alt: 'Hoi An',
-    price: '$1000',
-}, {
-    name: 'Hoi An',
-    description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
-    image: 'http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//hoa-dang.jpg',
-    alt: 'Hoi An',
-    price: '$1000',
-}, {
-    name: 'Hoi An',
-    description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
-    image: 'http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//hoa-dang.jpg',
-    alt: 'Hoi An',
-    price: '$1000',
-}, {
-    name: 'Hoi An',
-    description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
-    image: 'http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//hoa-dang.jpg',
-    alt: 'Hoi An',
-    price: '$1000',
-}, {
-    name: 'Hoi An',
-    description: 'Thiên đường tình yêu” là mỹ từ xưng tụng Đà Nẵng quả không sai. Bờ biển buông lơi, uốn cong theo từng cơn sóng vỗ được điểm tô bởi những hàng cọ, hàng dừa',
-    image: 'http://mauweb.monamedia.net//travelvn//wp-content//uploads//2019//01//hoa-dang.jpg',
-    alt: 'Hoi An',
-    price: '$1000',
-}]
+import RegardPrice from "../RegardPrice/RegardPrice";
 
 const PreArrow = (props) => {
     const { className, style, onClick } = props
@@ -102,7 +65,7 @@ const NextArrow = (props) => {
 function HotTourSlide(props) {
     const [data, setData] = useState([]);
     useEffect(async () => {
-        const result = await axios('http://localhost:3001/tours');
+        const result = await axios('http://localhost:3001/mien-trung?page=1');
         setData(result.data);
       },[]);
     const settings = {
@@ -151,14 +114,14 @@ function HotTourSlide(props) {
                 <div className="container-slide-hot-tour">
                     <h2> TOUR ĐƯỢC ƯA THÍCH NHẤT</h2>
                     <h4>ĐƠN GIẢN HÓA LỊCH TRÌNH KHÁM PHÁ</h4>
-                    <Slider {...settings} style={{ padding: '30px' }}>
+                    <Slider {...settings} style={{ padding: '30px'}}>
                         {
                             data.map((info, index) => (
                                 <TourCard
                                     name={info.name}
                                     description={info.description}
                                     image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                    price={`${info.price} VND`}
+                                    price={`${RegardPrice(info.price)} VND`}
                                     key={index} />
                             ))
                         }

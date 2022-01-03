@@ -35,15 +35,37 @@ export default function NewsCard({title, description, image}) {
                 }}
             />
             <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="h6" component="div"
+                    sx={{
+                        textAlign:'left',
+                        overflow:'hidden',
+                        lineHeight:'1.4',
+                        fontSize:'18px',
+                        height:'50px',
+                        textOverflow:'ellipsis',
+                        display:'-webkit-box',
+                        '-webkit-line-clamp':'2',
+                        '-webkit-box-orient':'vertical'
+                    }}>
                     {title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" align="left">
+                <Typography variant="body2" color="text.secondary" align="left"
+                    sx={{
+                        overflow:'hidden',
+                        lineHeight:'1.3',
+                        fontSize:'14px',
+                        height:'54px',
+                        textOverflow:'ellipsis',
+                        display:'-webkit-box',
+                        '-webkit-line-clamp':'3',
+                        '-webkit-box-orient':'vertical'
+                    }}
+                >
                     {description}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="info">Đọc thêm...</Button>
+                <Button size="small" color="secondary">Đọc thêm...</Button>
             </CardActions>
         </Card>
     );

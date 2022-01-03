@@ -63,7 +63,7 @@ const Header = () => {
 
     React.useEffect(()=>{
         const setNavigation = ()=>{
-            if(window.pageYOffset>200){
+            if(window.pageYOffset>150){
                 setNav({
                     height:'70px',
                     color:'white'

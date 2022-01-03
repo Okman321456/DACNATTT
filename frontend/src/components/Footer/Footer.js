@@ -20,7 +20,7 @@ function Footer(props) {
             }}>
             <Box sx={{ flexGrow: 1, padding: '50px 30px', backgroundColor: '#000000db' }}>
                 <Grid container>
-                    <Grid item xs={12} md={3} sm={6} spacing={2}>
+                    <Grid item xs={12} md={3} sm={6}>
                         <Typography variant="h5" color="white" align="left">
                             THÔNG TIN
                         </Typography>
@@ -34,7 +34,7 @@ function Footer(props) {
                             </ul>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} sm={6} spacing={2}>
+                    <Grid item xs={12} md={3} sm={6}>
                         <Typography variant="h6" color="white" align="left">
                             LIÊN HỆ
                         </Typography>
@@ -47,7 +47,7 @@ function Footer(props) {
                             </ul>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} sm={6} spacing={2}>
+                    <Grid item xs={12} md={3} sm={6}>
                         <Typography variant="h6" color="white" align="left">
                             PHỔ BIẾN
                         </Typography>
@@ -59,7 +59,7 @@ function Footer(props) {
                             </ul>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} sm={6} spacing={2}>
+                    <Grid item xs={12} md={3} sm={6}>
                         <Typography variant="h6" color="white" align="left">
                             KẾT NỐI VỚI CHÚNG TÔI
                         </Typography>

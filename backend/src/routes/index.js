@@ -5,6 +5,7 @@ const userRoute = require('./user.route')
 const newsRoute = require('./news.route')
 const ticketRoute = require('./ticket.route')
 const authRoute = require('./auth.route')
+const feedbackRoute = require('./feedback.route')
 
 const storeRoute = require('./store.route')
 
@@ -29,10 +30,12 @@ const defaultRoutes = [{
     path: '/cua-hang',
     route: storeRoute
 }, {
+    path: '/feedbacks',
+    route: feedbackRoute,
+}, {
     path: '/',
     route: tourRoute,
 }];
-
 
 
 defaultRoutes.forEach((route) => {
