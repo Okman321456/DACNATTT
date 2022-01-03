@@ -13,6 +13,10 @@ const getAllNews = async(perPage, page) => {
         .limit(perPage)
 }
 
+const getNewsPageHome = async() => {
+    return await News.find().limit(3)
+}
+
 const getNewsById = async(id) => {
     return await News.findById(id)
 }
@@ -41,5 +45,6 @@ module.exports = {
     getNewsById,
     updateNewsById,
     deleteNewsById,
-    countNews
+    countNews,
+    getNewsPageHome
 }

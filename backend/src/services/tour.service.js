@@ -1,4 +1,5 @@
 const { Tour } = require('../models');
+const { Feedback } = require('../models')
 const catchAsync = require('../utils/catchAsync');
 
 const createTour = async(tourBody) => {
@@ -6,11 +7,41 @@ const createTour = async(tourBody) => {
     return tour
 }
 
-const getAllTour = async(perPage, page) => {
+const getAllTour = async() => {
+    return await Tour.find()
+}
+
+const filterTour = async(regionId, typePlace, max, min, disValue, perPage, page) => {
     return await Tour
-        .find()
+        .find({
+            region: regionId,
+            typePlace: typePlace,
+            price: { $gte: min, $lte: max },
+            discount: { $gte: disValue, $lte: 1 }
+        })
+        .sort({ price: 1 })
         .skip((perPage * page) - perPage)
         .limit(perPage)
+}
+
+const countTourFilter = async(regionId, typePlace, max, min, disValue) => {
+    return await Tour
+        .find({
+            region: regionId,
+            typePlace: typePlace,
+            price: { $gte: min, $lte: max },
+            discount: { $gte: disValue, $lte: 1 }
+        }).count()
+}
+
+const getMinMaxPrice = async() => {
+    return await Tour.aggregate([{
+        "$group": {
+            "_id": null,
+            "max": { "$max": "$price" },
+            "min": { "$min": "$price" }
+        }
+    }])
 }
 
 const getTourById = async(id) => {
@@ -35,24 +66,80 @@ const countTourRegion = async(regionId) => {
     return await Tour.find({ region: regionId }).count()
 }
 
-const getTourRegion = async(regionId, perPage, page) => {
+const countTourSearchRegion = async(regionId, searchString) => {
     return await Tour
-        .find({ region: regionId })
+        .find({
+            region: regionId,
+            name: { $regex: new RegExp(searchString, "i") }
+        })
+        .count()
+}
+
+const getTourRegion = async(regionId, perPage, page, searchString) => {
+    return await Tour
+        .find({
+            region: regionId,
+            name: { $regex: new RegExp(searchString, "i") }
+        })
         .skip((perPage * page) - perPage)
         .limit(perPage)
+}
+
+//name: { $regex: searchString }
+// description: { $regex: new RegExp(searchString, "i") }
+
+const searchFull = async(searchString) => {
+    return await Tour.find({
+        name: /đà/
+    })
 }
 
 const getTourRegionById = async(id, regionId) => {
     return await Tour.find({ region: regionId, _id: id })
 }
 
-/* sort tour */
-const sortTour = async(max, min) => {
+const similarTourByTypePlace = async(id, regionId) => {
+    const tourData = await Tour.find({ region: regionId, _id: id })
     return await Tour
-        .find({ price: { $gte: max, $lte: min } })
-        .sort({ price: 1 })
+        .find({
+            _id: { $ne: id },
+            region: regionId,
+            typePlace: tourData[0].typePlace
+        })
 }
 
+/* sort tour region*/
+const sortTourRegion = async(regionId, status, typeSort, perPage, page) => {
+    if (typeSort == 'price')
+        return await Tour
+            .find({ region: regionId })
+            .sort({ price: status })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+    else return await Tour
+        .find({ region: regionId })
+        .sort({ name: status })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+}
+
+/* get average rating tour */
+const caculateRatingTour = async(idTour) => {
+    var averageRating = 0
+    const data = await Feedback.find({ idTour: idTour })
+        .populate({ path: 'idTour' })
+    data.forEach(tour => {
+        averageRating += tour.rating
+    });
+    return await Math.round(((averageRating / data.length) * 10)) / 10
+}
+
+/* get outstanding tour */
+const outstandingTour = async() => {
+    const arrTour = await Tour.find()
+
+    //return array
+}
 
 module.exports = {
     createTour,
@@ -62,6 +149,14 @@ module.exports = {
     deleteTourById,
     getTourRegion,
     countTourRegion,
+    countTourSearchRegion,
     getTourRegionById,
-    sortTour
+    sortTourRegion,
+    filterTour,
+    countTourFilter,
+    getMinMaxPrice,
+    similarTourByTypePlace,
+    searchFull,
+    caculateRatingTour,
+    outstandingTour
 }
