@@ -128,7 +128,7 @@ const Header = () => {
                             <MenuList>
                                 {pagesMenu.map((page, index) => (
                                     <MenuItem key={index} onClick={handleOpenSideBar}>
-                                        <Typography textAlign="center" color="gray">{page}</Typography>
+                                        <Typography textAlign="center" color="gray" component="div">{page}</Typography>
                                     </MenuItem>
                                 ))}
                             </MenuList>
@@ -164,6 +164,7 @@ const Header = () => {
                                 <ManageAccountsOutlinedIcon style={{color:'black'}}/>
                             </IconButton>
                             <TextField
+                                component="div"
                                 variant="standard"
                                 placeholder='Tìm kiếm...'
                                 className={!searchBox ? classes.hiddenBox : ''}

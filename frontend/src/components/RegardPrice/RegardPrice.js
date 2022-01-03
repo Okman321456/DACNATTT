@@ -1,4 +1,5 @@
 export default function RegardPrice(price) {
+    if(price<1000) return price
     let temPrice = JSON.stringify(price)
     var totalPriceArr = []
     for (let i = temPrice.length; i >= 1; i -= 3) {

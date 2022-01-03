@@ -111,7 +111,7 @@ function HotPlacesSlide() {
                 <Slider {...settings} style={{marginTop:'60px', padding:'0 30px'}}>
                     {
                         data.map((text, index) => (
-                            <Cards index={index} text={text.title} src={text.img}/>
+                            <Cards key={index} text={text.title} src={text.img}/>
                         ))
                     }
                 </Slider>

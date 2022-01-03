@@ -44,8 +44,8 @@ export default function NewsCard({title, description, image}) {
                         height:'50px',
                         textOverflow:'ellipsis',
                         display:'-webkit-box',
-                        '-webkit-line-clamp':'2',
-                        '-webkit-box-orient':'vertical'
+                        WebkitLineClamp:'2',
+                        WebkitBoxOrient:'vertical'
                     }}>
                     {title}
                 </Typography>
@@ -57,8 +57,8 @@ export default function NewsCard({title, description, image}) {
                         height:'54px',
                         textOverflow:'ellipsis',
                         display:'-webkit-box',
-                        '-webkit-line-clamp':'3',
-                        '-webkit-box-orient':'vertical'
+                        WebkitLineClamp:'3',
+                        WebkitBoxOrient:'vertical'
                     }}
                 >
                     {description}

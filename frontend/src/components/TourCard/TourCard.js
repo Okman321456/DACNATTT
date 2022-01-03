@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import RegardPrice from '../RegardPrice/RegardPrice';
 
 export default function TourCard({name, description, image, price}) {
     const [shadow, setShadow] = React.useState(false);
@@ -15,7 +14,6 @@ export default function TourCard({name, description, image, price}) {
         <Card
             onMouseOver={onMouseOver}
             onMouseOut={onMouseOut}
-            zDepth={shadow}
             raised={shadow}
             sx={{
                 boxSizing:'border-box',
@@ -26,7 +24,7 @@ export default function TourCard({name, description, image, price}) {
                 },
                 cursor:'pointer',
                 borderRadius:'10px',
-                maxWidth:330,
+                maxWidth:300,
                 height:450,
                 marginLeft:'auto',
                 marginRight:'auto',
@@ -62,8 +60,8 @@ export default function TourCard({name, description, image, price}) {
                         height:'78px',
                         textOverflow:'ellipsis',
                         display:'-webkit-box',
-                        '-webkit-line-clamp':'4',
-                        '-webkit-box-orient':'vertical'
+                        WebkitLineClamp:'4',
+                        WebkitBoxOrient:'vertical'
                     }}
                 >
                     {description}
