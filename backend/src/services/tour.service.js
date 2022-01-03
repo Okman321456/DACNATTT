@@ -1,4 +1,5 @@
 const { Tour } = require('../models');
+const { Feedback } = require('../models')
 const catchAsync = require('../utils/catchAsync');
 
 const createTour = async(tourBody) => {
@@ -6,11 +7,8 @@ const createTour = async(tourBody) => {
     return tour
 }
 
-const getAllTour = async(perPage, page) => {
-    return await Tour
-        .find()
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
+const getAllTour = async() => {
+    return await Tour.find()
 }
 
 const filterTour = async(regionId, typePlace, max, min, disValue, perPage, page) => {
@@ -100,6 +98,16 @@ const getTourRegionById = async(id, regionId) => {
     return await Tour.find({ region: regionId, _id: id })
 }
 
+const similarTourByTypePlace = async(id, regionId) => {
+    const tourData = await Tour.find({ region: regionId, _id: id })
+    return await Tour
+        .find({
+            _id: { $ne: id },
+            region: regionId,
+            typePlace: tourData[0].typePlace
+        })
+}
+
 /* sort tour region*/
 const sortTourRegion = async(regionId, status, typeSort, perPage, page) => {
     if (typeSort == 'price')
@@ -113,6 +121,24 @@ const sortTourRegion = async(regionId, status, typeSort, perPage, page) => {
         .sort({ name: status })
         .skip((perPage * page) - perPage)
         .limit(perPage)
+}
+
+/* get average rating tour */
+const caculateRatingTour = async(idTour) => {
+    var averageRating = 0
+    const data = await Feedback.find({ idTour: idTour })
+        .populate({ path: 'idTour' })
+    data.forEach(tour => {
+        averageRating += tour.rating
+    });
+    return await Math.round(((averageRating / data.length) * 10)) / 10
+}
+
+/* get outstanding tour */
+const outstandingTour = async() => {
+    const arrTour = await Tour.find()
+
+    //return array
 }
 
 module.exports = {
@@ -129,5 +155,8 @@ module.exports = {
     filterTour,
     countTourFilter,
     getMinMaxPrice,
-    searchFull
+    similarTourByTypePlace,
+    searchFull,
+    caculateRatingTour,
+    outstandingTour
 }

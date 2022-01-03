@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { tourService } = require('../services')
 const configFilter = require('../config/filter')
+const { newsService } = require('../services')
 
 const createTour = catchAsync(async(req, res) => {
     const tour = await tourService.createTour(
@@ -10,27 +11,43 @@ const createTour = catchAsync(async(req, res) => {
     res.status(httpStatus.CREATED).send(tour)
 })
 
-const getAllTour = catchAsync(async(req, res) => {
-    const perPage = 6;
-    let page = parseInt(req.query.page) || 1;
-    let search = req.query.search || ''
-
-    const tours = await tourService.getAllTour(perPage, page);
-    //const tours = await tourService.searchFull(search)
-    if (!tours) {
-        res.status(httpStatus.NOT_FOUND).send("Tour not found")
-    } else res.status(200).send(tours);
+const outstandingTour = catchAsync(async(req, res) => {
+    const tours = await tourService.getAllTour();
+    const minmaxPrice = await minmaxValue()
+    const news = await newsService.getNewsPageHome()
+    var arrayRating = [],
+        outstandingTour = []
+    for (let index = 0; index < tours.length; index++) {
+        var rating = await tourService.caculateRatingTour(tours[index]._id.toString()) || 0
+        arrayRating.push({ id: tours[index]._id.toString(), rating: rating })
+    }
+    arrayRating.sort(function(a, b) {
+        return b.rating - a.rating;
+    })
+    console.log(arrayRating);
+    for (let index = 0; index < 8; index++) {
+        outstandingTour.push(await tourService.getTourById(arrayRating[index].id))
+    }
+    res.status(200).json({ outstandingTour, minmaxPrice, news })
 })
+
+const minmaxValue = async() => {
+    const arrayMinMax = await tourService.getMinMaxPrice()
+    return {
+        min: arrayMinMax[0].min,
+        max: arrayMinMax[0].max
+    }
+}
 
 const filterTour = catchAsync(async(req, res) => {
     const perPage = 6;
-    const groupMinMaxPrice = await tourService.getMinMaxPrice()
     var regionId
     var disValue = 0
+    const groupMinMaxPrice = await minmaxValue()
     let page = parseInt(req.query.page) || 1;
     let typePlace = req.query.type || configFilter.typePlace
-    let minPrice = parseInt(req.query.min) || groupMinMaxPrice[0].min
-    let maxPrice = parseInt(req.query.max) || groupMinMaxPrice[0].max
+    let minPrice = parseInt(req.query.min) || groupMinMaxPrice.min
+    let maxPrice = parseInt(req.query.max) || groupMinMaxPrice.max
     let discount = req.query.dis || false
     if (discount) disValue = 0.0001
     if (req.query.region) {
@@ -57,6 +74,8 @@ const filterTour = catchAsync(async(req, res) => {
 const getTourById = catchAsync(async(req, res) => {
     const tour = await tourService.getTourById(req.params.tourId)
 
+    const rating = await tourService.caculateRatingTour(req.params.tourId)
+    console.log(rating);
     if (!tour) {
         res.status(httpStatus.NOT_FOUND).send("Tour not found")
     } else res.status(200).send(tour);
@@ -82,17 +101,17 @@ const getTourRegion = (regionId) => async(req, res) => {
     const tours = await tourService.getTourRegion(regionId, perPage, page, search)
     if (search == '') totalTourRegion = await tourService.countTourRegion(regionId)
     else totalTourRegion = await tourService.countTourSearchRegion(regionId, search)
-    if (!tours) {
+    if (totalTourRegion == 0) {
         res.status(httpStatus.NOT_FOUND).send("Tour region not found")
     } else res.status(200).json({ tours, totalTourRegion })
 }
 
 const getTourRegionById = (regionId) => async(req, res) => {
     const tour = await tourService.getTourRegionById(req.params.tourId, regionId)
-
+    const similarTour = await tourService.similarTourByTypePlace(req.params.tourId, regionId)
     if (!tour) {
         res.status(httpStatus.NOT_FOUND).send("Tour not found")
-    } else res.status(200).send(tour);
+    } else res.status(200).json({ tour, similarTour })
 }
 
 const sortTourRegion = (regionId, status, typeSort) => catchAsync(async(req, res) => {
@@ -101,19 +120,20 @@ const sortTourRegion = (regionId, status, typeSort) => catchAsync(async(req, res
 
     const tours = await tourService.sortTourRegion(regionId, status, typeSort, perPage, page)
     const totalTourRegion = await tourService.countTourRegion(regionId)
-    if (!tours) {
+    if (totalTourRegion == 0) {
         res.status(httpStatus.NOT_FOUND).send("Tour not found")
     } else res.status(200).json({ tours, totalTourRegion })
 })
 
+
 module.exports = {
     createTour,
-    getAllTour,
     filterTour,
     getTourById,
     updateTourById,
     deleteTourById,
     getTourRegion,
     getTourRegionById,
-    sortTourRegion
+    sortTourRegion,
+    outstandingTour
 }
