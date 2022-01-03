@@ -8,21 +8,10 @@ import NewsList from './page/NewsList';
 import { Route, Routes,useLocation } from 'react-router-dom';
 import TourDetail from './page/TourDetail';
 import NewsDetail from './page/NewsDetail';
-
-function useQuery() {
-  const { search } = useLocation();
-
-  // return React.useMemo(() => new URLSearchParams(search), [search]);
-}
+import PaymentConfirmation from './page/PaymentConfirmation';
+import Result from './page/Result';
 
 function App() {
-  const { search } = useLocation();
-  const searchParagram = new URLSearchParams(search);
-
-  const getPage = ()=>{
-    console.log(searchParagram.get('page'));
-    return searchParagram.get('page')
-  }
   return (
     <div className="App">
       <Header/>
@@ -34,6 +23,8 @@ function App() {
         <Route path="/detail" exact element={<TourDetail/>}/>
         <Route path="/news" element={<NewsList/>} />
         <Route path="/news-detail" element={<NewsDetail/>} />
+        {/* <Route path="/payment" element={<PaymentConfirmation/>} /> */}
+        <Route path="/result" element={<Result url="mien-trung"/>} />
       </Routes>
       <Footer/>
     </div>

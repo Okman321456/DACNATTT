@@ -10,7 +10,7 @@ function Home(props) {
     return (
         <div>
             <SlideIntroduce />
-            <Filter />
+            <Filter text='BẠN ĐANG TÌM KIẾM?...'/>
             <HotPlacesSlide />
             <HotTourSlide />
             <News/>

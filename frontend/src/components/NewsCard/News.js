@@ -28,7 +28,7 @@ function News(props) {
                     <Grid container spacing={2} justifyContent="center">
                         {
                             news.map((item, index) => (
-                                <Grid item xs={12} md={4} sm={6} spacing={2} >
+                                <Grid item xs={12} md={4} sm={6} key={index}>
                                     <NewsCard
                                         title={item.title}
                                         description={item.description}

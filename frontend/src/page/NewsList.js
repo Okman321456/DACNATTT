@@ -41,8 +41,7 @@ function NewsList(props) {
     const [data, setData] = useState([]);
     useEffect(async () => {
         const result = await axios('http://localhost:3001/mien-trung?page=1');
-        console.log(result.data)
-        setData(result.data);
+        setData(result.data.tours);
     }, []);
     return (
         <div className='news-list-wrapper' style={{ marginTop: '110px' }}>
@@ -69,20 +68,20 @@ function NewsList(props) {
                         <h4>CÁC TOUR NỔI BẬC</h4>
                         {
                             data.map((item, index) => (
-                                <React.Fragment>
+                                <React.Fragment key={index}>
                                     <Divider style={{ margin: '5px 0' }} />
-                                    <Grid container xs={12} key={index} style={{ padding: '10px' }}>
-                                        <Grid xs={2} md={3}>
+                                    <Grid container item xs={12} key={index} style={{ padding: '10px' }}>
+                                        <Grid item xs={2} md={3}>
                                             <div style={{ aspectRatio: '1', overflow: 'hidden', maxHeight: '100px' }}>
                                                 <img style={{ maxHeight: '100px', height: '100%' }} src={`http://localhost:3001/${item.imageUrl.slice(6)}`} />
                                             </div>
                                         </Grid>
-                                        <Grid xs={10} md={9}>
+                                        <Grid item xs={10} md={9}>
                                             <Typography variant="body1" align='left' sx={{ marginLeft: '10px' }}>
                                                 {item.name}
                                             </Typography>
                                             <Typography variant="body1" align='left' sx={{ marginLeft: '10px', fontSize: '14px', color: 'coral' }}>
-                                                {`${RegardPrice(item.price)} VND`}
+                                                {`₫${RegardPrice(item.price)}`}
                                             </Typography>
                                         </Grid>
                                     </Grid>

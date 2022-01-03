@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Container, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
+import Filter from '../components/Filter/Filter';
 import { Box } from '@mui/system';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -23,12 +24,12 @@ const news = [{
     image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
 },]
 
-function TourList(props) {
+function Result(props) {
+    const { url } = props;
     let navigate = useNavigate();
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
-    const { region, url } = props;
     const [sort, setSort] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni));
@@ -56,45 +57,8 @@ function TourList(props) {
         setOpen(true);
     };
     return (
-        <div className='tour-list'>
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: '150px',
-                padding: '50px 50px 10px 50px',
-                backgroundImage: "url('https://i1-dulich.vnecdn.net//2021//12//17//2-1639731390.jpg?w=1200&h=0&q=100&dpr=2&fit=crop&s=u1CJGQlx3X7u5U4jEpZxDA')",
-                backgroundSize: 'cover',
-                backgroundPosition: '0 50%'
-            }}>
-                <Typography gutterBottom variant="body1" component="div"
-                    sx={{
-                        border: '1px solid #660000', color: '#660000',
-                        borderRadius: '30px', padding: '5px', fontSize: { md: '1.2em', sm: '1em' }, marginTop: '30px', marginLeft: '20px'
-                    }}>
-                    {`DU LỊCH MIỀN ${region}`}
-                </Typography>
-                <Typography gutterBottom variant="h6" component="div" sx={{ marginTop: '30px', marginRight: '20px', }}>
-                    <FormControl sx={{ m: 1, minWidth: 120, borderRadius: "30px", color: '#660000', height: { md: '41px', xs: '36px' } }} error>
-                        <InputLabel id="demo-simple-select-helper-label" sx={{ color: '#660000', marginTop: { xs: '-8px', md: '-6px' } }}>Sắp xếp</InputLabel>
-                        <Select
-                            id="demo-controlled-open-select"
-                            open={open}
-                            onClose={handleClose}
-                            onOpen={handleOpen}
-                            value={sort}
-                            onChange={handleChange}
-                            sx={{ height: { md: '41px', xs: '36px' }, color: '#660000' }}
-                            inputProps={{ style: { border: '1px solid #660000 ' } }}
-                        >
-                            <MenuItem value={1}>Giá &#8593;</MenuItem>
-                            <MenuItem value={2}>Giá &#8595;</MenuItem>
-                            <MenuItem value={3}>Tên &#8593;</MenuItem>
-                            <MenuItem value={4}>Tên &#8595;</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Typography>
-            </Box>
+        <div className='tour-list' style={{marginTop:'90px'}}>
+            <Filter text='KẾT QUẢ TÌM KIẾM'/>
             <Container maxWidth="lg">
                 <Box sx={{ flexGrow: 1, marginTop: '30px' }}>
                     <Grid container spacing={1}>
@@ -162,4 +126,4 @@ function TourList(props) {
     );
 }
 
-export default TourList;
+export default Result;

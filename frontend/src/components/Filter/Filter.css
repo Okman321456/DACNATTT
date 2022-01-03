@@ -28,7 +28,7 @@
     top:40px;
     left: -1px;
     background-color: aliceblue;
-    width: 170px;
+    width: 130px;
     border: 1px solid rgba(0,0,0,.1);
     border-top: none;
     z-index: 10;
@@ -53,7 +53,7 @@
     font-family: 'Dosis', sans-serif;
     font-size: 18px;
 }
-.filter-item-label:hover:after{
+.filter-item-label:not(:last-child):hover:after{
     content: '';
     position: absolute;
     z-index: 5;

@@ -66,7 +66,8 @@ function HotTourSlide(props) {
     const [data, setData] = useState([]);
     useEffect(async () => {
         const result = await axios('http://localhost:3001/mien-trung?page=1');
-        setData(result.data);
+        console.log(result.data)
+        setData(result.data.tours);
       },[]);
     const settings = {
         dots: false,
@@ -121,7 +122,7 @@ function HotTourSlide(props) {
                                     name={info.name}
                                     description={info.description}
                                     image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                    price={`${RegardPrice(info.price)} VND`}
+                                    price={`₫${RegardPrice(info.price)}`}
                                     key={index} />
                             ))
                         }
