@@ -14,8 +14,8 @@ const showListFeedback = catchAsync(async(req, res) => {
 })
 // tra ve danh sach feedback moi tour
 const showFeedbackPerTour = catchAsync(async(req, res) => {
-    const feedback = await feedbackService.showFeedbackPerTour(req.params.idTour)
-    res.send(feedback)
+    const feedbacks = await feedbackService.showFeedbackPerTour(req.params.idTour)
+    res.send({feedbacks})
 })
 // admin
 const deleteFeedback = catchAsync(async(req, res) => {

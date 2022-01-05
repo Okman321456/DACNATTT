@@ -1,4 +1,5 @@
 const { Tour } = require('../models');
+const { Ticket } = require('../models');
 const { Feedback } = require('../models')
 const catchAsync = require('../utils/catchAsync');
 
@@ -48,6 +49,17 @@ const getTourById = async(id) => {
     return await Tour.findById(id)
 }
 
+const caculateRemainingAmount = async(id) => {
+    const tour = await Tour.findById(id)
+    let remainingAmount = tour.amount
+    const ticket = await Ticket.find().populate({path: 'idTour'})
+    ticket.forEach(element => {
+        if(element.idTour._id == id){
+            remainingAmount -= element.numberPeople
+        }
+    });
+    return remainingAmount
+}
 const updateTourById = async(id, data) => {
     const tour = await getTourById(id);
     Object.assign(tour, data);
@@ -151,6 +163,8 @@ module.exports = {
     countTourRegion,
     countTourSearchRegion,
     getTourRegionById,
+    sortTour,
+    caculateRemainingAmount,
     sortTourRegion,
     filterTour,
     countTourFilter,

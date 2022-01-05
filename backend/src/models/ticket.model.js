@@ -6,17 +6,15 @@ const ticketSchema = mongoose.Schema({
         ref: 'Tour',
         required: true,
     },
+    name: {
+        type: String,
+    },
     email: {
         type: String,
         required: true,
         unique: true,
         trim: true,
         lowercase: true,
-        // validate(value) {
-        //   if (!validator.isEmail(value)) {
-        //     throw new Error('Invalid email');
-        //   }
-        // },
     },
     phone: {
         type: String,
