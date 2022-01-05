@@ -18,7 +18,7 @@ const showListFeedback = async() => {
 }
 
 const showFeedbackPerTour = async(idTour) => {
-    const feedbackPerTour = []
+     const feedbackPerTour = []
     const feedback = await Feedback.find().populate({path: 'idTour'})
     feedback.forEach(element => {
         if(element.idTour._id == idTour){

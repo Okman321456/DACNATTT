@@ -6,9 +6,8 @@ const ticketSchema = mongoose.Schema({
         ref: 'Tour',
         required: true,
     },
-    idUser: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User',
+    name: {
+        type: String,
         required: true,
     },
     numberPeople: {

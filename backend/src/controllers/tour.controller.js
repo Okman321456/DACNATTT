@@ -21,10 +21,10 @@ const getAllTour = catchAsync(async(req, res) => {
 
 const getTourById = catchAsync(async(req, res) => {
     const tour = await tourService.getTourById(req.params.tourId)
-
+    const remainingAmount = await tourService.caculateRemainingAmount(req.params.tourId)
     if (!tour) {
         res.status(httpStatus.NOT_FOUND).send("Product not found")
-    } else res.send(tour);
+    } else res.send([{tour}, {remainingAmount}]);
 })
 
 const updateTourById = catchAsync(async(req, res) => {
