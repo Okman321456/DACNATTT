@@ -22,10 +22,10 @@ function AdvantageCard(props) {
                                     <Typography gutterBottom variant="subtitle1" component="div" align='center'>
                                         <Forward30Icon sx={{fontSize:"5em", color:'darkcyan'}}/>
                                     </Typography>
-                                    <Typography variant="h5" color="cadetblue" align="center">
+                                    <Typography variant="h5" color="cadetblue" align="center" component='div'>
                                         NHANH CHÓNG
                                     </Typography>
-                                    <Typography variant="body1" color="text.secondary" align="left">
+                                    <Typography variant="body1" color="text.secondary" align="left" component='div'>
                                     Phương châm hoạt động của công ty là để mọi người mọi nhà đều có thể đi du lịch với giá cả hợp lý nhất.
                                     </Typography>
                                 </CardContent>
@@ -37,10 +37,10 @@ function AdvantageCard(props) {
                                     <Typography gutterBottom variant="subtitle1" component="div" align='center'>
                                         <RecommendIcon sx={{fontSize:"5em", color:'darkcyan'}}/>
                                     </Typography>
-                                    <Typography variant="h5" color="cadetblue" align="center">
+                                    <Typography variant="h5" color="cadetblue" align="center" component='div'>
                                         UY TÍN
                                     </Typography>
-                                    <Typography variant="body1" color="text.secondary" align="left">
+                                    <Typography variant="body1" color="text.secondary" align="left" component='div'>
                                     Phương châm hoạt động của công ty là để mọi người mọi nhà đều có thể đi du lịch với giá cả hợp lý nhất.
                                     </Typography>
                                 </CardContent>
@@ -52,10 +52,10 @@ function AdvantageCard(props) {
                                     <Typography gutterBottom variant="subtitle1" component="div" align='center'>
                                         <PriceCheckIcon sx={{fontSize:"5em", color:'darkcyan'}}/>
                                     </Typography>
-                                    <Typography variant="h5" color="cadetblue" align="center">
+                                    <Typography variant="h5" color="cadetblue" align="center" component="div">
                                         GIÁ TỐT
                                     </Typography>
-                                    <Typography variant="body1" color="text.secondary" align="left">
+                                    <Typography variant="body1" color="text.secondary" align="left" component="div">
                                     Phương châm hoạt động của công ty là để mọi người mọi nhà đều có thể đi du lịch với giá cả hợp lý nhất.
                                     </Typography>
                                 </CardContent>

@@ -62,12 +62,8 @@ const NextArrow = (props) => {
         </div>
     );
 }
-function HotTourSlide(props) {
-    const [data, setData] = useState([]);
-    useEffect(async () => {
-        const result = await axios('http://localhost:3001/mien-trung?page=1');
-        setData(result.data);
-      },[]);
+function HotTourSlide({tourlist}) {
+
     const settings = {
         dots: false,
         arrows: true,
@@ -116,12 +112,14 @@ function HotTourSlide(props) {
                     <h4>ĐƠN GIẢN HÓA LỊCH TRÌNH KHÁM PHÁ</h4>
                     <Slider {...settings} style={{ padding: '30px'}}>
                         {
-                            data.map((info, index) => (
+                            tourlist.map((info, index) => (
                                 <TourCard
+                                    link={`/tour/${info._id}`}
+                                    _id={info._id}
                                     name={info.name}
                                     description={info.description}
                                     image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                    price={`${RegardPrice(info.price)} VND`}
+                                    price={`₫${RegardPrice(info.price)}`}
                                     key={index} />
                             ))
                         }

@@ -21,10 +21,10 @@ function Footer(props) {
             <Box sx={{ flexGrow: 1, padding: '50px 30px', backgroundColor: '#000000db' }}>
                 <Grid container>
                     <Grid item xs={12} md={3} sm={6}>
-                        <Typography variant="h5" color="white" align="left">
+                        <Typography variant="h5" color="white" align="left" component='div'>
                             THÔNG TIN
                         </Typography>
-                        <Typography variant='body1' align='left'>
+                        <Typography variant='body1' align='left' component='div'>
                             <ul style={{ listStyle: 'none', padding: 0 }} className='students'>
                                 <li><a href="https://www.facebook.com/thang.phung.3363" target="_blank" >Văn Thắng</a></li>
                                 <li><a href="https://www.facebook.com/tranlongnhat333" target="_blank">Long Nhật</a></li>
@@ -35,10 +35,10 @@ function Footer(props) {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={3} sm={6}>
-                        <Typography variant="h6" color="white" align="left">
+                        <Typography variant="h6" color="white" align="left" component='div'>
                             LIÊN HỆ
                         </Typography>
-                        <Typography variant='body1' align='left'>
+                        <Typography variant='body1' align='left' component='div'>
                             <ul style={{ listStyle: 'none', padding: 0 }} className='address'>
                                 <li><LocationOnIcon color='warning' /> Đại học Bách Khoa Đà Nẵng</li>
                                 <li><LocalPhoneIcon color='warning' /> 0909 999 999</li>
@@ -48,10 +48,10 @@ function Footer(props) {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={3} sm={6}>
-                        <Typography variant="h6" color="white" align="left">
+                        <Typography variant="h6" color="white" align="left" component='div'>
                             PHỔ BIẾN
                         </Typography>
-                        <Typography variant='body1' align='left'>
+                        <Typography variant='body1' align='left' component='div'>
                             <ul style={{ listStyle: 'none', padding: 0 }} className='address'>
                                 <li><LocalOfferIcon color='warning' /> Đà Nẵng</li>
                                 <li><LocalOfferIcon color='warning' /> Đà Lạt</li>
@@ -60,10 +60,10 @@ function Footer(props) {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={3} sm={6}>
-                        <Typography variant="h6" color="white" align="left">
+                        <Typography variant="h6" color="white" align="left" component='div'>
                             KẾT NỐI VỚI CHÚNG TÔI
                         </Typography>
-                        <Typography variant="body1" align="left">
+                        <Typography variant="body1" align="left" component='div'>
                             <TextField id="submit-gmail-tf"
                                 error placeholder='Your gmail...'
                                 sx={{

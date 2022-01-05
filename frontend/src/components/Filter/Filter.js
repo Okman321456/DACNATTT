@@ -1,24 +1,32 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { Grid} from '@material-ui/core';
+import {useNavigate  } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form';
+import { Checkbox, Grid } from '@material-ui/core';
+import Slider from '@mui/material/Slider';
 import { Container } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './Filter.css'
-function Filter() {
+import RegardPrice from '../RegardPrice/RegardPrice';
+
+function Filter({text, min = 0, max = 15000000}) {
+    let navigate = useNavigate();
+    const minValue = min;
+    const maxValue = max;
     const {
         register,
         handleSubmit,
         reset,
+        control,
     } = useForm();
     const onHandleSubmit = (data) => {
-        console.log(data);
+        navigate(`/cua-hang?region=${data.region}&type=${data.type}&min=${data.price[0]}&max=${data.price[1]}&dis=${data.discount}`,{replace: true});
         reset();
     };
     return (
         <div className='filter-box'>
             <Container>
-                <h1 style={{margin:0, marginBottom:'20px', fontFamily:"'Roboto Mono', monospace", fontWeight:'initial', color:'dimgray'}}>
-                    BẠN ĐANG TÌM KIẾM?...
+                <h1 style={{ margin: 0, marginBottom: '20px', fontFamily: "'Roboto Mono', monospace", fontWeight: 'initial', color: 'dimgray' }}>
+                    {text}
                 </h1>
                 <form action='' onSubmit={handleSubmit(onHandleSubmit)}>
                     <Grid
@@ -33,50 +41,75 @@ function Filter() {
                                 <label className='filter-label'>Vùng miền</label>
                                 <KeyboardArrowDownIcon className='arrow' />
                                 <div className='filter-detail'>
-                                    <div className='filter-radio-item'><input type="radio" id="region" value="bac" {...register("region")}/><label for='region'>Miền Bắc</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="region" value="trung" {...register("region")}/><label for='region'>Miền Trung</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="region" value="nam" {...register("region")}/><label for='region'>Miền Nam</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="bac" value="bac" {...register("region")} /><label htmlFor='bac'>Miền Bắc</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="trung" value="trung" {...register("region")} /><label htmlFor='trung'>Miền Trung</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="nam" value="nam" {...register("region")} /><label htmlFor='nam'>Miền Nam</label></div>
                                 </div>
                             </div>
 
                         </div>
                         <div className='filter-item-wrapper'>
                             <div className='filter-item-label'>
-                                <label className='filter-label' for='travel-type'>Loại hình</label>
+                                <label className='filter-label'>Loại hình</label>
                                 <KeyboardArrowDownIcon className='arrow' />
                                 <div className='filter-detail'>
-                                    <div className='filter-radio-item'><input type="radio" id="type" value="nui" {...register("type")}/><label for='type'>Núi</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="type" value="bien" {...register("type")}/><label for='type'>Biển</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="type" value="dao" {...register("type")}/><label for='type'>Đảo</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="type" value="vanhoa" {...register("type")}/><label for='type'>Đảo</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="nui" value="nui" {...register("type")} /><label htmlFor='nui'>Núi</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="bien" value="bien" {...register("type")} /><label htmlFor='bien'>Biển</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="dao" value="dao" {...register("type")} /><label htmlFor='dao'>Đảo</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="vanhoa" value="vanhoa" {...register("type")} /><label htmlFor='vanhoa'>Đảo</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="songnuoc" value="songnuoc" {...register("type")} /><label htmlFor='songnuoc'>Sông nước</label></div>
                                 </div>
                             </div>
                         </div>
                         <div className='filter-item-wrapper'>
                             <div className='filter-item-label'>
-                                <label className='filter-label' for='quantily'>Số lượng</label>
+                                <label className='filter-label'>Giá</label>
                                 <KeyboardArrowDownIcon className='arrow' />
-                                <div className='filter-detail'>
-                                    <div className='filter-radio-item'><input type="radio" id="quantily" value="1" {...register("quantily")}/><label for='quantily'>1 Người</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="quantily" value="2" {...register("quantily")}/><label for='quantily'>2 Người</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="quantily" value="4" {...register("quantily")}/><label for='quantily'>4 người</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="quantily" value="5" {...register("quantily")}/><label for='quantily'>5 Người</label></div>
+                                <div className='filter-detail' style={{ width: '200px', left: '-50%', transform: 'translateX(-20%)' }}>
+                                    <Controller
+                                        name="price"
+                                        control={control}
+                                        defaultValue={[minValue, maxValue]}
+                                        render={({ field }) => (
+                                            <Slider
+                                                {...field}
+                                                onChange={(_, value) => {
+                                                    field.onChange(value);
+                                                }}
+                                                valueLabelDisplay="auto"
+                                                valueLabelFormat={
+                                                    (value) => `${RegardPrice(value)}`
+                                                }
+                                                max={maxValue}
+                                                min={minValue}
+                                            />
+                                        )}
+                                    />
                                 </div>
                             </div>
                         </div>
                         <div className='filter-item-wrapper'>
                             <div className='filter-item-label'>
-                                <label className='filter-label' for='price'>Giá</label>
-                                <KeyboardArrowDownIcon className='arrow' />
-                                <div className='filter-detail' style={{width:'100px'}}>
-                                    <div className='filter-radio-item'><input type="radio" id="price" value="1-3" {...register("price")}/><label for="price">Từ 1 - 3 tr</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="price" value="3-5" {...register("price")}/><label for="price">Từ 3 - 5 tr</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="price" value="5-10" {...register("price")}/><label for="price">Trên 5tr</label></div>
-                                </div>
+                                <label className='filter-label' htmlFor='discountCheck'>Giảm giá</label>
+                                <section>
+                                    <Controller
+                                        name="discount"
+                                        control={control}
+                                        defaultValue={false}
+                                        render={({ field }) => (
+                                            <Checkbox
+                                                id='discountCheck'
+                                                name='discountCheck'
+                                                onChange={(e) => field.onChange(e.target.checked)}
+                                                checked={field.value}
+                                                style={{padding: 0, paddingLeft:'5px'}}
+                                            />
+                                        )}
+                                    />
+                                </section>
                             </div>
                         </div>
-                        <button type='submit' className='button-search' style={{cursor:'pointer'}}>Tìm kiếm</button>
-
+                        <button type='submit' className='button-search' style={{ cursor: 'pointer' }}>Tìm kiếm</button>
                     </Grid>
                 </form>
             </Container>

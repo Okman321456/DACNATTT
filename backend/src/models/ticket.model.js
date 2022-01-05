@@ -19,11 +19,13 @@ const ticketSchema = mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
+
     },
     phone: {
         type: String,
         minlength: 0,
         maxlength: 10,
+        required: true,
     },
     numberPeople: {
         type: Number,
