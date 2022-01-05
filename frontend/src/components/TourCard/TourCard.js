@@ -5,17 +5,22 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import RegardPrice from '../RegardPrice/RegardPrice';
+import { Link } from 'react-router-dom';
+import {useStore, actions} from '../../store'
 
-export default function TourCard({name, description, image, price}) {
+export default function TourCard({_id, name, description, image, price, link}) {
     const [shadow, setShadow] = React.useState(false);
     const onMouseOver = () => setShadow(true);
     const onMouseOut = () => setShadow(false);
+    const [state, dispatch] = useStore();
+
+    const handleOnClick = (_id)=>{
+        dispatch(actions.setBookTour(_id));
+    }
     return (
         <Card
             onMouseOver={onMouseOver}
             onMouseOut={onMouseOut}
-            zDepth={shadow}
             raised={shadow}
             sx={{
                 boxSizing:'border-box',
@@ -26,7 +31,7 @@ export default function TourCard({name, description, image, price}) {
                 },
                 cursor:'pointer',
                 borderRadius:'10px',
-                maxWidth:330,
+                maxWidth:300,
                 height:450,
                 marginLeft:'auto',
                 marginRight:'auto',
@@ -62,16 +67,16 @@ export default function TourCard({name, description, image, price}) {
                         height:'78px',
                         textOverflow:'ellipsis',
                         display:'-webkit-box',
-                        '-webkit-line-clamp':'4',
-                        '-webkit-box-orient':'vertical'
+                        WebkitLineClamp:'4',
+                        WebkitBoxOrient:'vertical'
                     }}
                 >
                     {description}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="info" variant="outlined">Đặt</Button>
-                <Button size="small" color="info" variant="outlined">Xem thêm</Button>
+                <Button size="small" color="info" variant="outlined" onClick={()=>handleOnClick(_id)}>Đặt</Button>
+                <Link to={link} style={{textDecoration:'none'}}><Button size="small" color="info" variant="outlined">Xem thêm</Button></Link>
             </CardActions>
         </Card>
     );
