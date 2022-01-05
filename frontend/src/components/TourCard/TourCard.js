@@ -5,11 +5,18 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Link } from 'react-router-dom';
+import {useStore, actions} from '../../store'
 
-export default function TourCard({name, description, image, price}) {
+export default function TourCard({_id, name, description, image, price, link}) {
     const [shadow, setShadow] = React.useState(false);
     const onMouseOver = () => setShadow(true);
     const onMouseOut = () => setShadow(false);
+    const [state, dispatch] = useStore();
+
+    const handleOnClick = (_id)=>{
+        dispatch(actions.setBookTour(_id));
+    }
     return (
         <Card
             onMouseOver={onMouseOver}
@@ -68,8 +75,8 @@ export default function TourCard({name, description, image, price}) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="info" variant="outlined">Đặt</Button>
-                <Button size="small" color="info" variant="outlined">Xem thêm</Button>
+                <Button size="small" color="info" variant="outlined" onClick={()=>handleOnClick(_id)}>Đặt</Button>
+                <Link to={link} style={{textDecoration:'none'}}><Button size="small" color="info" variant="outlined">Xem thêm</Button></Link>
             </CardActions>
         </Card>
     );

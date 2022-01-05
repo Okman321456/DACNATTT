@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import TourCard from '../components/TourCard/TourCard';
 import { Divider } from '@material-ui/core';
 import RegardPrice from '../components/RegardPrice/RegardPrice';
+import APIClient from '../APIs/APIClient';
 
 const news = [{
     title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
@@ -25,48 +26,49 @@ const news = [{
 },]
 
 function Result(props) {
-    const { url } = props;
     let navigate = useNavigate();
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
-    const [sort, setSort] = React.useState("");
-    const [open, setOpen] = React.useState(false);
-    const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni));
+    const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni)); 
+    const paramURL={page: pageNumber};
+    const [load, onLoad] = React.useState(false);
+    const [data, setData] = React.useState();
+
+    const paramTem = {page: pageNumber}
+    searchParagram.forEach((value, key)=>{
+        if(value!='null' && value!='false')
+        paramURL[key] = value;
+        paramTem[key] = value;
+    })
+    
+
+    useEffect(async () => {
+        console.log(paramURL)
+        const result = await APIClient.getResultFilter(paramURL);
+        // const result = await axios('http://localhost:3001/cua-hang?min=3200000&max=10500000&dis=true');
+        setData(result);
+        console.log(result);
+    }, [pageNumber]);
 
     const handleChangePage = (event, value) => {
         setPageNumber(value);
-        navigate(`/${url}?page=${value}`);
-    };
-    const [data, setData] = React.useState([]);
-    useEffect(async () => {
-        const result = await axios(`http://localhost:3001/${url}?page=${pageNumber}`);
-        setData(result.data.tours);
-
-    }, [pageNumber]);
-
-    const handleChange = (event) => {
-        setSort(event.target.value);
+        navigate(`/cua-hang?region=${paramTem.region}&type=${paramTem.type}&min=${paramTem.min}&max=${paramTem.max}&dis=${paramTem.dis}&page=${value}`,{replace: true});
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
     return (
         <div className='tour-list' style={{marginTop:'90px'}}>
             <Filter text='KẾT QUẢ TÌM KIẾM'/>
             <Container maxWidth="lg">
                 <Box sx={{ flexGrow: 1, marginTop: '30px' }}>
+                    {(data)?
                     <Grid container spacing={1}>
                         <Grid container item xs={12} md={9} spacing={2}>
                             {
-                                data.map((tour, index) => (
+                                data.tours.map((tour, index) => (
                                     <Grid item key={index} md={4} xs={12} sm={6}>
                                         <TourCard
+                                            link={`/tour/${tour._id}`}
                                             name={tour.name}
                                             description={tour.description}
                                             image={`http://localhost:3001/${tour.imageUrl.slice(6)}`}
@@ -77,7 +79,7 @@ function Result(props) {
                             }
                             <Grid item xs={12}>
                                 <Stack spacing={2} sx={{ marginTop: '40px' }}>
-                                    <Pagination count={10} page={pageNumber} onChange={handleChangePage} sx={{ display: 'flex', justifyContent: 'center' }} />
+                                    <Pagination count={Math.ceil(data.totalTourFilter/ 6)} page={pageNumber} onChange={handleChangePage} sx={{ display: 'flex', justifyContent: 'center' }} />
                                 </Stack>
                             </Grid>
                         </Grid>
@@ -119,6 +121,8 @@ function Result(props) {
                             <Divider style={{ margin: '5px 0' }} />
                         </Grid>
                     </Grid>
+                    : <h1> KHÔNG TÌM THẤY TOUR PHỤ HỢP </h1>
+                    }
                 </Box>
             </Container>
 

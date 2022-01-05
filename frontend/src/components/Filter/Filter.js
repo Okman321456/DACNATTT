@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate  } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form';
 import { Checkbox, Grid } from '@material-ui/core';
 import Slider from '@mui/material/Slider';
@@ -7,11 +8,10 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './Filter.css'
 import RegardPrice from '../RegardPrice/RegardPrice';
 
-function Filter({text}) {
-    const [value, setValuePrice] = React.useState([0, 15000000]);
-    const handleChangeRange = (event, newValue) => {
-        setValuePrice(newValue);
-    };
+function Filter({text, min = 0, max = 15000000}) {
+    let navigate = useNavigate();
+    const minValue = min;
+    const maxValue = max;
     const {
         register,
         handleSubmit,
@@ -19,7 +19,7 @@ function Filter({text}) {
         control,
     } = useForm();
     const onHandleSubmit = (data) => {
-        console.log(data);
+        navigate(`/cua-hang?region=${data.region}&type=${data.type}&min=${data.price[0]}&max=${data.price[1]}&dis=${data.discount}`,{replace: true});
         reset();
     };
     return (
@@ -69,7 +69,7 @@ function Filter({text}) {
                                     <Controller
                                         name="price"
                                         control={control}
-                                        defaultValue={[0, 10]}
+                                        defaultValue={[minValue, maxValue]}
                                         render={({ field }) => (
                                             <Slider
                                                 {...field}
@@ -80,7 +80,8 @@ function Filter({text}) {
                                                 valueLabelFormat={
                                                     (value) => `${RegardPrice(value)}`
                                                 }
-                                                max={15000000}
+                                                max={maxValue}
+                                                min={minValue}
                                             />
                                         )}
                                     />
@@ -109,7 +110,6 @@ function Filter({text}) {
                             </div>
                         </div>
                         <button type='submit' className='button-search' style={{ cursor: 'pointer' }}>Tìm kiếm</button>
-
                     </Grid>
                 </form>
             </Container>
