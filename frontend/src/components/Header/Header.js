@@ -16,8 +16,28 @@ import { TextField } from '@material-ui/core';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { MenuList, Paper } from '@mui/material';
 import logo from '../image/logoTravel.png';
+import { Link } from 'react-router-dom';
 
-const pages = ['TRANG CHỦ', 'MIỀN BẮC', 'MIỀN TRUNG', 'MIỀN NAM', 'TIN TỨC', 'GIỚI THIỆU'];
+const pages = [{
+    title: 'TRANG CHỦ',
+    path:'/'
+},{
+    title: 'MIỀN BẮC',
+    path:'/mien-bac'
+},{
+    title: 'MIỀN TRUNG',
+    path:'/mien-trung'
+},{
+    title: 'MIỀN NAM',
+    path:'/mien-nam'
+},
+{
+    title: 'TIN TỨC',
+    path:'/tin-tuc'
+},{
+    title: 'GIỚI THIỆU',
+    path:'/gioi-thieu'
+}];
 const pagesMenu = ['TRANG CHỦ', 'MIỀN BẮC', 'MIỀN TRUNG', 'MIỀN NAM', 'TIN TỨC', 'GIỚI THIỆU', 'ĐĂNG NHẬP', 'VALI CÁ NHÂN'];
 
 const useStyles = makeStyles({
@@ -101,13 +121,15 @@ const Header = () => {
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', minHeight: '60px' }}>
                         {pages.map((page, index) => (
+                            <Link style={{textDecoration:'none'}} to={page.path} key={index}>
                             <Button
                                 className={classes.item}
                                 key={index}
                                 sx={{ color: 'darkslateblue', display: 'block', px: 1, mx: 1, fontFamily:"'Roboto Mono', monospace", fontWeight:800 }}
                             >
-                                {page}
+                                {page.title}
                             </Button>
+                            </Link>
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
