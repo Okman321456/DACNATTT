@@ -24,7 +24,6 @@ const ticketSchema = mongoose.Schema({
         type: String,
         minlength: 0,
         maxlength: 10,
-        required: true,
     },
     numberPeople: {
         type: Number,

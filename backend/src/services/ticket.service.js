@@ -3,16 +3,15 @@ const {User} = require('../models')
 const {Tour} = require('../models')
 
 const bookTicket = async(id, ticketBody) => {
-    const ticket = await Ticket.create({
-        idTour: id,
-        name: ticketBody.name,
-        email: ticketBody.email,
-        phone: ticketBody.phone,
-        status: 0,
-        numberPeople: ticketBody.numberPeople
-    })
-    return ticket
-
+        const ticket = await Ticket.create({
+            idTour: id,
+            name: ticketBody.name,
+            email: ticketBody.email,
+            phone: ticketBody.phone,
+            status: 0,
+            numberPeople: ticketBody.numberPeople
+        })
+        return ticket
 }
 
 const viewDetailTicket = async(id) => {

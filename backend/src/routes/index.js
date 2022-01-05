@@ -5,6 +5,7 @@ const userRoute = require('./user.route')
 const newsRoute = require('./news.route')
 const ticketRoute = require('./ticket.route')
 const authRoute = require('./auth.route')
+const feedbackRoute = require('./feedback.route')
 
 const router = express.Router();
 
@@ -26,6 +27,9 @@ const defaultRoutes = [{
 }, {
     path: '/',
     route: tourRoute,
+}, {
+    path: '/feedbacks',
+    route: feedbackRoute,
 }];
 
 
