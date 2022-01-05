@@ -8,6 +8,18 @@ const ticketSchema = mongoose.Schema({
     },
     name: {
         type: String,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
+    },
+    phone: {
+        type: String,
+        minlength: 0,
+        maxlength: 10,
         required: true,
     },
     numberPeople: {
@@ -22,14 +34,6 @@ const ticketSchema = mongoose.Schema({
         max: 3,
         required: true,
     },
-
-    numberPeople: {
-        type: Number,
-        min: 1,
-        max: 5,
-        required: true
-    }
-
 }, {
     timestamps: true
 })

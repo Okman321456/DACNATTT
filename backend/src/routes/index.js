@@ -1,6 +1,8 @@
 const express = require('express');
+
 const tourRoute = require('./tour.route')
 const userRoute = require('./user.route')
+const newsRoute = require('./news.route')
 const ticketRoute = require('./ticket.route')
 const authRoute = require('./auth.route')
 const feedbackRoute = require('./feedback.route')
@@ -8,13 +10,13 @@ const feedbackRoute = require('./feedback.route')
 const router = express.Router();
 
 const defaultRoutes = [{
-    path: '/',
-    route: tourRoute,
+    path: '/news',
+    route: newsRoute,
 }, {
     path: '/users',
     route: userRoute,
 }, {
-    path:'/tickets',
+    path: '/tickets',
     route: ticketRoute
 }, {
     path: '/auth',
@@ -23,8 +25,12 @@ const defaultRoutes = [{
     path: '/admin',
     route: userRoute,
 }, {
+
     path: '/feedbacks',
     route: feedbackRoute,
+
+    path: '/',
+    route: tourRoute,
 }];
 
 
