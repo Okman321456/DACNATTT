@@ -46,10 +46,22 @@ const updateTicketStatus = async(id, status) => {
     return res.modifiedCount
 }
 
+const getTicketRegion = async(idRegion) => {
+    const ticket = await Ticket.find().populate({path: 'idTour'})
+    const result = []
+    ticket.forEach(element => {
+        if(element.idTour.region == idRegion) {
+            result.push(element)
+        }
+    })
+    return result
+}
+
 module.exports = {
     bookTicket,
     viewDetailTicket,
     deleteTicket,
     viewAllTicket,
-    updateTicketStatus
+    updateTicketStatus,
+    getTicketRegion
 }

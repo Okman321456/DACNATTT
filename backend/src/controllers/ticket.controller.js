@@ -32,10 +32,16 @@ const updateTicketStatus = catchAsync(async(req, res) => {
     res.send(`Đã cập nhật trạng thái ${numDocumentUpdated} Ticket`)
 })
 
+const getTicketRegion = catchAsync(async(req, res) => {
+    const ticket = await ticketService.getTicketRegion(req.params.idRegion)
+    res.send(ticket)
+})
+
 module.exports = {
     bookTicket,
     viewDetailTicket,
     deleteTicket, 
     viewAllTicket,
-    updateTicketStatus
+    updateTicketStatus,
+    getTicketRegion
 }

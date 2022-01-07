@@ -163,7 +163,6 @@ module.exports = {
     countTourRegion,
     countTourSearchRegion,
     getTourRegionById,
-    sortTour,
     caculateRemainingAmount,
     sortTourRegion,
     filterTour,
