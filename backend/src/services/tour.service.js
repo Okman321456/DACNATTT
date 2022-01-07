@@ -18,7 +18,7 @@ const filterTour = async(regionId, typePlace, max, min, disValue, perPage, page)
             region: regionId,
             typePlace: typePlace,
             price: { $gte: min, $lte: max },
-            discount: { $gte: disValue, $lte: 1 }
+            discount: { $gte: disValue[0], $lte: disValue[1] }
         })
         .sort({ price: 1 })
         .skip((perPage * page) - perPage)
@@ -31,7 +31,7 @@ const countTourFilter = async(regionId, typePlace, max, min, disValue) => {
             region: regionId,
             typePlace: typePlace,
             price: { $gte: min, $lte: max },
-            discount: { $gte: disValue, $lte: 1 }
+            discount: { $gte: disValue[0], $lte: disValue[1] }
         }).count()
 }
 
@@ -52,9 +52,9 @@ const getTourById = async(id) => {
 const caculateRemainingAmount = async(id) => {
     const tour = await Tour.findById(id)
     let remainingAmount = tour.amount
-    const ticket = await Ticket.find().populate({path: 'idTour'})
+    const ticket = await Ticket.find().populate({ path: 'idTour' })
     ticket.forEach(element => {
-        if(element.idTour._id == id){
+        if (element.idTour._id == id) {
             remainingAmount -= element.numberPeople
         }
     });
@@ -110,12 +110,11 @@ const getTourRegionById = async(id, regionId) => {
     return await Tour.find({ region: regionId, _id: id })
 }
 
-const similarTourByTypePlace = async(id, regionId) => {
-    const tourData = await Tour.find({ region: regionId, _id: id })
+const similarTourByTypePlace = async(id) => {
+    const tourData = await Tour.find({ _id: id })
     return await Tour
         .find({
             _id: { $ne: id },
-            region: regionId,
             typePlace: tourData[0].typePlace
         })
 }
@@ -146,12 +145,6 @@ const caculateRatingTour = async(idTour) => {
     return await Math.round(((averageRating / data.length) * 10)) / 10
 }
 
-/* get outstanding tour */
-const outstandingTour = async() => {
-    const arrTour = await Tour.find()
-
-    //return array
-}
 
 module.exports = {
     createTour,
@@ -165,11 +158,10 @@ module.exports = {
     getTourRegionById,
     caculateRemainingAmount,
     sortTourRegion,
-    filterTour,
     countTourFilter,
+    filterTour,
     getMinMaxPrice,
     similarTourByTypePlace,
     searchFull,
     caculateRatingTour,
-    outstandingTour
 }

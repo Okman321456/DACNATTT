@@ -1,8 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
-const { tourService } = require('../services')
 const configFilter = require('../config/filter')
-const { newsService } = require('../services')
+const { tourService, newsService } = require('../services')
 
 const createTour = catchAsync(async(req, res) => {
     const tour = await tourService.createTour(
@@ -24,11 +23,15 @@ const outstandingTour = catchAsync(async(req, res) => {
     arrayRating.sort(function(a, b) {
         return b.rating - a.rating;
     })
-    console.log(arrayRating);
     for (let index = 0; index < 8; index++) {
         outstandingTour.push(await tourService.getTourById(arrayRating[index].id))
     }
-    res.status(200).json({ outstandingTour, minmaxPrice, news })
+    res.status(200)
+        .json({
+            outstandingTour,
+            minmaxPrice,
+            news
+        })
 })
 
 const minmaxValue = async() => {
@@ -41,15 +44,15 @@ const minmaxValue = async() => {
 
 const filterTour = catchAsync(async(req, res) => {
     const perPage = 6;
-    var regionId
-    var disValue = 0
-    const groupMinMaxPrice = await minmaxValue()
+    var regionId, disValue
+    const minmaxPrice = await minmaxValue()
     let page = parseInt(req.query.page) || 1;
     let typePlace = req.query.type || configFilter.typePlace
-    let minPrice = parseInt(req.query.min) || groupMinMaxPrice.min
-    let maxPrice = parseInt(req.query.max) || groupMinMaxPrice.max
+    let minPrice = parseInt(req.query.min) || minmaxPrice.min
+    let maxPrice = parseInt(req.query.max) || minmaxPrice.max
     let discount = req.query.dis || false
-    if (discount) disValue = 0.0001
+    if (discount) disValue = [0.0001, 1]
+    else disValue = [0, 0]
     if (req.query.region) {
         switch (req.query.region) {
             case 'bac':
@@ -68,15 +71,27 @@ const filterTour = catchAsync(async(req, res) => {
     const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice, disValue)
     if (totalTourFilter == 0) {
         res.status(httpStatus.NOT_FOUND).send("Tour not found")
-    } else res.status(200).json({ tours, totalTourFilter });
+    } else res.status(200)
+        .json({
+            tours,
+            totalTourFilter,
+            minmaxPrice
+        });
 })
 
 const getTourById = catchAsync(async(req, res) => {
     const tour = await tourService.getTourById(req.params.tourId)
     const remainingAmount = await tourService.caculateRemainingAmount(req.params.tourId)
+    const rating = await tourService.caculateRatingTour(req.params.tourId) || 0
+    const similarTour = await tourService.similarTourByTypePlace(req.params.tourId)
     if (!tour) {
         res.status(httpStatus.NOT_FOUND).send("Product not found")
-    } else res.send([{tour}, {remainingAmount}]);
+    } else res.status(200).json({
+        tour,
+        rating,
+        remainingAmount,
+        similarTour
+    })
 })
 
 const updateTourById = catchAsync(async(req, res) => {
