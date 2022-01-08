@@ -5,10 +5,10 @@ import { Checkbox, Grid } from '@material-ui/core';
 import Slider from '@mui/material/Slider';
 import { Container } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import './Filter.css'
+import './Filter.css';
 import RegardPrice from '../RegardPrice/RegardPrice';
 
-function Filter({text, min = 0, max = 15000000}) {
+function Filter({text, min = 0, max = 15000000,load, onLoad}) {
     let navigate = useNavigate();
     const minValue = min;
     const maxValue = max;
@@ -18,8 +18,14 @@ function Filter({text, min = 0, max = 15000000}) {
         reset,
         control,
     } = useForm();
+    const handleLoad= ()=>{
+        if(onLoad){
+            onLoad(!load);
+        }
+    }
     const onHandleSubmit = (data) => {
-        navigate(`/cua-hang?region=${data.region}&type=${data.type}&min=${data.price[0]}&max=${data.price[1]}&dis=${data.discount}`,{replace: true});
+        navigate(`/cua-hang?region=${data.region}&type=${data.type}&min=${data.price[0]}&max=${data.price[1]}&dis=${data.discount}`);
+        handleLoad();
         reset();
     };
     return (
@@ -53,11 +59,11 @@ function Filter({text, min = 0, max = 15000000}) {
                                 <label className='filter-label'>Loại hình</label>
                                 <KeyboardArrowDownIcon className='arrow' />
                                 <div className='filter-detail'>
-                                    <div className='filter-radio-item'><input type="radio" id="nui" value="nui" {...register("type")} /><label htmlFor='nui'>Núi</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="bien" value="bien" {...register("type")} /><label htmlFor='bien'>Biển</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="dao" value="dao" {...register("type")} /><label htmlFor='dao'>Đảo</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="vanhoa" value="vanhoa" {...register("type")} /><label htmlFor='vanhoa'>Đảo</label></div>
-                                    <div className='filter-radio-item'><input type="radio" id="songnuoc" value="songnuoc" {...register("type")} /><label htmlFor='songnuoc'>Sông nước</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="nui" value="Núi" {...register("type")} /><label htmlFor='nui'>Núi</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="bien" value="Biển" {...register("type")} /><label htmlFor='bien'>Biển</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="dao" value="Đảo" {...register("type")} /><label htmlFor='dao'>Đảo</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="vanhoa" value="Văn Hóa" {...register("type")} /><label htmlFor='vanhoa'>Văn hóa</label></div>
+                                    <div className='filter-radio-item'><input type="radio" id="songnuoc" value="Sông Nước" {...register("type")} /><label htmlFor='songnuoc'>Sông nước</label></div>
                                 </div>
                             </div>
                         </div>

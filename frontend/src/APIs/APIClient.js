@@ -28,13 +28,20 @@ const getResultFilter = (param)=>{
   const url = '/cua-hang';
   return axiosClient.get(url,{params:param});
 }
+
+const postBookingInfo = (id, {data})=>{
+  const url= `/tickets/book/${id}`;
+  return axiosClient.post(url,{data})
+}
+
 const APIClient ={
   getDataHomePage,
   getTourDetail,
   getTourList,
   getNewsList,
   getNewsDetail,
-  getResultFilter
+  getResultFilter,
+  postBookingInfo
 }
 
 export default APIClient;

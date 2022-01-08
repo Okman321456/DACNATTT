@@ -1,4 +1,4 @@
-import {BOOK_TOUR, CLOSE_FORM} from './constants';
+import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY} from './constants';
 
 export const setBookTour = (payload) =>({
     type: BOOK_TOUR,
@@ -6,4 +6,8 @@ export const setBookTour = (payload) =>({
 })
 export const setCloseForm = () =>({
     type: CLOSE_FORM,
+})
+export const setShowNofify = (payload) =>({
+    type: SHOW_NOTIFY,
+    payload
 })

@@ -43,5 +43,10 @@
     left: 0;
     right: 0;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.377);
+    background-color: rgba(0, 0, 0, 0.699);
+}
+.alert{
+    font-size: 12px;
+    color: red;
+    text-align: end;
 }

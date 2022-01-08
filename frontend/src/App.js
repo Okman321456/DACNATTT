@@ -13,6 +13,7 @@ import NewsDetail from './page/NewsDetail';
 import Result from './page/Result';
 import BookingForm from './components/BookingForm/BookingForm';
 import {useStore} from './store';
+import OrderSuccessfully from './components/Notification/OrderSuccessfully';
 
 function App() {
   const [openForm, setOpenForm] = useState(false);
@@ -31,10 +32,11 @@ function App() {
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route path="/tin-tuc/:id" element={<NewsDetail />} />
         {/* <Route path="/payment" element={<PaymentConfirmation/>} /> */}
-        <Route path="/cua-hang" element={<Result url="mien-trung" />} />
+        <Route path="/cua-hang" element={<Result/>} />
         <Route path="/dat-hang" element={<BookingForm/>} />
       </Routes>
       {state.openForm && <BookingForm/>}
+      {state.showNotify && <OrderSuccessfully/>}
       <Footer />
     </div>
     
