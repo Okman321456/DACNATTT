@@ -107,6 +107,7 @@ function TourList({ region, url }) {
                                         data.tours.map((tour, index) => (
                                             <Grid item key={index} md={4} xs={12} sm={6}>
                                                 <TourCard
+                                                    _id={tour._id}
                                                     link={`/tour/${tour._id}`}
                                                     name={tour.name}
                                                     description={tour.description}

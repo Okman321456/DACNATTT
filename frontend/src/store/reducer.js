@@ -1,7 +1,8 @@
-import {BOOK_TOUR, CLOSE_FORM} from './constants'
+import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY} from './constants'
 const initialState = {
     tourID: 0,
     openForm: false,
+    showNotify: false,
 }
 
 function reducer(state, action){
@@ -15,6 +16,11 @@ function reducer(state, action){
             return {
                 openForm: false,
                 tourID: 0
+            };    
+        case SHOW_NOTIFY:
+            return {
+                ...initialState,
+                showNotify: action.payload
             };    
         default:
             break;

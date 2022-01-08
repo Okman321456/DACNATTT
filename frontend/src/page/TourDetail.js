@@ -10,6 +10,8 @@ import Slider from 'react-slick';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useStore, actions } from '../store';
 
 const useStyles = makeStyles({
     avatar: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles({
     },
     sliderContainer: {
         "& .slick-list": {
-          paddingBottom: "10px",
+            paddingBottom: "10px",
         },
     },
 });
@@ -74,23 +76,27 @@ const NextArrow = (props) => {
         </div>
     );
 }
-const ConvertToImageURL = (url)=>{
-    if(url) return `http://localhost:3001/${url.slice(6)}`
+const ConvertToImageURL = (url) => {
+    if (url) return `http://localhost:3001/${url.slice(6)}`
     else return "";
 }
 function TourDetail(props) {
     const classes = useStyles();
-    const {id} = useParams();
-    const [data, setData] = useState([]);
-    // let searchParagram = new URLSearchParams(search);
-    // let id = searchParagram.get("id") ? searchParagram.get("id").toString() : '';
+    const { id } = useParams();
+    const [data, setData] = useState();
+    const [state, dispatch] = useStore();
     useEffect(async () => {
-        const result = await APIClient.getTourDetail(id)
-        setData(result);
-    }, [data]);
-    console.log(data);
+        // const result = await APIClient.getTourDetail(id)
+        const result = await axios(`http://localhost:3001/tour/${id}`);
+        setData(result.data);
+    }, []);
+    
+    const handleOnClick = (_id)=>{
+        dispatch(actions.setBookTour(_id));
+    }
+
     const settings = {
-        className:classes.sliderContainer,
+        className: classes.sliderContainer,
         dots: false,
         arrows: true,
         infinite: true,
@@ -123,45 +129,51 @@ function TourDetail(props) {
     };
     return (
         <div className='tour-detail-wrapper'>
-             { data &&
-            <Container maxWidth="lg">
-                <Box sx={{ marginTop: '130px', paddingLeft: { md: '60px' }, paddingRight: { md: '60px' } }}>
-                    <Grid container spacing={2}>
-                        <Grid item md={6} xs={12}>
-                            <img className={classes.avatar} src={ConvertToImageURL(data.imageUrl)}/>
+            {data &&
+                <Container maxWidth="lg">
+                    <Box sx={{ marginTop: '130px', paddingLeft: { md: '60px' }, paddingRight: { md: '60px' } }}>
+                        <Grid container spacing={2}>
+                            <Grid item md={6} xs={12}>
+                                <img className={classes.avatar} src={ConvertToImageURL(data[0].tour.imageUrl)} />
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                                <Typography gutterBottom variant="h4" component="div" align='left' style={{ marginTop: '20px' }}>
+                                    {data[0].tour.name}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left' color="secondary">
+                                    {`đ ${data[0].tour.price}`}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left'>
+                                    {`"${data[0].tour.description}"`}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left'>
+                                    <span style={{ color: 'darkblue' }}>Khách sạn: </span>{data[0].tour.hotelName}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left'>
+                                    <span style={{ color: 'darkblue' }}>Số lượng: </span>{data[0].tour.amount}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left'>
+                                    <span style={{ color: 'darkblue' }}>Số lượng còn: </span>{data[1].remainingAmount}
+                                </Typography>
+                                <Typography gutterBottom variant="button" component="div" align='left'>
+                                    <Button variant="contained" color="secondary" onClick={()=>handleOnClick(data[0].tour._id)}>Đặt Tour</Button>
+                                </Typography>
+                                <Divider style={{ margin: '10px 0' }} />
+                                <Typography gutterBottom variant="body1" component="div" align='left'>
+                                    <span style={{ color: 'darkblue' }}>Danh mục: </span> {data[0].tour.typePlace}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left' style={{ display: 'flex', alignItems: 'center' }}>
+                                    <span style={{ color: 'darkblue' }}>Share on: </span> <FacebookIcon fontSize="large" color="primary" /> <InstagramIcon fontSize="large" color="primary" /> <LinkedInIcon fontSize="large" color='primary' />
+                                </Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item md={6} xs={12}>
-                            <Typography gutterBottom variant="h4" component="div" align='left' style={{ marginTop: '20px' }}>
-                            {data.name}
-                            </Typography>
-                            <Typography gutterBottom variant="body1" component="div" align='left'>
-                                {`${data.price} VND`}
-                            </Typography>
-                            <Typography gutterBottom variant="body1" component="div" align='left'>
-                                {`"${data.description}"`}
-                            </Typography>
-                            <Typography gutterBottom variant="body1" component="div" align='left'>
-                                <span style={{ color: 'darkblue' }}>Khách sạn: </span>{data.hotelName}
-                            </Typography>
-                            <Typography gutterBottom variant="button" component="div" align='left'>
-                                <Button variant="contained" color="secondary">Đặt Tour</Button>
-                            </Typography>
-                            <Divider style={{ margin: '10px 0' }} />
-                            <Typography gutterBottom variant="body1" component="div" align='left'>
-                                <span style={{ color: 'darkblue' }}>Danh mục: </span> {data.typePlace}
-                            </Typography>
-                            <Typography gutterBottom variant="body1" component="div" align='left' style={{ display: 'flex', alignItems:'center' }}>
-                                <span style={{ color: 'darkblue' }}>Share on: </span> <FacebookIcon fontSize="large" color="primary" /> <InstagramIcon fontSize="large"  color="primary" /> <LinkedInIcon fontSize="large" color='primary' />
-                            </Typography>
+                        <Divider style={{ margin: '10px 0' }} />
+                        <Grid>
+                            <Tabs detail={data[0].tour.schedule} />
                         </Grid>
-                    </Grid>
-                    <Divider style={{ margin: '10px 0' }} />
-                    <Grid>
-                        <Tabs detail={data.schedule} />
-                    </Grid>
-                    <Divider style={{ margin: '10px 0' }} />
-                    <Box sx={{ padding: '20px' }}>
-                        {/* <h3 style={{ margin: '0', textAlign: 'left' }}>TOUR TƯƠNG TỰ</h3>                     
+                        <Divider style={{ margin: '10px 0' }} />
+                        <Box sx={{ padding: '20px' }}>
+                            {/* <h3 style={{ margin: '0', textAlign: 'left' }}>TOUR TƯƠNG TỰ</h3>                     
                         <Slider {...settings} style={{ padding: '20px'}}>
                             {
                                 data.map((info, index) => (
@@ -174,10 +186,10 @@ function TourDetail(props) {
                                 ))
                             }
                         </Slider> */}
+                        </Box>
                     </Box>
-                </Box>
-            </Container>
-}
+                </Container>
+            }
         </div>
     );
 }

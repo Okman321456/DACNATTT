@@ -30,35 +30,31 @@ function Result(props) {
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
-    const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni)); 
-    const paramURL={page: pageNumber};
-    const [load, onLoad] = React.useState(false);
-    const [data, setData] = React.useState();
-
-    const paramTem = {page: pageNumber}
-    searchParagram.forEach((value, key)=>{
-        if(value!='null' && value!='false')
-        paramURL[key] = value;
-        paramTem[key] = value;
-    })
     
+    const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni)); 
+    const [data, setData] = React.useState();
+    
+    const paramURL={page: pageNumber};    
+    const paramTem = {page: pageNumber}
+    const [load, onLoad] = React.useState(false);
 
     useEffect(async () => {
-        console.log(paramURL)
+        searchParagram.forEach((value, key)=>{
+            if(value!='null' && value!='false')
+            paramURL[key] = value;
+            paramTem[key] = value;
+        })
         const result = await APIClient.getResultFilter(paramURL);
-        // const result = await axios('http://localhost:3001/cua-hang?min=3200000&max=10500000&dis=true');
         setData(result);
-        console.log(result);
-    }, [pageNumber]);
+    }, [pageNumber,load]);
 
-    const handleChangePage = (event, value) => {
+    const handleChangePage = async (event, value) => {
+        navigate(`/cua-hang?region=${paramTem.region}&type=${paramTem.type}&min=${paramTem.min}&max=${paramTem.max}&dis=${paramTem.dis}&page=${pageNumber}`);
         setPageNumber(value);
-        navigate(`/cua-hang?region=${paramTem.region}&type=${paramTem.type}&min=${paramTem.min}&max=${paramTem.max}&dis=${paramTem.dis}&page=${value}`,{replace: true});
     };
-
     return (
         <div className='tour-list' style={{marginTop:'90px'}}>
-            <Filter text='KẾT QUẢ TÌM KIẾM'/>
+            <Filter text='KẾT QUẢ TÌM KIẾM' load={load} onLoad={onLoad}/>
             <Container maxWidth="lg">
                 <Box sx={{ flexGrow: 1, marginTop: '30px' }}>
                     {(data)?
@@ -68,6 +64,7 @@ function Result(props) {
                                 data.tours.map((tour, index) => (
                                     <Grid item key={index} md={4} xs={12} sm={6}>
                                         <TourCard
+                                            _id = {tour._id}
                                             link={`/tour/${tour._id}`}
                                             name={tour.name}
                                             description={tour.description}
