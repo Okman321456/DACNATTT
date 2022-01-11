@@ -19,7 +19,6 @@ import AdminTest from './page/AdminTest'
 
 function App() {
   const [state, dispatch] = useStore()
-  console.log(state.tourID)
   return (
     <div className="App">
       <Header />

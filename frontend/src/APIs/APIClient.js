@@ -34,6 +34,11 @@ const postBookingInfo = (id, {data})=>{
   return axiosClient.post(url,{data})
 }
 
+const login = (data)=>{
+  const url = '/auth/login/';
+  return axiosClient.post(url,{...data});
+}
+
 const APIClient ={
   getDataHomePage,
   getTourDetail,
@@ -41,7 +46,8 @@ const APIClient ={
   getNewsList,
   getNewsDetail,
   getResultFilter,
-  postBookingInfo
+  postBookingInfo,
+  login
 }
 
 export default APIClient;
