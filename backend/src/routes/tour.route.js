@@ -2,7 +2,6 @@ const express = require('express');
 const tourController = require('../controllers/tour.controller')
 const upLoadImage = require('../middlewares/fileUpload')
 const auth = require('../middlewares/auth')
-const authController = require('../controllers/auth.controller')
 
 const router = express.Router();
 

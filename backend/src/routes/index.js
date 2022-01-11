@@ -25,7 +25,10 @@ const defaultRoutes = [{
     route: authRoute,
 }, {
     path: '/admin',
-    route: userRoute,
+    route: feedbackRoute,
+}, {
+    path: '/manage',
+    route: newsRoute,
 }, {
     path: '/cua-hang',
     route: storeRoute

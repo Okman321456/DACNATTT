@@ -1,7 +1,6 @@
 const { Tour } = require('../models');
 const { Ticket } = require('../models');
 const { Feedback } = require('../models')
-const catchAsync = require('../utils/catchAsync');
 
 const createTour = async(tourBody) => {
     const tour = await Tour.create(tourBody)

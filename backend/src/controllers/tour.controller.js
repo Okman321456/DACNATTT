@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const configFilter = require('../config/filter')
 const sortConstant = require('../config/sortConstant')
+const fs = require('fs')
 const { tourService, newsService, feedbackService } = require('../services')
 
 const createTour = catchAsync(async(req, res) => {
@@ -100,13 +101,24 @@ const getTourById = catchAsync(async(req, res) => {
 })
 
 const updateTourById = catchAsync(async(req, res) => {
-    const tour = await tourService.updateTourById(req.params.tourId, req.body)
+    const tourData = await tourService.getTourById(req.params.tourId)
+    const path = tourData.imageUrl.slice(14)
+    fs.unlink(`./public/uploads/${path}`, (err) => {
+        if (err) {
+            console.error(err)
+            return
+        }
+    })
+    const tour = await tourService.updateTourById(
+        req.params.tourId,
+        Object.assign(req.body, { imageUrl: req.file.path })
+    )
     res.status(200).send(tour)
 })
 
 const deleteTourById = catchAsync(async(req, res) => {
     await tourService.deleteTourById(req.params.tourId)
-    res.status(httpStatus.NO_CONTENT).send("Tour has been deleted")
+    res.status(httpStatus.NO_CONTENT).send()
 })
 
 /*Get tour region */

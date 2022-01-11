@@ -19,7 +19,6 @@ const fileFilter = (req, file, cb) => {
     }
 
 };
-
 let upLoadImage = multer({ storage: storage, fileFilter: fileFilter, limits: limits });
 
 module.exports = upLoadImage.single('imageUrl')
