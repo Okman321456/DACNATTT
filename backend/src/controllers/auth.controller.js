@@ -1,8 +1,10 @@
 const httpStatus = require('http-status');
 const jwt = require('jsonwebtoken')
+var localStorage = require('localStorage')
 
 const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
+
 require('dotenv').config()
 
 const { userService } = require('../services')
@@ -20,7 +22,8 @@ const login = catchAsync(async(req, res) => {
 
     const payloadLogin = { id: user._id.toString() }
     const accessToken = jwt.sign(payloadLogin, process.env.JWT_SECRET, options)
-    res.cookie('token', accessToken);
+        // res.cookie('token', accessToken);
+    localStorage.setItem('token', accessToken);
     res.status(200).json({
         name: user.name,
         permission: user.role
@@ -28,8 +31,9 @@ const login = catchAsync(async(req, res) => {
 })
 
 const logout = catchAsync(async(req, res) => {
+    localStorage.removeItem('token')
     return res
-        .clearCookie("token")
+        // .clearCookie("token")
         .status(200)
         .json({ message: "Log out Successfully" });
 })

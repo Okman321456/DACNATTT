@@ -1,10 +1,12 @@
 const httpStatus = require('http-status')
 const jwt = require('jsonwebtoken')
+const localStorage = require('localStorage')
 const { authService, userService } = require('../services')
 
 const auth = (...roles) => {
     return async(req, res, next) => {
-        const token = req.cookies.token
+        // const token = req.cookies.token
+        const token = localStorage.getItem('token');
         if (!token) {
             return res.status(httpStatus.FORBIDDEN).send("Token does not exist")
         }
