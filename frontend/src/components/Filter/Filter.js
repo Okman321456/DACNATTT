@@ -8,7 +8,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './Filter.css';
 import RegardPrice from '../RegardPrice/RegardPrice';
 
-function Filter({text, min = 0, max = 15000000,load, onLoad}) {
+function Filter({text, min, max ,load, onLoad}) {
     let navigate = useNavigate();
     const minValue = min;
     const maxValue = max;

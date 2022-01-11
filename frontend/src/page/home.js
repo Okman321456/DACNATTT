@@ -13,7 +13,6 @@ function Home(props) {
         const result = await APIClient.getDataHomePage();
         setData(result);
     }, []);
-    console.log(data)
     return (
         <div>
             {

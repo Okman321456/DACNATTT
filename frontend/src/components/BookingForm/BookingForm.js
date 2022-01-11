@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Button, ButtonGroup } from '@mui/material';
-import './BookingForm.css'
+import './BookingForm.css';
 import { useStore, actions } from '../../store';
 import APIClient from '../../APIs/APIClient';
 import axios from 'axios';
@@ -46,7 +46,7 @@ function BookingForm(props) {
     } = useForm({
         // resolver: yupResolver(schema)
     });
-    const [textValue, setTextValue] = React.useState('test');
+
     const onHandleSubmit = async (data) => {
         let body = {
             name: data.name,
@@ -111,8 +111,8 @@ function BookingForm(props) {
                                 message:"* SĐT không đúng!"
                             },
                             minLength:{
-                                value:11,
-                                message:"* SĐT không đúng"
+                                value:10,
+                                message:"* SĐT không đúng!"
                             },
                         })} />
                     </div>

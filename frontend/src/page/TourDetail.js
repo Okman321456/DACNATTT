@@ -12,6 +12,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useStore, actions } from '../store';
+import RegardPrice from "../components/RegardPrice/RegardPrice";
 
 const useStyles = makeStyles({
     avatar: {
@@ -86,12 +87,13 @@ function TourDetail(props) {
     const [data, setData] = useState();
     const [state, dispatch] = useStore();
     useEffect(async () => {
+        document.title = "Bootcamp Travle | Chi tiết";
         // const result = await APIClient.getTourDetail(id)
         const result = await axios(`http://localhost:3001/tour/${id}`);
         setData(result.data);
     }, []);
-    
-    const handleOnClick = (_id)=>{
+
+    const handleOnClick = (_id) => {
         dispatch(actions.setBookTour(_id));
     }
 
@@ -134,33 +136,33 @@ function TourDetail(props) {
                     <Box sx={{ marginTop: '130px', paddingLeft: { md: '60px' }, paddingRight: { md: '60px' } }}>
                         <Grid container spacing={2}>
                             <Grid item md={6} xs={12}>
-                                <img className={classes.avatar} src={ConvertToImageURL(data[0].tour.imageUrl)} />
+                                <img className={classes.avatar} src={ConvertToImageURL(data.tour.imageUrl)} />
                             </Grid>
                             <Grid item md={6} xs={12}>
                                 <Typography gutterBottom variant="h4" component="div" align='left' style={{ marginTop: '20px' }}>
-                                    {data[0].tour.name}
+                                    {data.tour.name}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left' color="secondary">
-                                    {`đ ${data[0].tour.price}`}
+                                    {`₫${RegardPrice(data.tour.price)}`}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    {`"${data[0].tour.description}"`}
+                                    {`"${data.tour.description}"`}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue' }}>Khách sạn: </span>{data[0].tour.hotelName}
+                                    <span style={{ color: 'darkblue' }}>Khách sạn: </span>{data.tour.hotelName}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue' }}>Số lượng: </span>{data[0].tour.amount}
+                                    <span style={{ color: 'darkblue' }}>Số lượng: </span>{data.tour.amount}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue' }}>Số lượng còn: </span>{data[1].remainingAmount}
+                                    <span style={{ color: 'darkblue' }}>Số lượng còn: </span>{data.remainingAmount}
                                 </Typography>
                                 <Typography gutterBottom variant="button" component="div" align='left'>
-                                    <Button variant="contained" color="secondary" onClick={()=>handleOnClick(data[0].tour._id)}>Đặt Tour</Button>
+                                    <Button variant="contained" color="secondary" onClick={() => handleOnClick(data.tour._id)}>Đặt Tour</Button>
                                 </Typography>
                                 <Divider style={{ margin: '10px 0' }} />
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue' }}>Danh mục: </span> {data[0].tour.typePlace}
+                                    <span style={{ color: 'darkblue' }}>Danh mục: </span> {data.tour.typePlace}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left' style={{ display: 'flex', alignItems: 'center' }}>
                                     <span style={{ color: 'darkblue' }}>Share on: </span> <FacebookIcon fontSize="large" color="primary" /> <InstagramIcon fontSize="large" color="primary" /> <LinkedInIcon fontSize="large" color='primary' />
@@ -169,23 +171,25 @@ function TourDetail(props) {
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Grid>
-                            <Tabs detail={data[0].tour.schedule} />
+                            <Tabs detail={data.tour.schedule} />
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Box sx={{ padding: '20px' }}>
-                            {/* <h3 style={{ margin: '0', textAlign: 'left' }}>TOUR TƯƠNG TỰ</h3>                     
-                        <Slider {...settings} style={{ padding: '20px'}}>
-                            {
-                                data.map((info, index) => (
-                                    <TourCard
-                                        name={info.name}
-                                        description={info.description}
-                                        image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                        price={`₫${info.price}`}
-                                        key={index} />
-                                ))
-                            }
-                        </Slider> */}
+                            <h3 style={{ margin: '0', textAlign: 'left' }}>TOUR TƯƠNG TỰ</h3>
+                            <Slider {...settings} style={{ padding: '20px' }}>
+                                {
+                                    data.similarTour.map((info, index) => (
+                                        <TourCard
+                                            link={`/tour/${info._id}`}
+                                            _id={info._id}
+                                            name={info.name}
+                                            description={info.description}
+                                            image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
+                                            price={`₫${info.price}`}
+                                            key={index} />
+                                    ))
+                                }
+                            </Slider>
                         </Box>
                     </Box>
                 </Container>
