@@ -14,7 +14,7 @@ const signUp = catchAsync(async(req, res) => {
 })
 
 const getAllUser = catchAsync(async(req, res) => {
-    const users = await userService.getAllUser
+    const users = await userService.getAllUser()
 
     if (!users) res.status(httpStatus.NOT_FOUND).send("User not found")
     else res.status(200).send(users)
@@ -35,7 +35,7 @@ const updateUserById = catchAsync(async(req, res) => {
 
 const deleteUserById = catchAsync(async(req, res) => {
     await userService.deleteUserById(req.params.id)
-    res.status(httpStatus.NO_CONTENT).send("User has been deleted")
+    res.status(httpStatus.NO_CONTENT).send()
 })
 
 module.exports = {
