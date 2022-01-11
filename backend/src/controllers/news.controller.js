@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { newsService } = require('../services')
+const fs = require('fs')
 
 const createNews = catchAsync(async(req, res) => {
     const news = await newsService.createNews(
@@ -28,7 +29,19 @@ const getNewsById = catchAsync(async(req, res) => {
 })
 
 const updateNewsById = catchAsync(async(req, res) => {
-    const news = await newsService.updateNewsById(req.params.id, req.body)
+    const newsSingle = await newsService.getNewsById(req.params.id)
+    const path = newsSingle.imageUrl.slice(14)
+    fs.unlink(`./public/uploads/${path}`, (err) => {
+        if (err) {
+            console.error(err)
+            return
+        }
+    })
+    const news = await newsService.updateNewsById(
+        req.params.id,
+        Object.assign(
+            req.body, { imageUrl: req.file.path })
+    )
     res.status(200).send(news)
 })
 

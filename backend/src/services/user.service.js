@@ -23,6 +23,11 @@ const createUser = async(userBody) => {
     const user = await User.create(userBody)
     return user
 }
+const getAllUser = async() => {
+    return User.find({
+        role: { $ne: 'admin' }
+    })
+}
 
 const getUserById = async(id) => {
     return User.findById(id)
@@ -68,6 +73,7 @@ const transporter = nodeMailer.createTransport({
 
 module.exports = {
     createUser,
+    getAllUser,
     getUserById,
     getUserByEmail,
     updateUserById,

@@ -1,0 +1,1 @@
+module.exports = ['price-asc', 'price-dec', 'name-asc', 'name-dec', '']
