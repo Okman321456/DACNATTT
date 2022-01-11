@@ -2,33 +2,20 @@ import React, { useEffect } from 'react';
 import { Container, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
 import Filter from '../components/Filter/Filter';
 import { Box } from '@mui/system';
-import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import TourCard from '../components/TourCard/TourCard';
 import { Divider } from '@material-ui/core';
 import RegardPrice from '../components/RegardPrice/RegardPrice';
 import APIClient from '../APIs/APIClient';
+import axios from 'axios';
+import { useStore } from '../store';
 
-const news = [{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},]
 const ConvertToImageURL = (url) => {
     if (url) return `http://localhost:3001/${url.slice(6)}`
     else return "";
 }
 function Result(props) {
+    const [state, dispatch] = useStore()
     let navigate = useNavigate();
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
@@ -52,13 +39,17 @@ function Result(props) {
         setData(result);
         setNews(newsList.news);
 
-    }, [pageNumber, load]);
+    }, [pageNumber, load,state.search]);
 
     const handleChangePage = (event, value) => {
-        // searchParagram.forEach((value, key)=>{
-        //     paramTem[key] = value;
-        // })
-        navigate(`/cua-hang?region=${paramTem.region}&type=${paramTem.type}&min=${paramTem.min}&max=${paramTem.max}&dis=${paramTem.dis}&page=${value}`);
+        const arrayParams = Object.keys(paramURL);
+        
+        console.log(arrayParams)
+        let stringParams = arrayParams.reduce((previousValue, currentValue)=>
+            currentValue=='page' ? previousValue : `${previousValue}${currentValue}=${paramURL[currentValue]}&`,"")
+            .slice(0,-1);
+        console.log(stringParams)
+        navigate(`/cua-hang?${stringParams}&page=${value}`);
         setPageNumber(value);
     };
     return (

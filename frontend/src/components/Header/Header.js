@@ -16,34 +16,46 @@ import { TextField } from '@material-ui/core';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { MenuList, Paper } from '@mui/material';
 import logo from '../image/logoTravel.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useStore,actions } from '../../store';
+import axios from 'axios';
 
-const pages = [{
+const pagesUser = [{
     title: 'TRANG CHỦ',
-    path:'/'
-},{
+    path: '/'
+}, {
     title: 'MIỀN BẮC',
-    path:'/mien-bac'
-},{
+    path: '/mien-bac'
+}, {
     title: 'MIỀN TRUNG',
-    path:'/mien-trung'
-},{
+    path: '/mien-trung'
+}, {
     title: 'MIỀN NAM',
-    path:'/mien-nam'
+    path: '/mien-nam'
 },
 {
     title: 'TIN TỨC',
-    path:'/tin-tuc'
-},{
+    path: '/tin-tuc'
+}, {
     title: 'GIỚI THIỆU',
-    path:'/gioi-thieu'
+    path: '/gioi-thieu'
+}];
+
+const pagesAdmin = [{
+    title:'QUẢN LÍ TOUR',
+    path:'/admin'
+}];
+
+let menuList = [{
+    title:'QUẢN LÍ TOUR',
+    path:'/admin'
 }];
 const pagesMenu = ['TRANG CHỦ', 'MIỀN BẮC', 'MIỀN TRUNG', 'MIỀN NAM', 'TIN TỨC', 'GIỚI THIỆU', 'ĐĂNG NHẬP', 'VALI CÁ NHÂN'];
 
 const useStyles = makeStyles({
     root: {
-        overflow:'visible',
-        transition:'0.4s'
+        overflow: 'visible',
+        transition: '0.4s'
     },
     item: {
         "&:hover": {
@@ -52,7 +64,7 @@ const useStyles = makeStyles({
     },
     hiddenBox: {
         height: '0 !important',
-        padding:'0 !important',
+        padding: '0 !important',
     },
     hiddenSideBar: {
         width: '0 !important',
@@ -73,37 +85,43 @@ const paperStyle = {
 };
 
 const Header = () => {
+    let navigate = useNavigate();
     const classes = useStyles();
+    const [state, dispatch] = useStore();
+    // let menuList;
+    if(state.role=='admin') menuList = pagesAdmin;
+    if(state.role=='user') menuList = pagesUser;  
+
     const [openSideBar, setOpenSideBar] = React.useState(false);
     const [searchBox, setSearchBox] = React.useState(false);
     const [nav, setNav] = React.useState({
-        height:'90px',
-        color:'transparent'
+        height: '90px',
+        color: 'transparent'
     });
-
-    React.useEffect(()=>{
-        const setNavigation = ()=>{
-            if(window.pageYOffset>150){
+    React.useEffect(() => {
+        const setNavigation = () => {
+            if (window.pageYOffset > 150) {
                 setNav({
-                    height:'70px',
-                    color:'white'
+                    height: '70px',
+                    color: 'white'
                 });
             }
-            if(window.pageYOffset<=300){
+            if (window.pageYOffset <= 300) {
                 setNav({
-                    height:'90px',
-                    color:'transparent'
+                    height: '90px',
+                    color: 'transparent'
                 });
             }
         }
-        window.addEventListener("scroll",setNavigation)
+        window.addEventListener("scroll", setNavigation)
         return () => {
             window.removeEventListener("scroll", setNavigation);
         }
-    },[]);
+    }, []);
 
     const handleOpenSearchField = () => {
         setSearchBox((searchBox) => !searchBox);
+        document.getElementById('search-field').focus()
     };
     const handleClickCloseSearch = () => {
         setSearchBox(false);
@@ -111,24 +129,45 @@ const Header = () => {
     const handleOpenSideBar = () => {
         setOpenSideBar(!openSideBar)
     };
+    const search = (e) => {
+        if (e.keyCode == 13) {
+            console.log(e.target.value);
+            dispatch(actions.setSearch(e.target.value));
+            navigate(`/cua-hang?search=${e.target.value}`);
+            document.getElementById('search-field').value = '';
+            setSearchBox(false);
+        }
+    }
 
+    const handleToggleLogin =async ()=>{
+        console.log("click")
+        if(state.role=='admin') {
+            dispatch(actions.setLogin('user'));
+            navigate('/');
+            // const res = await axios.post(
+            //     'http://localhost:3001/auth/logout'
+            // )
+        }else{
+            navigate('/dang-nhap')
+        }
+    }
     return (
-        <AppBar position="fixed" className={classes.root} style={{ height: `${nav.height}`, backgroundColor:`${nav.color}`}}>
+        <AppBar position="fixed" className={classes.root} style={{ height: `${nav.height}`, backgroundColor: `${nav.color}` }}>
             <Container maxWidth="xl">
-                <Toolbar sx={{height: `${nav.height}`}}>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }}}>
-                        <img src={logo} height={nav.height}/>
+                <Toolbar sx={{ height: `${nav.height}` }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                        <img src={logo} height={nav.height} />
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', minHeight: '60px' }}>
-                        {pages.map((page, index) => (
-                            <Link style={{textDecoration:'none'}} to={page.path} key={index}>
-                            <Button
-                                className={classes.item}
-                                key={index}
-                                sx={{ color: 'darkslateblue', display: 'block', px: 1, mx: 1, fontFamily:"'Roboto Mono', monospace", fontWeight:800 }}
-                            >
-                                {page.title}
-                            </Button>
+                        {menuList.map((page, index) => (
+                            <Link style={{ textDecoration: 'none' }} to={page.path} key={index}>
+                                <Button
+                                    className={classes.item}
+                                    key={index}
+                                    sx={{ color: 'darkslateblue', display: 'block', px: 1, mx: 1, fontFamily: "'Roboto Mono', monospace", fontWeight: 800 }}
+                                >
+                                    {page.title}
+                                </Button>
                             </Link>
                         ))}
                     </Box>
@@ -141,7 +180,7 @@ const Header = () => {
                             onClick={handleOpenSideBar}
                             color="inherit"
                         >
-                            <MenuIcon style={{color:'black'}}/>
+                            <MenuIcon style={{ color: 'black' }} />
                         </IconButton>
                         <Paper
                             sx={paperStyle}
@@ -156,37 +195,40 @@ const Header = () => {
                             </MenuList>
                         </Paper>
                     </Box>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent:'center'}}>
-                        <img src={logo} height={nav.height}/>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'center' }}>
+                        <img src={logo} height={nav.height} />
                     </Box>
                     <ClickAwayListener onClickAway={handleClickCloseSearch}>
-                        <Box sx={{ flexGrow: 1, display:'flex', justifyContent: 'end', position: 'relative', width: '50px' }}>
+                        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'end', position: 'relative', width: '50px' }}>
                             <IconButton
                                 size="large"
                                 aria-label="account of current user"
                                 onClick={handleOpenSearchField}
                                 color="inherit"
                             >
-                                <SearchOutlined style={{color:'black'}}/>
+                                <SearchOutlined style={{ color: 'black' }} />
                             </IconButton>
                             <IconButton
                                 size="large"
                                 aria-label="account of current user"
                                 color="inherit"
-                                sx={{display:{xs:'none', md:'inline-block'}}}
+                                sx={{ display: { xs: 'none', md: 'inline-block' } }}
                             >
-                                <WorkOutlineOutlinedIcon style={{color:'black'}}/>
+                                <WorkOutlineOutlinedIcon style={{ color: 'black' }} />
                             </IconButton>
                             <IconButton
                                 size="large"
                                 aria-label="account of current user"
                                 color="inherit"
-                                sx={{display:{xs:'none', md:'inline-block'}}}
+                                sx={{ display: { xs: 'none', md: 'inline-block' } }}
+                                onClick={handleToggleLogin}
                             >
-                                <Link to='/dang-nhap' style={{textDecoration:'none'}}><ManageAccountsOutlinedIcon style={{color:'black'}}/></Link>
+                                <ManageAccountsOutlinedIcon style={{ color: 'black' }}/>
                             </IconButton>
                             <TextField
+                                id='search-field'
                                 component="div"
+                                onKeyDown={search}
                                 variant="standard"
                                 placeholder='Tìm kiếm...'
                                 className={!searchBox ? classes.hiddenBox : ''}
@@ -198,9 +240,10 @@ const Header = () => {
                                     position: 'absolute',
                                     top: '65px',
                                     backgroundColor: 'white',
-                                    borderRadius:'3px',
-                                    overflow:'hidden',
+                                    borderRadius: '3px',
+                                    overflow: 'hidden',
                                 }}
+
                             />
                         </Box>
                     </ClickAwayListener>
