@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middlewares/auth')
 const ticketController = require('../controllers/ticket.controller')
 
 const router = express.Router();
@@ -9,5 +10,6 @@ router.delete('/delete/:ticketId', ticketController.deleteTicket)
 router.put('/updateStatus/:ticketId/:ticketStatus', ticketController.updateTicketStatus)
 router.get('/listTicket', ticketController.viewAllTicket)
 router.get('/region/:idRegion', ticketController.getTicketRegion)
+
 
 module.exports = router;

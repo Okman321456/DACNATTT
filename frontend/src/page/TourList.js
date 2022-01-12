@@ -29,24 +29,28 @@ function TourList({ region, url }) {
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
+    let sortBy = searchParagram.get("sortBy") ? searchParagram.get("sortBy").toString() : "";
+
     const [sort, setSort] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni));
     const [data, setData] = React.useState();
 
+    const paramURL = { page: pageNumber, sortBy};
+
     const handleChangePage = (event, value) => {
         setPageNumber(value);
+        sortBy ? navigate(`/${url}?page=${value}&sortBy=${sortBy}`):
         navigate(`/${url}?page=${value}`);
     };
     useEffect(async () => {
-        const result = await APIClient.getTourList({
-            page: pageNumber
-        }, url);
+        const result = await APIClient.getTourList(paramURL, url);
         setData(result);
 
     }, [searchParagram]);
     
     const handleChange = (event) => {
+        navigate(`/${url}?page=${pageNumber}&sortBy=${event.target.value}`);
         setSort(event.target.value);
     };
 
@@ -91,10 +95,10 @@ function TourList({ region, url }) {
                                     sx={{ height: { md: '41px', xs: '36px' }, color: '#660000' }}
                                     inputProps={{ style: { border: '1px solid #660000 ' } }}
                                 >
-                                    <MenuItem value={1}>Giá &#8593;</MenuItem>
-                                    <MenuItem value={2}>Giá &#8595;</MenuItem>
-                                    <MenuItem value={3}>Tên &#8593;</MenuItem>
-                                    <MenuItem value={4}>Tên &#8595;</MenuItem>
+                                    <MenuItem value='price-asc'>Giá &#8593;</MenuItem>
+                                    <MenuItem value='price-dec'>Giá &#8595;</MenuItem>
+                                    <MenuItem value='name-asc'>Tên &#8593;</MenuItem>
+                                    <MenuItem value='name-dec'>Tên &#8595;</MenuItem>
                                 </Select>
                             </FormControl>
                         </Typography>
@@ -107,6 +111,7 @@ function TourList({ region, url }) {
                                         data.tours.map((tour, index) => (
                                             <Grid item key={index} md={4} xs={12} sm={6}>
                                                 <TourCard
+                                                    _id={tour._id}
                                                     link={`/tour/${tour._id}`}
                                                     name={tour.name}
                                                     description={tour.description}

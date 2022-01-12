@@ -1,7 +1,6 @@
 const { Tour } = require('../models');
 const { Ticket } = require('../models');
 const { Feedback } = require('../models')
-const catchAsync = require('../utils/catchAsync');
 
 const createTour = async(tourBody) => {
     const tour = await Tour.create(tourBody)
@@ -12,12 +11,13 @@ const getAllTour = async() => {
     return await Tour.find()
 }
 
-const filterTour = async(regionId, typePlace, max, min, disValue, perPage, page) => {
+const filterTour = async(regionId, typePlace, max, min, disValue, search, perPage, page) => {
     return await Tour
         .find({
             region: regionId,
             typePlace: typePlace,
             price: { $gte: min, $lte: max },
+            name: { $regex: new RegExp(search, "i") },
             discount: { $gte: disValue[0], $lte: disValue[1] }
         })
         .sort({ price: 1 })
@@ -25,12 +25,13 @@ const filterTour = async(regionId, typePlace, max, min, disValue, perPage, page)
         .limit(perPage)
 }
 
-const countTourFilter = async(regionId, typePlace, max, min, disValue) => {
+const countTourFilter = async(regionId, typePlace, max, min, disValue, search) => {
     return await Tour
         .find({
             region: regionId,
             typePlace: typePlace,
             price: { $gte: min, $lte: max },
+            name: { $regex: new RegExp(search, "i") },
             discount: { $gte: disValue[0], $lte: disValue[1] }
         }).count()
 }
@@ -87,28 +88,19 @@ const countTourSearchRegion = async(regionId, searchString) => {
         .count()
 }
 
-const getTourRegion = async(regionId, perPage, page, searchString) => {
+const getTourRegion = async(regionId, perPage, page, searchString, sortBy) => {
     return await Tour
         .find({
             region: regionId,
             name: { $regex: new RegExp(searchString, "i") }
         })
+        .sort(sortBy)
         .skip((perPage * page) - perPage)
         .limit(perPage)
 }
 
 //name: { $regex: searchString }
 // description: { $regex: new RegExp(searchString, "i") }
-
-const searchFull = async(searchString) => {
-    return await Tour.find({
-        name: /đà/
-    })
-}
-
-const getTourRegionById = async(id, regionId) => {
-    return await Tour.find({ region: regionId, _id: id })
-}
 
 const similarTourByTypePlace = async(id) => {
     const tourData = await Tour.find({ _id: id })
@@ -117,21 +109,6 @@ const similarTourByTypePlace = async(id) => {
             _id: { $ne: id },
             typePlace: tourData[0].typePlace
         })
-}
-
-/* sort tour region*/
-const sortTourRegion = async(regionId, status, typeSort, perPage, page) => {
-    if (typeSort == 'price')
-        return await Tour
-            .find({ region: regionId })
-            .sort({ price: status })
-            .skip((perPage * page) - perPage)
-            .limit(perPage)
-    else return await Tour
-        .find({ region: regionId })
-        .sort({ name: status })
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
 }
 
 /* get average rating tour */
@@ -155,13 +132,10 @@ module.exports = {
     getTourRegion,
     countTourRegion,
     countTourSearchRegion,
-    getTourRegionById,
     caculateRemainingAmount,
-    sortTourRegion,
     countTourFilter,
     filterTour,
     getMinMaxPrice,
     similarTourByTypePlace,
-    searchFull,
     caculateRatingTour,
 }

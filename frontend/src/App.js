@@ -10,14 +10,15 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import TourDetail from './page/TourDetail';
 import NewsDetail from './page/NewsDetail';
 // import PaymentConfirmation from './page/PaymentConfirmation';
-import Result from './page/Result';
-import BookingForm from './components/BookingForm/BookingForm';
 import {useStore} from './store';
+import Result from './page/Result'
+import LoginForm from '../src/components/Forms/LoginForm';
+import BookingForm from './components/BookingForm/BookingForm';
+import OrderSuccessfully from './components/Notification/OrderSuccessfully';
+import AdminTest from './page/AdminTest'
 
 function App() {
-  const [openForm, setOpenForm] = useState(false);
   const [state, dispatch] = useStore()
-  console.log(state.tourID)
   return (
     <div className="App">
       <Header />
@@ -31,10 +32,13 @@ function App() {
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route path="/tin-tuc/:id" element={<NewsDetail />} />
         {/* <Route path="/payment" element={<PaymentConfirmation/>} /> */}
-        <Route path="/cua-hang" element={<Result url="mien-trung" />} />
+        <Route path="/cua-hang" element={<Result/>} />
         <Route path="/dat-hang" element={<BookingForm/>} />
+        <Route path="/dang-nhap" element={<LoginForm/>} />
+        <Route path="/admin" element={<AdminTest/>} />
       </Routes>
       {state.openForm && <BookingForm/>}
+      {state.showNotify && <OrderSuccessfully/>}
       <Footer />
     </div>
     

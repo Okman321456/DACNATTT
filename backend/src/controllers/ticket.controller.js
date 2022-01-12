@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const { ticketService } = require('../services')
 
 const bookTicket = catchAsync(async(req, res) => {
+    console.log(req.body);
     const ticket = await ticketService.bookTicket(req.params.tourId, req.body)
     if(ticket){
         res.status(httpStatus.CREATED).send(ticket)
