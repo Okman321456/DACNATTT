@@ -1,6 +1,7 @@
 const {Ticket} = require('../models')
 const {User} = require('../models')
 const {Tour} = require('../models')
+const {ticketValidation} = require('../validations')
 
 const bookTicket = async(id, ticketBody) => {
         const ticket = await Ticket.create({
