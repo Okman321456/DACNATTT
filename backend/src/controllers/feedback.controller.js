@@ -1,11 +1,21 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { feedbackService } = require('../services');
+const validator = require('validator')
 
 // user
 const createFeedback = catchAsync(async(req, res) => {
+    if(!validator.isEmail(req.body.email)){
+        res.json('Email không hợp lệ, hãy kiểm tra lại!')
+        return
+    }
     const feedback = await feedbackService.createFeedback(req.params.idTour, req.body)
-    res.send(feedback)
+    if(feedback){
+        res.send(feedback)
+    }
+    else {
+        res.send('Dữ liệu nhập vào chưa đầy đủ hoặc chưa chính xác, hãy kiểm tra lại!')
+    }
 })
 // admin
 const showListFeedback = catchAsync(async(req, res) => {

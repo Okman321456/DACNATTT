@@ -4,15 +4,27 @@ const {Tour} = require('../models')
 const {ticketValidation} = require('../validations')
 
 const bookTicket = async(id, ticketBody) => {
-        const ticket = await Ticket.create({
-            idTour: id,
-            name: ticketBody.name,
-            email: ticketBody.email,
-            phone: ticketBody.phone,
-            status: 0,
-            numberPeople: ticketBody.numberPeople
-        })
-        return ticket
+    try {
+        const validation = ticketValidation.validate(ticketBody)
+        if(!validation.error){
+            const ticket = await Ticket.create({
+                idTour: id,
+                name: validation.value.name,
+                email: validation.value.email,
+                phone: validation.value.phone,
+                status: 0,
+                numberPeople: validation.value.numberPeople
+            })
+            return ticket
+        }
+        else return null
+
+    }
+    catch (err) { 
+        console.log(err)
+        return null
+    }
+
 }
 
 const viewDetailTicket = async(id) => {

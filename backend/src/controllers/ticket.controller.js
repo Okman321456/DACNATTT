@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { ticketService } = require('../services')
+const validator = require('validator')
 
 const bookTicket = catchAsync(async(req, res) => {
     if(!validator.isEmail(req.body.email)){
