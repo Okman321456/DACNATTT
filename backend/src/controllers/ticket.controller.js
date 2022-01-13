@@ -1,15 +1,19 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { ticketService } = require('../services')
+const validator = require('validator')
 
 const bookTicket = catchAsync(async(req, res) => {
-    console.log(req.body);
+    if(!validator.isEmail(req.body.email)){
+        res.json('Email không hợp lệ, hãy kiểm tra lại!')
+        return
+    }
     const ticket = await ticketService.bookTicket(req.params.tourId, req.body)
     if(ticket){
         res.status(httpStatus.CREATED).send(ticket)
     }
     else {
-        res.json('Email không chính xác!')
+        res.json('Dữ liệu nhập vào chưa đầy đủ hoặc chưa chính xác, hãy kiểm tra lại!')
     } 
 })
 

@@ -4,7 +4,7 @@ const { tourService, newsService, feedbackService, statisticService } = require(
 
 const showStatisticPerMonth = catchAsync(async(req, res) => {
     const result = await statisticService.showStatisticPerMonth(req.params.month)
-    console.log(result)
+    res.status(httpStatus['OK']).send(result)
 })
 
 module.exports = {
