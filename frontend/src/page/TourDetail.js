@@ -12,8 +12,20 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useStore, actions } from '../store';
-import RegardPrice from "../components/RegardPrice/RegardPrice";
+import PriceDiscount from '../components/RegardPrice/PriceDiscount'
+import Rating from "@mui/material/Rating";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { styled } from "@mui/material/styles";
 
+const StyledRating = styled(Rating)({
+    "& .MuiRating-iconFilled": {
+        color: "#ff6d75"
+    },
+    "& .MuiRating-iconHover": {
+        color: "#ff3d47"
+    }
+});
 const useStyles = makeStyles({
     avatar: {
         positionSize: 'cover',
@@ -85,18 +97,26 @@ function TourDetail(props) {
     const classes = useStyles();
     const { id } = useParams();
     const [data, setData] = useState();
+    const [load, onLoad] = useState();
     const [state, dispatch] = useStore();
     useEffect(async () => {
-        document.title = "Bootcamp Travle | Chi tiết";
-        // const result = await APIClient.getTourDetail(id)
+        document.title = "Bootcamp Travel | Chi tiết";
+        // const result = await APIClient.getTourDetail(id) 
         const result = await axios(`http://localhost:3001/tour/${id}`);
         setData(result.data);
-    }, []);
+    }, [load]);
 
     const handleOnClick = (_id) => {
         dispatch(actions.setBookTour(_id));
     }
-
+    const onHandleSendFeedback = async (data)=>{
+        const dataSubmit = {
+            ...data,
+            idTour: id,
+        }
+        onLoad(!load);
+        const res = await APIClient.sendFeedback(id,dataSubmit);
+    }
     const settings = {
         className: classes.sliderContainer,
         dots: false,
@@ -135,15 +155,30 @@ function TourDetail(props) {
                 <Container maxWidth="lg">
                     <Box sx={{ marginTop: '130px', paddingLeft: { md: '60px' }, paddingRight: { md: '60px' } }}>
                         <Grid container spacing={2}>
-                            <Grid item md={6} xs={12}>
+                            <Grid item md={6} xs={12} style={{ position: "relative" }}>
                                 <img className={classes.avatar} src={ConvertToImageURL(data.tour.imageUrl)} />
+                                {data.tour.discount != '0' && <div style={{ position: 'absolute', zIndex: 100, top: '8px', left: '20px', height: '40px', lineHeight: '40px', width: '60px', backgroundColor: 'red', color: 'white' }}>
+                                    -{new Number(data.tour.discount) * 100}%
+                                </div>}
                             </Grid>
                             <Grid item md={6} xs={12}>
                                 <Typography gutterBottom variant="h4" component="div" align='left' style={{ marginTop: '20px' }}>
                                     {data.tour.name}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left' color="secondary">
-                                    {`₫${RegardPrice(data.tour.price)}`}
+                                    <PriceDiscount valueDiscount={data.tour.discount} valuePrice={data.tour.price} />
+                                </Typography>
+                                <Typography gutterBottom component="div" variant="body1" align="left">
+                                    <StyledRating
+                                        name="customized-color"
+                                        value={data.rating}
+                                        getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
+                                        precision={0.1}
+                                        icon={<FavoriteIcon fontSize="inherit" color="error"/>}
+                                        emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                                        readOnly
+                                        size="medium"
+                                    />
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
                                     {`"${data.tour.description}"`}
@@ -171,7 +206,7 @@ function TourDetail(props) {
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Grid>
-                            <Tabs detail={data.tour.schedule} />
+                            <Tabs detail={data.tour.schedule} feedback={data.listFeedback} onHandleSendFeedback={onHandleSendFeedback}/>
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Box sx={{ padding: '20px' }}>
@@ -180,13 +215,17 @@ function TourDetail(props) {
                                 {
                                     data.similarTour.map((info, index) => (
                                         <TourCard
+                                            load={load}
+                                            onLoad={onLoad}
                                             link={`/tour/${info._id}`}
                                             _id={info._id}
                                             name={info.name}
                                             description={info.description}
                                             image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                            price={`₫${info.price}`}
-                                            key={index} />
+                                            price={info.price}
+                                            key={index}
+                                            discount={info.discount}
+                                        />
                                     ))
                                 }
                             </Slider>
@@ -194,7 +233,7 @@ function TourDetail(props) {
                     </Box>
                 </Container>
             }
-        </div>
+        </div >
     );
 }
 
