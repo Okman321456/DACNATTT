@@ -22,6 +22,11 @@ const viewDetailTicket = catchAsync(async(req, res) => {
     res.send(result)
 })
 
+const showTicketPerTour = catchAsync(async(req, res) => {
+    const tickets = await ticketService.showTicketPerTour(req.params.idTour)
+    res.send({tickets})
+})
+
 const deleteTicket = catchAsync(async(req, res) => {
     const numDocumentDeleted = await ticketService.deleteTicket(req.params.ticketId)
     res.send(`Đã xóa ${numDocumentDeleted} Ticket!`)
@@ -48,5 +53,6 @@ module.exports = {
     deleteTicket, 
     viewAllTicket,
     updateTicketStatus,
-    getTicketRegion
+    getTicketRegion,
+    showTicketPerTour
 }

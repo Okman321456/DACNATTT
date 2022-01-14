@@ -1,6 +1,4 @@
 const {Ticket} = require('../models')
-const {User} = require('../models')
-const {Tour} = require('../models')
 const {ticketValidation} = require('../validations')
 
 const bookTicket = async(id, ticketBody) => {
@@ -70,11 +68,30 @@ const getTicketRegion = async(idRegion) => {
     return result
 }
 
+const showTicketPerTour = async(idTour) => {
+   let ticketPerTour = []
+   const ticket = await Ticket.find().populate({path: 'idTour'})
+   ticket.forEach(element => {
+       if(element.idTour._id == idTour){
+           console.log(element)
+           ticketPerTour.push({
+               email: element.email,
+               name: element.name,
+               phone: element.phone,
+               numberPeople: element.numberPeople,
+               status: element.status
+           })
+       }
+   });
+   return ticketPerTour
+}
+
 module.exports = {
     bookTicket,
     viewDetailTicket,
     deleteTicket,
     viewAllTicket,
     updateTicketStatus,
-    getTicketRegion
+    getTicketRegion,
+    showTicketPerTour
 }
