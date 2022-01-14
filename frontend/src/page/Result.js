@@ -69,7 +69,9 @@ function Result(props) {
                                                 name={tour.name}
                                                 description={tour.description}
                                                 image={`http://localhost:3001/${tour.imageUrl.slice(6)}`}
-                                                price={`₫${RegardPrice(tour.price)}`}
+                                                price={tour.price}
+                                                discount={tour.discount}
+                                                rating={tour.rating}
                                             />
                                         </Grid>
                                     ))

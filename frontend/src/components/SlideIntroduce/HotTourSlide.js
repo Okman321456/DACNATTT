@@ -119,8 +119,11 @@ function HotTourSlide({tourlist}) {
                                     name={info.name}
                                     description={info.description}
                                     image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                    price={`₫${RegardPrice(info.price)}`}
-                                    key={index} />
+                                    price={info.price}
+                                    key={index}
+                                    discount={info.discount}
+                                    rating={info.rating}
+                                />
                             ))
                         }
                     </Slider>

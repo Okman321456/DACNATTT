@@ -21,8 +21,10 @@ function LoginForm(props) {
     } = useForm();
     const onHandleSubmit = async (data) => {
         const res = await APIClient.login(data);
-        console.log(res.permission);
+        console.log(res);
+        localStorage.setItem("token",res.token);
         if (res.permission == 'admin') {
+            console.log(localStorage.getItem("token"));
             dispatch(actions.setLogin('admin'));
             navigate('/admin');
         }

@@ -6,6 +6,7 @@ const getDataHomePage =  () => {
 };
 
 const getTourDetail = (id)=>{
+  // console.log(typeof id)
   const url = `/tour/${id}`;
   return axiosClient.get(url)
 }
@@ -39,6 +40,51 @@ const login = (data)=>{
   return axiosClient.post(url,{...data});
 }
 
+const createTour = (data) => {
+  const url = '/create';
+  return axiosClient.post(url, data)
+}
+
+const getAllManager = ()=>{
+  const url = '/users';
+  return axiosClient.get(url);
+}
+
+const deleteManager = (id)=>{
+  const url = `/users/${id}`;
+  return axiosClient.delete(url);
+}
+
+const createManager = (data)=>{
+  const url = '/users/create';
+  return axiosClient.post(url, data)
+}
+
+const getManagerById=(id)=>{
+  const url = `/users/${id}`;
+  return axiosClient.get(url)
+}
+
+const updateManager = (id,data)=>{
+  const url = `/users/${id}`;
+  return axiosClient.put(url, data)
+}
+
+const sendFeedback = (id,data)=>{
+  const url = `/feedbacks/create/${id}`;
+  return axiosClient.post(url, data)
+}
+
+const updateTour = (id,data) => {
+  const url = `/${id}`;
+  return axiosClient.put(url, data)
+}
+
+const deleteTour = (id)=>{
+  const url = `/${id}`;
+  return axiosClient.delete(url);
+}
+
 const APIClient ={
   getDataHomePage,
   getTourDetail,
@@ -47,7 +93,16 @@ const APIClient ={
   getNewsDetail,
   getResultFilter,
   postBookingInfo,
-  login
+  login,
+  createTour,
+  getAllManager,
+  deleteManager,
+  createManager,
+  getManagerById,
+  updateManager,
+  sendFeedback,
+  updateTour,
+  deleteTour
 }
 
 export default APIClient;

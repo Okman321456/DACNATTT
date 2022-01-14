@@ -68,6 +68,7 @@ function SlideIntroduce(props) {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
+        pauseOnHover: false,
         dotsClass: `slick-dots ${classes.slickdotsCustom}`,
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />

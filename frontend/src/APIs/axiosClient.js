@@ -9,12 +9,34 @@ const axiosClient = axios.create({
   paramsSerializer: params => queryString.stringify(params),
 });
 
-axiosClient.interceptors.response.use((response) => {
-  if (response && response.data) {
-    return response.data;
-  }
-  return response;
-}, (error) => {
-  throw error;
-});
+axiosClient.interceptors.response.use(
+  (response) => {
+    if (response.data) {
+      return response.data;
+    }
+    return response;
+  },
+  (error) => {
+    const statusCode = error.response.status;
+    if (statusCode === 404) {
+      // window.location.href = '/not-found';
+      // return;
+    }
+    if (statusCode === 401) {
+      window.location.href = '/dang-nhap';
+      return;
+    }
+    if (statusCode === 403) {
+      console.log("Forbidden");
+      window.location.href = '/dang-nhap';
+      return;
+    }
+    if (statusCode === 500) {
+      // show notification
+      return;
+    }
+    throw error;
+  },
+);
+
 export default axiosClient;

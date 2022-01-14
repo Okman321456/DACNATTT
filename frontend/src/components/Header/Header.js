@@ -36,15 +36,22 @@ const pagesUser = [{
 {
     title: 'TIN TỨC',
     path: '/tin-tuc'
-}, {
-    title: 'GIỚI THIỆU',
-    path: '/gioi-thieu'
 }];
 
-const pagesAdmin = [{
+const pagesAdmin = [
+    {
+    title:'QUẢN LÍ NHÂN VIÊN',
+    path:'/quan-li-nhan-vien'
+},
+    {
+    title:'THÊM NHÂN VIÊN',
+    path:'/them-nhan-vien'
+},
+    {
     title:'QUẢN LÍ TOUR',
     path:'/admin'
-}];
+},
+];
 
 let menuList = [{
     title:'QUẢN LÍ TOUR',
@@ -140,13 +147,13 @@ const Header = () => {
     }
 
     const handleToggleLogin =async ()=>{
-        console.log("click")
+        // console.log(localStorage.getItem("token"));
         if(state.role=='admin') {
             dispatch(actions.setLogin('user'));
             navigate('/');
-            // const res = await axios.post(
-            //     'http://localhost:3001/auth/logout'
-            // )
+            const res = await axios.post(
+                'http://localhost:3001/auth/logout'
+            )
         }else{
             navigate('/dang-nhap')
         }
