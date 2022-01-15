@@ -1,15 +1,22 @@
+const fs = require('fs')
 const httpStatus = require('http-status');
 const configFilter = require('../config/filter')
 const sortConstant = require('../config/sortConstant')
-const catchAsync = require('../utils/catchAsync');
-const handleRatingTour = require('../utils/handleRatingTour');
-const fs = require('fs')
-const { tourService, newsService, feedbackService } = require('../services');
+const catchAsync = require('../utils/catchAsync')
+const handleRatingTour = require('../utils/handleRatingTour')
+const { tourService, newsService, feedbackService } = require('../services')
+const { tourValidation } = require('../validations')
 
 const createTour = catchAsync(async(req, res) => {
-    const tour = await tourService.createTour(
-        Object.assign(req.body, { imageUrl: req.file.path })
-    )
+    const tourBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const validation = await tourValidation.validate(tourBody)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+    const tour = await tourService.createTour(tourBody)
 
     res.status(httpStatus.CREATED).send(tour)
 })
@@ -109,13 +116,22 @@ const updateTourById = catchAsync(async(req, res) => {
     fs.unlink(`./public/uploads/${path}`, (err) => {
         if (err) {
             console.error(err)
-            return
+            res.status(httpStatus.BAD_REQUEST).send({ error: err })
         }
     })
 
+    const tourBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const validation = await tourValidation.validate(tourBody)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+
     const tour = await tourService.updateTourById(
         req.params.tourId,
-        Object.assign(req.body, { imageUrl: req.file.path })
+        tourBody
     )
     res.status(200).send(tour)
 })
