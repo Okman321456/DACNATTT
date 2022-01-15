@@ -8,7 +8,7 @@ const auth = (...roles) => {
         // const token = req.cookies.token
         const token = localStorage.getItem('token');
         if (!token) {
-            return res.status(httpStatus.FORBIDDEN).send("Token does not exist")
+            return res.status(httpStatus.UNAUTHORIZED).send("Unauthorization")
         }
 
         try {
@@ -19,10 +19,9 @@ const auth = (...roles) => {
             if (!roles.includes(user.role)) {
                 return res.status(httpStatus.UNAUTHORIZED).send("Unauthorization")
             }
-            // res.redirect(`/${user.role}`)
             next();
         } catch {
-            return res.status(httpStatus.FORBIDDEN).send("Unauthorization")
+            return res.status(httpStatus.FORBIDDEN).send("Forbidden")
         }
 
     }

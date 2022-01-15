@@ -1,5 +1,4 @@
 const { tourService } = require("../services");
-const catchAsync = require("./catchAsync");
 
 const handleRatingTour = async(tours) => {
     var toursResult = []

@@ -24,12 +24,6 @@ const defaultRoutes = [{
     path: '/auth',
     route: authRoute,
 }, {
-    path: '/admin',
-    route: feedbackRoute,
-}, {
-    path: '/manage',
-    route: newsRoute,
-}, {
     path: '/cua-hang',
     route: storeRoute
 }, {
@@ -39,7 +33,7 @@ const defaultRoutes = [{
     path: '/',
     route: tourRoute,
 }, {
-    path:'/statistic',
+    path: '/statistic',
     route: statisticRoute
 }];
 

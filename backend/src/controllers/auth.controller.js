@@ -8,7 +8,7 @@ const { userService } = require('../services')
 require('dotenv').config()
 
 const options = {
-    expiresIn: Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES),
+    expiresIn: `${process.env.JWT_ACCESS_EXPIRATION_MINUTES}m`,
 };
 
 const login = catchAsync(async(req, res) => {

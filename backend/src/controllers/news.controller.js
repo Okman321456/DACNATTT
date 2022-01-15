@@ -1,12 +1,19 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { newsService } = require('../services')
+const { newsValidation } = require('../validations')
 const fs = require('fs')
 
 const createNews = catchAsync(async(req, res) => {
-    const news = await newsService.createNews(
-        Object.assign(req.body, { imageUrl: req.file.path })
-    )
+    const newsBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const validation = await newsValidation.validate(newsBody)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+    const news = await newsService.createNews(newsBody)
     res.status(httpStatus.CREATED).send(news)
 })
 
@@ -21,6 +28,8 @@ const getNewsByPage = catchAsync(async(req, res) => {
 })
 
 const getNewsById = catchAsync(async(req, res) => {
+    const validation = await newsValidation.getNews.validate(req.params.id)
+    if (validation.error) res.status(httpStatus.BAD_REQUEST).send(validation.error)
     const newsSingle = await newsService.getNewsById(req.params.id)
 
     if (!newsSingle) {
@@ -34,13 +43,22 @@ const updateNewsById = catchAsync(async(req, res) => {
     fs.unlink(`./public/uploads/${path}`, (err) => {
         if (err) {
             console.error(err)
-            return
+            res.status(httpStatus.BAD_REQUEST).send({ error: err })
         }
     })
+
+    const newsBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const validation = await newsValidation.validate(newsBody)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+
     const news = await newsService.updateNewsById(
         req.params.id,
-        Object.assign(
-            req.body, { imageUrl: req.file.path })
+        newsBody
     )
     res.status(200).send(news)
 })

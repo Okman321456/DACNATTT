@@ -1,10 +1,10 @@
-const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const configFilter = require('../config/filter')
 const sortConstant = require('../config/sortConstant')
+const catchAsync = require('../utils/catchAsync');
+const handleRatingTour = require('../utils/handleRatingTour');
 const fs = require('fs')
 const { tourService, newsService, feedbackService } = require('../services');
-const handleRatingTour = require('../utils/handleRatingTour');
 
 const createTour = catchAsync(async(req, res) => {
     const tour = await tourService.createTour(
@@ -31,7 +31,6 @@ const outstandingTour = catchAsync(async(req, res) => {
         outstandingTourTemp.push(await tourService.getTourById(arrayRating[index].id))
     }
     const outstandingTour = await handleRatingTour(outstandingTourTemp)
-    console.log(outstandingTour);
     res.status(200)
         .json({
             outstandingTour,
@@ -59,7 +58,7 @@ const filterTour = catchAsync(async(req, res) => {
     let maxPrice = parseInt(req.query.max) || minmaxPrice.max
     let discount = req.query.dis || false
     if (discount) disValue = [0.0001, 1]
-    else disValue = [0, 0]
+    else disValue = [0, 1]
     if (req.query.region) {
         switch (req.query.region) {
             case 'bac':
