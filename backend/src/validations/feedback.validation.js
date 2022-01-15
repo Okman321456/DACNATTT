@@ -6,7 +6,9 @@ const feedbackSchema = Joi.object({
         .min(5)
         .max(300)
         .required(),
-
+        
+    idTour: Joi.string()
+        .required(),
     rating: Joi.number()
         .integer()
         .min(1)

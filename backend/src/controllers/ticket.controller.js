@@ -47,6 +47,16 @@ const getTicketRegion = catchAsync(async(req, res) => {
     res.send(ticket)
 })
 
+const sortTicket = catchAsync(async(req, res) => {
+    const tickets = await ticketService.sortTicket()
+    if(tickets){
+        res.status(200).send(tickets)
+    }
+    else{
+        res.send('Ticket Not Found!')
+    }
+})
+
 module.exports = {
     bookTicket,
     viewDetailTicket,
@@ -54,5 +64,6 @@ module.exports = {
     viewAllTicket,
     updateTicketStatus,
     getTicketRegion,
-    showTicketPerTour
+    showTicketPerTour,
+    sortTicket
 }

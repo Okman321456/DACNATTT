@@ -48,8 +48,19 @@ const deleteTicket = async(id) => {
 }
 
 const viewAllTicket = async() => {
-    const result = await Ticket.find()
-    return result
+    let allTickets = []
+    const ticket = await Ticket.find().populate({path: 'idTour'})
+    ticket.forEach(element => {
+        allTickets.push({
+            email: element.email,
+            name: element.name,
+            phone: element.phone,
+            tourName: element.idTour.name,
+            numberPeople: element.numberPeople,
+            status: element.status
+        })
+    });
+    return allTickets
 }
 
 const updateTicketStatus = async(id, status) => {
@@ -62,7 +73,14 @@ const getTicketRegion = async(idRegion) => {
     const result = []
     ticket.forEach(element => {
         if(element.idTour.region == idRegion) {
-            result.push(element)
+            let temp = {}
+            temp.tourName = element.idTour.name
+            temp.email =  element.email
+            temp.name = element.name
+            temp.phone =  element.phone
+            temp.numberPeople = element.numberPeople,
+            temp.status = element.status
+            result.push(temp)
         }
     })
     return result
@@ -78,12 +96,17 @@ const showTicketPerTour = async(idTour) => {
                email: element.email,
                name: element.name,
                phone: element.phone,
+               tourName: element.idTour.name,
                numberPeople: element.numberPeople,
                status: element.status
            })
        }
    });
    return ticketPerTour
+}
+
+const sortTicket = async() => {
+    return await Ticket.find().sort({createdAt: -1})
 }
 
 module.exports = {
@@ -93,5 +116,6 @@ module.exports = {
     viewAllTicket,
     updateTicketStatus,
     getTicketRegion,
-    showTicketPerTour
+    showTicketPerTour,
+    sortTicket
 }
