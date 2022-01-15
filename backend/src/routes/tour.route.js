@@ -19,7 +19,7 @@ router.post('/create', auth('admin', 'manage'), upLoadImage, tourController.crea
 
 router.get('/:tourId', tourController.getTourById)
 
-router.put('/:tourId', auth('admin', 'manage'), tourController.updateTourById)
+router.put('/:tourId', auth('admin', 'manage'), upLoadImage, tourController.updateTourById)
 
 router.delete('/:tourId', auth('admin', 'manage'), tourController.deleteTourById)
 

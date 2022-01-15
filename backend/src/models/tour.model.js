@@ -56,10 +56,6 @@ const tourSchema = mongoose.Schema({
         minlength: 0,
         required: true,
     },
-    listFeedback: {
-        type: [mongoose.SchemaTypes.ObjectId],
-        ref: 'Feedback',
-    },
     discount: {
         type: Number,
         min: 0,
