@@ -12,7 +12,6 @@ const newsSchema = Joi.object({
         .required(),
     imageUrl: Joi.string()
         .max(500)
-        .required()
 })
 
 

@@ -27,12 +27,14 @@ const login = catchAsync(async(req, res) => {
         res.status(httpStatus.UNAUTHORIZED).send('Incorrect email or password')
     } else {
         const payloadLogin = { id: user._id.toString() }
+        console.log(options);
         const accessToken = jwt.sign(payloadLogin, process.env.JWT_SECRET, options)
             // res.cookie('token', accessToken);
-        localStorage.setItem('token', accessToken);
+        localStorage.setItem('token', accessToken)
         res.status(200).json({
             name: user.name,
             permission: user.role,
+            email: user.email,
             token: accessToken
         })
     }
@@ -44,6 +46,17 @@ const logout = catchAsync(async(req, res) => {
         // .clearCookie("token")
         .status(200)
         .json({ message: "Log out Successfully" });
+})
+
+const getRole = catchAsync(async(req, res) => {
+
+    if (!req.role) res.status(httpStatus.FORBIDDEN).send("Forbidden")
+    res.status(200).json({
+        role: req.role,
+        name: req.name,
+        email: req.email
+    })
+
 })
 
 const changePass = catchAsync(async(req, res) => {
@@ -58,6 +71,7 @@ const refreshTokens = catchAsync(async(req, res) => {
 module.exports = {
     login,
     logout,
+    getRole,
     changePass,
     refreshTokens
 }

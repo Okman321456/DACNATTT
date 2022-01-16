@@ -1,3 +1,9 @@
-module.exports.newsValidation = require('./news.validation')
-module.exports.tourValidation = require('./tour.validation')
-module.exports.authValidation = require('./auth.validation')
+const newsValidation = require('./news.validation')
+const tourValidation = require('./tour.validation')
+const authValidation = require('./auth.validation')
+
+module.exports = {
+    newsValidation,
+    tourValidation,
+    authValidation
+}

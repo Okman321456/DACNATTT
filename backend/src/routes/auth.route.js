@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/login', authController.login)
 router.post('/logout', auth('admin', 'manage'), authController.logout)
+router.get('/getrole', auth('admin', 'manage'), authController.getRole)
 router.post('/changepass', auth('admin'), checkChangePass, authController.changePass)
 
 module.exports = router

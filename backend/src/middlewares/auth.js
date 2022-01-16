@@ -19,6 +19,9 @@ const auth = (...roles) => {
             if (!roles.includes(user.role)) {
                 return res.status(httpStatus.UNAUTHORIZED).send("Unauthorization")
             }
+            req.role = user.role
+            req.name = user.name
+            req.email = user.email
             next();
         } catch {
             return res.status(httpStatus.FORBIDDEN).send("Forbidden")
