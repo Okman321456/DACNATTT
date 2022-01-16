@@ -1,15 +1,26 @@
 .create-tour-formbody{
     max-width: 500px;
     margin: auto;
+    padding: 10px
+}
+.manager-form-wrapper{
+    max-width: 300px;
+    margin: auto;
+    padding: 10px
+}
+.manager-form-wrapper .form-group input{
+    justify-content: center;
+    flex-direction: column;
+    text-align: start;
+    margin: 5px;
 }
 .create-tour-formbody .form-group{
     justify-content: center;
     flex-direction: column;
     text-align: start;
-}
-.create-tour-formbody .form-group *{
     margin: 5px;
 }
+
 .create-tour-formbody .form-group input, select{
     max-width: 500px;
     height: 30px;

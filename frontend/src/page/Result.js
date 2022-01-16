@@ -8,7 +8,7 @@ import { Divider } from '@material-ui/core';
 import RegardPrice from '../components/RegardPrice/RegardPrice';
 import APIClient from '../APIs/APIClient';
 import axios from 'axios';
-import { useStore } from '../store';
+import { useStore, actions } from '../store';
 
 const ConvertToImageURL = (url) => {
     if (url) return `http://localhost:3001/${url.slice(6)}`
@@ -34,10 +34,12 @@ function Result(props) {
         paramTem[key] = value;
     })
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
         const result = await APIClient.getResultFilter(paramURL);
         const newsList = await APIClient.getNewsList();
         setData(result);
         setNews(newsList.news);
+        dispatch(actions.setLoading(false));
 
     }, [pageNumber, load,state.search]);
 
@@ -69,7 +71,9 @@ function Result(props) {
                                                 name={tour.name}
                                                 description={tour.description}
                                                 image={`http://localhost:3001/${tour.imageUrl.slice(6)}`}
-                                                price={`₫${RegardPrice(tour.price)}`}
+                                                price={tour.price}
+                                                discount={tour.discount}
+                                                rating={tour.rating}
                                             />
                                         </Grid>
                                     ))

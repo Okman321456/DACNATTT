@@ -1,15 +1,24 @@
 const {Feedback} = require('../models')
-const {User} = require('../models')
-const {Tour} = require('../models')
+const {feedbackValidation} = require('../validations')
 
 const createFeedback = async(idTour, feedbackBody) => {
-    const feedback = await Feedback.create({
-        idTour: idTour,
-        email: feedbackBody.email,
-        rating: feedbackBody.rating,
-        comment: feedbackBody.comment
-    })
-    return feedback
+    try {
+        const validation = feedbackValidation.validate(feedbackBody)
+        if(!validation.error){
+            const feedback = await Feedback.create({
+                idTour: idTour,
+                email: validation.value.email,
+                rating: validation.value.rating,
+                comment: validation.value.comment
+            })
+            return feedback
+        }
+        else return null
+    }
+    catch (err) { 
+        console.log(err)
+        return null
+    }
 }
 
 const showListFeedback = async() => {

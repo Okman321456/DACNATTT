@@ -1,17 +1,28 @@
 const {Ticket} = require('../models')
-const {User} = require('../models')
-const {Tour} = require('../models')
+const {ticketValidation} = require('../validations')
 
 const bookTicket = async(id, ticketBody) => {
-        const ticket = await Ticket.create({
-            idTour: id,
-            name: ticketBody.name,
-            email: ticketBody.email,
-            phone: ticketBody.phone,
-            status: 0,
-            numberPeople: ticketBody.numberPeople
-        })
-        return ticket
+    try {
+        const validation = ticketValidation.validate(ticketBody)
+        if(!validation.error){
+            const ticket = await Ticket.create({
+                idTour: id,
+                name: validation.value.name,
+                email: validation.value.email,
+                phone: validation.value.phone,
+                status: 0,
+                numberPeople: validation.value.numberPeople
+            })
+            return ticket
+        }
+        else return null
+
+    }
+    catch (err) { 
+        console.log(err)
+        return null
+    }
+
 }
 
 const viewDetailTicket = async(id) => {
@@ -37,8 +48,19 @@ const deleteTicket = async(id) => {
 }
 
 const viewAllTicket = async() => {
-    const result = await Ticket.find()
-    return result
+    let allTickets = []
+    const ticket = await Ticket.find().populate({path: 'idTour'})
+    ticket.forEach(element => {
+        allTickets.push({
+            email: element.email,
+            name: element.name,
+            phone: element.phone,
+            tourName: element.idTour.name,
+            numberPeople: element.numberPeople,
+            status: element.status
+        })
+    });
+    return allTickets
 }
 
 const updateTicketStatus = async(id, status) => {
@@ -51,10 +73,40 @@ const getTicketRegion = async(idRegion) => {
     const result = []
     ticket.forEach(element => {
         if(element.idTour.region == idRegion) {
-            result.push(element)
+            let temp = {}
+            temp.tourName = element.idTour.name
+            temp.email =  element.email
+            temp.name = element.name
+            temp.phone =  element.phone
+            temp.numberPeople = element.numberPeople,
+            temp.status = element.status
+            result.push(temp)
         }
     })
     return result
+}
+
+const showTicketPerTour = async(idTour) => {
+   let ticketPerTour = []
+   const ticket = await Ticket.find().populate({path: 'idTour'})
+   ticket.forEach(element => {
+       if(element.idTour._id == idTour){
+           console.log(element)
+           ticketPerTour.push({
+               email: element.email,
+               name: element.name,
+               phone: element.phone,
+               tourName: element.idTour.name,
+               numberPeople: element.numberPeople,
+               status: element.status
+           })
+       }
+   });
+   return ticketPerTour
+}
+
+const sortTicket = async() => {
+    return await Ticket.find().sort({createdAt: -1})
 }
 
 module.exports = {
@@ -63,5 +115,7 @@ module.exports = {
     deleteTicket,
     viewAllTicket,
     updateTicketStatus,
-    getTicketRegion
+    getTicketRegion,
+    showTicketPerTour,
+    sortTicket
 }

@@ -1,4 +1,4 @@
-import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY, SEARCH, LOGIN} from './constants';
+import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY, SEARCH, LOGIN, LOADING} from './constants';
 
 export const setBookTour = (payload) =>({
     type: BOOK_TOUR,
@@ -17,5 +17,9 @@ export const setSearch = (payload) =>({
 });
 export const setLogin = (payload) =>({
     type: LOGIN,
+    payload
+});
+export const setLoading = (payload) =>({
+    type: LOADING,
     payload
 });

@@ -2,56 +2,56 @@ import React, { useEffect } from 'react';
 import { Container, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import TourCard from '../components/TourCard/TourCard';
 import { Divider } from '@material-ui/core';
 import RegardPrice from '../components/RegardPrice/RegardPrice';
 import APIClient from '../APIs/APIClient';
+import { useStore, actions } from '../store';
 
-const news = [{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},]
+const ConvertToImageURL = (url) => {
+    if (url) return `http://localhost:3001/${url.slice(6)}`
+    else return "";
+}
 
 function TourList({ region, url }) {
     let navigate = useNavigate();
+    const [state, dispatch] = useStore()
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
+    console.log("page: ", pageIni);
     let sortBy = searchParagram.get("sortBy") ? searchParagram.get("sortBy").toString() : "";
-
+    let urltem = window.location.href;
     const [sort, setSort] = React.useState("");
     const [open, setOpen] = React.useState(false);
+    const [load, onLoad] = React.useState(false);
     const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni));
     const [data, setData] = React.useState();
+    const [newsList, setNewsList] = React.useState();
 
-    const paramURL = { page: pageNumber, sortBy};
+    const paramURL = { page: pageIni, sortBy };
+    console.log("param", paramURL)
 
     const handleChangePage = (event, value) => {
         setPageNumber(value);
-        sortBy ? navigate(`/${url}?page=${value}&sortBy=${sortBy}`):
-        navigate(`/${url}?page=${value}`);
+        sortBy ? navigate(`/${url}?page=${value}&sortBy=${sortBy}`) :
+            navigate(`/${url}?page=${value}`);
+        onLoad(!load);
     };
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
         const result = await APIClient.getTourList(paramURL, url);
+        const newsList = await APIClient.getNewsList();
         setData(result);
+        setNewsList(newsList);
+        dispatch(actions.setLoading(false));
+    }, [load, urltem]);
 
-    }, [searchParagram]);
-    
     const handleChange = (event) => {
         navigate(`/${url}?page=${pageNumber}&sortBy=${event.target.value}`);
         setSort(event.target.value);
+        onLoad(!load);
     };
 
     const handleClose = () => {
@@ -116,7 +116,9 @@ function TourList({ region, url }) {
                                                     name={tour.name}
                                                     description={tour.description}
                                                     image={`http://localhost:3001/${tour.imageUrl.slice(6)}`}
-                                                    price={`₫${RegardPrice(tour.price)}`}
+                                                    price={tour.price}
+                                                    discount={tour.discount}
+                                                    rating={tour.rating}
                                                 />
                                             </Grid>
                                         ))
@@ -130,13 +132,13 @@ function TourList({ region, url }) {
                                 <Grid item xs={12} md={3}>
                                     <h4>TRẢI NGHIỆM DU LỊCH</h4>
                                     {
-                                        news.map((item, index) => (
-                                            <React.Fragment key={index}>
+                                        newsList && newsList.news.map((item, index) => (
+                                            <Link to={`/tin-tuc/${item._id}`} style={{textDecoration:'none'}} key={index}>
                                                 <Divider style={{ margin: '5px 0' }} />
                                                 <Grid container item xs={12} key={index} style={{ padding: '10px' }}>
                                                     <Grid item xs={2} md={3}>
                                                         <div style={{ aspectRatio: '1', overflow: 'hidden', maxHeight: '100px' }}>
-                                                            <img style={{ maxHeight: '100px', height: '100%' }} src={item.image} />
+                                                            <img style={{ maxHeight: '100px', height: '100%' }} src={ConvertToImageURL(item.imageUrl)} />
                                                         </div>
                                                     </Grid>
                                                     <Grid item xs={10} md={9}>
@@ -159,7 +161,7 @@ function TourList({ region, url }) {
                                                         </Typography>
                                                     </Grid>
                                                 </Grid>
-                                            </React.Fragment>
+                                            </Link>
                                         ))
                                     }
                                     <Divider style={{ margin: '5px 0' }} />

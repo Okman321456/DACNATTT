@@ -7,13 +7,19 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import axios from 'axios';
 import './Form.css';
+import APIClient from '../../APIs/APIClient';
 
 
 const Regions = ['Bắc', 'Trung', 'Nam'];
 const Types = ["Núi", "Biển", "Đảo", "Văn Hóa", "Sông Nước"];
-const Discounts = ["20%", "40%", "50%", "70%"]
+const Discounts = ["20", "40", "50", "70"]
 
-function AddTourForm(props) {
+const ConvertToImageURL = (url) => {
+    if (url) return `http://localhost:3001/${url.slice(6)}`
+    else return "";
+}
+
+function TourForm({ handleAddTour, tour }) {
     const {
         register,
         handleSubmit,
@@ -21,34 +27,26 @@ function AddTourForm(props) {
         control,
         formState: { errors },
     } = useForm();
-    const [start, setStart] = React.useState(new Date());
-    const [end, setEnd] = React.useState(new Date());
+    const [start, setStart] = React.useState(tour ? tour.timeStart : new Date());
+    const [end, setEnd] = React.useState(tour ? tour.timeEnd : new Date());
+    const [dataPrevious, setDataPrevios] = React.useState(tour);
     const [imagePreview, setImagePreview] = React.useState();
-    
-    useEffect(()=>{
-        return ()=>{
+    // const [image, setImage]
+    console.log(start, end)
+    useEffect(() => {
+        return () => {
             imagePreview && URL.revokeObjectURL(imagePreview.preview);
         }
-    },[imagePreview]);
+    }, [imagePreview]);
 
-    const handleChangePreview = (e)=>{
+    const handleChangePreview = (e) => {
         const file = e.target.files[0];
-        if(file) file.preview = URL.createObjectURL(file);
-        setImagePreview(file); 
+        if (file) file.preview = URL.createObjectURL(file);
+        setImagePreview(file);
     };
 
     const onHandleSubmit = async (data) => {
-        console.log(data);
-        let formData = new FormData();
-        for (let key in data) {
-            if (key == 'imageUrl') {
-                formData.append('imageUrl', data[key][0])
-                console.log(data[key][0])
-            }
-            else formData.append(key, data[key])
-        }
-        console.log(formData.get("name"))
-        await  axios.post('http://localhost:3001/create',formData)
+        handleAddTour(data);
     };
     return (
         <div className='create-tour-form-wrapper' style={{ marginTop: '120px' }}>
@@ -61,7 +59,9 @@ function AddTourForm(props) {
                             value: 100,
                             message: '* Nhập tên quá dài.'
                         }
-                    })} />
+                    })}
+                        defaultValue={tour && tour.name}
+                    />
                     {errors.name && <div className="alert">{errors.name.message}</div>}
                 </div>
                 <div className="form-group mb-2">
@@ -75,7 +75,9 @@ function AddTourForm(props) {
                             value: 1024,
                             message: "* Mô tả quá dài!"
                         }
-                    })} />
+                    })}
+                        defaultValue={tour && tour.description}
+                    />
                     {errors.description && <div className="alert">{errors.description.message}</div>}
                 </div>
                 <div className="form-group mb-2">
@@ -96,16 +98,18 @@ function AddTourForm(props) {
                                 message: "* Nhập lỗi"
                             }
                         }
-                    )} />
+                    )}
+                        defaultValue={tour && tour.price}
+                    />
                     {errors.price && <div className="alert">{errors.price.message}</div>}
                 </div>
                 <div className="form-group mb-2">
                     <label>Region:</label>
-                    <select {...register("region", { required: "* Chọn vùng miền" })} placeholder='category'>
+                    <select {...register("region", { required: "* Chọn vùng miền" })} placeholder='category' defaultValue={tour && tour.region}>
                         <option value="" hidden>Choose...</option>
                         {
                             Regions.map((value, index) => (
-                                <option value={index + 1} key={index}>{value}</option>
+                                <option value={index + 1} key={index} selected = {tour ? tour.region===index+1 : false}>{value}</option>
                             ))
                         }
                     </select>
@@ -113,11 +117,11 @@ function AddTourForm(props) {
                 </div>
                 <div className="form-group mb-2">
                     <label>Type:</label>
-                    <select {...register("typePlace", { required: "* Chọn loại hình" })} placeholder='category'>
+                    <select {...register("typePlace", { required: "* Chọn loại hình" })} placeholder='category' defaultValue={tour && tour.typePlace}>
                         <option value="" hidden>Choose...</option>
                         {
                             Types.map((value, index) => (
-                                <option value={value} key={index}>{value}</option>
+                                <option value={value} key={index}  key={index} selected = {tour ? tour.typePlace=== value : false}>{value}</option>
                             ))
                         }
                     </select>
@@ -130,6 +134,7 @@ function AddTourForm(props) {
                             name="timeStart"
                             control={control}
                             defaultValue={start}
+
                             render={({ field }) => (
                                 <DesktopDatePicker
                                     label="Start"
@@ -166,7 +171,7 @@ function AddTourForm(props) {
                 </div>
                 <div className="form-group mb-2">
                     <label>Amount: </label>
-                    <input type='text' {...register("amount",
+                    <input type='text' defaultValue={tour && tour.amount} {...register("amount",
                         {
                             required: "* Nhập giá số lượng",
                             min: {
@@ -187,11 +192,11 @@ function AddTourForm(props) {
                 </div>
                 <div className="form-group mb-2">
                     <label>Discount:</label>
-                    <select {...register("discount", { required: "* Chọn mức giảm giá" })} placeholder='discount'>
+                    <select {...register("discount", { required: "* Chọn mức giảm giá" })} placeholder='discount' defaultValue={tour && tour.discount}>
                         <option value={0}>0%</option>
                         {
                             Discounts.map((value, index) => (
-                                <option value={parseFloat(value)} key={index}>{value}</option>
+                                <option value={value/100} key={index} selected = {tour ? tour.discount== value/100 : false}>{value}%</option>
                             ))
                         }
                     </select>
@@ -199,7 +204,7 @@ function AddTourForm(props) {
                 </div>
                 <div className="form-group mb-2">
                     <label>Hotel: </label>
-                    <input {...register("hotelName", {
+                    <input defaultValue={tour && tour.hotelName} {...register("hotelName", {
                         required: "* Nhập tên khách sạn!",
                         minLength: {
                             value: 0,
@@ -214,7 +219,7 @@ function AddTourForm(props) {
                 </div>
                 <div className="form-group mb-2">
                     <label>Lịch trình: </label>
-                    <textarea type="text" style={{ height: '150px' }} {...register("schedule", {
+                    <textarea type="text" defaultValue={tour && tour.schedule} style={{ height: '150px' }} {...register("schedule", {
                         required: "* Nhập lịch trình!",
                         minLength: {
                             value: 20,
@@ -229,11 +234,12 @@ function AddTourForm(props) {
                 </div>
                 <div className="form-group mb-2">
                     <label>Image: </label>
-                    <input type='file' {...register("imageUrl")} onChange={handleChangePreview}/>
+                    <input type='file' {...register("imageUrl")} onChange={handleChangePreview} />
                     {imagePreview && <img src={imagePreview.preview} alt="" width={200} />}
+                    {(!imagePreview && tour) && <img src={ConvertToImageURL(tour.imageUrl)} alt="" width={200} />}
                 </div>
-                <div className="form-group mb-2">
-                    <button type='submit'>CLICK</button>
+                <div className="form-group mb-2" style={{ width: '50px' }}>
+                    <button type='submit'>LƯU</button>
                 </div>
             </form>
 
@@ -241,4 +247,4 @@ function AddTourForm(props) {
     );
 }
 
-export default AddTourForm;
+export default TourForm;
