@@ -2,6 +2,7 @@ const express = require('express');
 const newsController = require('../controllers/news.controller')
 const upLoadImage = require('../middlewares/fileUpload')
 const auth = require('../middlewares/auth')
+const validate = require('../middlewares/validate')
 
 const router = express.Router()
 

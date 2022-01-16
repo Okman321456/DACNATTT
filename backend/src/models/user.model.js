@@ -1,19 +1,25 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs');
+const validator = require('validator')
+const roles = require('../config/roles')
 
 const userSchema = mongoose.Schema({
     name: {
         type: String,
         minlength: 5,
         maxlength: 100,
-        lowercase: true,
         required: true,
     },
     password: {
         type: String,
         minlength: 5,
-        maxlength: 1024,
+        maxlength: 32,
         required: true,
+        validate(value) {
+            if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
+                throw new Error('Password must contain at least one letter and one number');
+            }
+        },
     },
     email: {
         type: String,
@@ -21,11 +27,11 @@ const userSchema = mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        // validate(value) {
-        //   if (!validator.isEmail(value)) {
-        //     throw new Error('Invalid email');
-        //   }
-        // },
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error('Invalid email');
+            }
+        },
     },
     phone: {
         type: String,
@@ -35,6 +41,7 @@ const userSchema = mongoose.Schema({
     },
     role: {
         type: String,
+        enum: roles,
         default: 'manage',
     }
 }, {

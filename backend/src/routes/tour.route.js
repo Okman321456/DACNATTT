@@ -15,12 +15,12 @@ router.get('/mien-nam', tourController.getTourRegion(3))
 
 router.get('/tour/:tourId', tourController.getTourById)
 
-router.post('/create', auth('admin', 'manage'), upLoadImage, tourController.createTour)
+router.post('/create', auth('manage'), upLoadImage, tourController.createTour)
 
 router.get('/:tourId', tourController.getTourById)
 
-router.put('/:tourId', auth('admin', 'manage'), tourController.updateTourById)
+router.put('/:tourId', auth('manage'), upLoadImage, tourController.updateTourById)
 
-router.delete('/:tourId', auth('admin', 'manage'), tourController.deleteTourById)
+router.delete('/:tourId', auth('manage'), tourController.deleteTourById)
 
 module.exports = router;
