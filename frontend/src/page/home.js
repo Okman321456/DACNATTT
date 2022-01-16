@@ -6,12 +6,16 @@ import HotTourSlide from '../components/SlideIntroduce/HotTourSlide';
 import News from '../components/NewsCard/News';
 import AdvantageCard from '../components/AdvantageCard/AdvantageCard';
 import APIClient from '../APIs/APIClient';
+import { useStore, actions } from '../store';
 
 function Home(props) {
+    const [state, dispatch] = useStore()
     const [data, setData] = useState();
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
         const result = await APIClient.getDataHomePage();
         setData(result);
+        dispatch(actions.setLoading(false));
     }, []);
     return (
         <div>

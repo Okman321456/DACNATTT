@@ -94,16 +94,20 @@ const ConvertToImageURL = (url) => {
     else return "";
 }
 function TourDetail(props) {
+    const [state, dispatch] = useStore()
+    
     const classes = useStyles();
     const { id } = useParams();
     const [data, setData] = useState();
     const [load, onLoad] = useState();
-    const [state, dispatch] = useStore();
+    
     useEffect(async () => {
         document.title = "Bootcamp Travel | Chi tiết";
+        dispatch(actions.setLoading(true));
         // const result = await APIClient.getTourDetail(id) 
         const result = await axios(`http://localhost:3001/tour/${id}`);
         setData(result.data);
+        dispatch(actions.setLoading(false));
     }, [load]);
 
     const handleOnClick = (_id) => {

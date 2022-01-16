@@ -15,9 +15,9 @@ import { SearchOutlined } from '@material-ui/icons';
 import { TextField } from '@material-ui/core';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { MenuList, Paper } from '@mui/material';
-import logo from '../image/logoTravel.png';
+import logo from '../image/logoBootcamp.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { useStore,actions } from '../../store';
+import { useStore, actions } from '../../store';
 import axios from 'axios';
 
 const pagesUser = [{
@@ -40,22 +40,32 @@ const pagesUser = [{
 
 const pagesAdmin = [
     {
-    title:'QUẢN LÍ NHÂN VIÊN',
-    path:'/quan-li-nhan-vien'
-},
+        title: 'QUẢN LÍ NHÂN VIÊN',
+        path: '/quan-li-nhan-vien'
+    },
     {
-    title:'THÊM NHÂN VIÊN',
-    path:'/them-nhan-vien'
-},
+        title: 'THÊM NHÂN VIÊN',
+        path: '/them-nhan-vien'
+    },
+];
+const pagesManager = [
     {
-    title:'QUẢN LÍ TOUR',
-    path:'/admin'
-},
+        title: 'QUẢN LÍ TOUR',
+        path: '/quan-li-tour'
+    },
+    {
+        title: 'THÊM TOUR',
+        path: '/them-tour'
+    },
+    {
+        title: 'QUẢN LÍ VÉ',
+        path: '/them-nhan-vien'
+    },
 ];
 
 let menuList = [{
-    title:'QUẢN LÍ TOUR',
-    path:'/admin'
+    title: 'QUẢN LÍ TOUR',
+    path: '/admin'
 }];
 const pagesMenu = ['TRANG CHỦ', 'MIỀN BẮC', 'MIỀN TRUNG', 'MIỀN NAM', 'TIN TỨC', 'GIỚI THIỆU', 'ĐĂNG NHẬP', 'VALI CÁ NHÂN'];
 
@@ -96,8 +106,11 @@ const Header = () => {
     const classes = useStyles();
     const [state, dispatch] = useStore();
     // let menuList;
-    if(state.role=='admin') menuList = pagesAdmin;
-    if(state.role=='user') menuList = pagesUser;  
+    React.useEffect(()=>{
+        if (state.role == 'admin') menuList = pagesAdmin;
+        if (state.role == 'user') menuList = pagesUser;
+        if (state.role == 'manager') menuList = pagesManager;
+    },[state.role]);
 
     const [openSideBar, setOpenSideBar] = React.useState(false);
     const [searchBox, setSearchBox] = React.useState(false);
@@ -107,13 +120,13 @@ const Header = () => {
     });
     React.useEffect(() => {
         const setNavigation = () => {
-            if (window.pageYOffset > 150) {
+            if (window.pageYOffset > 100) {
                 setNav({
                     height: '70px',
                     color: 'white'
                 });
             }
-            if (window.pageYOffset <= 300) {
+            if (window.pageYOffset <= 100) {
                 setNav({
                     height: '90px',
                     color: 'transparent'
@@ -146,15 +159,15 @@ const Header = () => {
         }
     }
 
-    const handleToggleLogin =async ()=>{
+    const handleToggleLogin = async () => {
         // console.log(localStorage.getItem("token"));
-        if(state.role=='admin') {
+        if (state.role == 'admin') {
             dispatch(actions.setLogin('user'));
             navigate('/');
             const res = await axios.post(
                 'http://localhost:3001/auth/logout'
             )
-        }else{
+        } else {
             navigate('/dang-nhap')
         }
     }
@@ -220,17 +233,9 @@ const Header = () => {
                                 aria-label="account of current user"
                                 color="inherit"
                                 sx={{ display: { xs: 'none', md: 'inline-block' } }}
-                            >
-                                <WorkOutlineOutlinedIcon style={{ color: 'black' }} />
-                            </IconButton>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                color="inherit"
-                                sx={{ display: { xs: 'none', md: 'inline-block' } }}
                                 onClick={handleToggleLogin}
                             >
-                                <ManageAccountsOutlinedIcon style={{ color: 'black' }}/>
+                                <ManageAccountsOutlinedIcon style={{ color: 'black' }} />
                             </IconButton>
                             <TextField
                                 id='search-field'

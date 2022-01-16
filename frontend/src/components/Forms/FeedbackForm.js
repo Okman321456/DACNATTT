@@ -68,7 +68,7 @@ function FeedbackForm({handleSendFeedback}) {
                                     name="customized-color"
                                     defaultValue={0}
                                     getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
-                                    precision={0.5}
+                                    precision={1}
                                     value={rating}
                                     icon={<FavoriteIcon fontSize="inherit" color="error" />}
                                     emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}

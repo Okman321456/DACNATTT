@@ -5,44 +5,16 @@ import React, { useEffect, useState } from 'react';
 import APIClient from '../APIs/APIClient';
 import NewsCard from '../components/NewsCard/NewsCard';
 import RegardPrice from '../components/RegardPrice/RegardPrice';
-
-const news = [{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-{
-    title: 'Tất tần tật những kinh nghiệm bạn cần biết trước khi du lịch Bình Ba',
-    description: 'Bình Ba là một đảo nhỏ, diện tích trên 3km2, thuộc xã Cam Bình, thành phố Cam Ranh, tỉnh Khánh Hòa. Cách Nha Trang 60 km thành phố Cam Ranh, tỉnh Khánh Hòa',
-    image: 'http://mauweb.monamedia.net//trabble//wp-content//uploads//2018//01//dat-phong-khach-san-grand-ho-tram-gia-re_du-lich-viet_0.png',
-},
-]
+import { useStore, actions } from '../store';
 
 function NewsList(props) {
+    const [state, dispatch] = useStore()
     const [data, setData] = useState();
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
         const result = await APIClient.getNewsList();
         setData(result);
+        dispatch(actions.setLoading(false));
     }, []);
 
     return (
