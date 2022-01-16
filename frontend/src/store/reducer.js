@@ -1,10 +1,11 @@
-import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY, SEARCH, LOGIN} from './constants'
+import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY, SEARCH, LOGIN, LOADING} from './constants'
 const initialState = {
     tourID: 0,
     openForm: false,
     showNotify: false,
     search:'',
     role:'user',
+    loading:false,
 }
 
 function reducer(state, action){
@@ -33,6 +34,11 @@ function reducer(state, action){
             return {
                 ...initialState,
                 role: action.payload
+            };    
+        case LOADING:
+            return {
+                ...initialState,
+                loading: action.payload
             };    
         default:
             break;

@@ -21,7 +21,7 @@ function Footer(props) {
             <Box sx={{ flexGrow: 1, padding: '50px 30px', backgroundColor: '#000000db' }}>
                 <Grid container>
                     <Grid item xs={12} md={3} sm={6}>
-                        <Typography variant="h5" color="white" align="left" component='div'>
+                        <Typography variant="h6" color="white" align="left" component='div'>
                             THÔNG TIN
                         </Typography>
                         <Typography variant='body1' align='left' component='div'>
@@ -40,10 +40,10 @@ function Footer(props) {
                         </Typography>
                         <Typography variant='body1' align='left' component='div'>
                             <ul style={{ listStyle: 'none', padding: 0 }} className='address'>
-                                <li><LocationOnIcon color='warning' /> Đại học Bách Khoa Đà Nẵng</li>
-                                <li><LocalPhoneIcon color='warning' /> 0909 999 999</li>
-                                <li><MailOutlineIcon color='warning' /> tet.anlanh@gmail.com</li>
-                                <li><FacebookIcon color='warning'/><InstagramIcon color='warning' sx={{marginLeft:'5px'}}/><TwitterIcon color='warning' sx={{marginLeft:'5px'}}/></li>
+                                <li style={{display:'flex'}}><LocationOnIcon color='warning' />&nbsp;Đại học Bách Khoa Đà Nẵng</li>
+                                <li style={{display:'flex'}}><LocalPhoneIcon color='warning' />&nbsp;0909 999 999</li>
+                                <li style={{display:'flex'}}><MailOutlineIcon color='warning' />&nbsp;tet.anlanh@gmail.com</li>
+                                <li style={{display:'flex'}}><FacebookIcon color='warning'/><InstagramIcon color='warning' sx={{marginLeft:'5px'}}/><TwitterIcon color='warning' sx={{marginLeft:'5px'}}/></li>
                             </ul>
                         </Typography>
                     </Grid>

@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Divider, Grid } from '@material-ui/core';
 import APIClient from '../APIs/APIClient';
 import { Container, Stack, Typography } from '@mui/material';
+import { useStore, actions } from '../store';
 
 const ConvertToImageURL = (url) => {
     if (url) return `http://localhost:3001/${url.slice(6)}`
@@ -11,15 +12,18 @@ const ConvertToImageURL = (url) => {
 }
 
 function NewsDetail(props) {
+    const [state, dispatch] = useStore()
     const [dataNews, setDataNews] = useState();
     const [dataNewsList, setDataNewsList] = useState();
     const [load, onLoad] = useState(false);
     const { id } = useParams();
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
         const result = await axios(`http://localhost:3001/news/${id}`);
         const list = await APIClient.getNewsList();
         setDataNews(result.data);
         setDataNewsList(list);
+        dispatch(actions.setLoading(false));
     },[]);
     useEffect(async () => {
         const result = await APIClient.getNewsDetail(id)

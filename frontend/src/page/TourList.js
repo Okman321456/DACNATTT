@@ -7,6 +7,7 @@ import TourCard from '../components/TourCard/TourCard';
 import { Divider } from '@material-ui/core';
 import RegardPrice from '../components/RegardPrice/RegardPrice';
 import APIClient from '../APIs/APIClient';
+import { useStore, actions } from '../store';
 
 const ConvertToImageURL = (url) => {
     if (url) return `http://localhost:3001/${url.slice(6)}`
@@ -15,6 +16,7 @@ const ConvertToImageURL = (url) => {
 
 function TourList({ region, url }) {
     let navigate = useNavigate();
+    const [state, dispatch] = useStore()
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
@@ -30,6 +32,7 @@ function TourList({ region, url }) {
 
     const paramURL = { page: pageIni, sortBy };
     console.log("param", paramURL)
+
     const handleChangePage = (event, value) => {
         setPageNumber(value);
         sortBy ? navigate(`/${url}?page=${value}&sortBy=${sortBy}`) :
@@ -37,10 +40,12 @@ function TourList({ region, url }) {
         onLoad(!load);
     };
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
         const result = await APIClient.getTourList(paramURL, url);
         const newsList = await APIClient.getNewsList();
         setData(result);
         setNewsList(newsList);
+        dispatch(actions.setLoading(false));
     }, [load, urltem]);
 
     const handleChange = (event) => {
