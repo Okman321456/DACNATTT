@@ -44,7 +44,7 @@ const updateTicketStatus = catchAsync(async(req, res) => {
 
 const getTicketRegion = catchAsync(async(req, res) => {
     const ticket = await ticketService.getTicketRegion(req.params.idRegion)
-    res.send(ticket)
+    res.status(200).send(ticket)
 })
 
 const sortTicket = catchAsync(async(req, res) => {
