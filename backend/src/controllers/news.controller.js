@@ -28,8 +28,7 @@ const getNewsByPage = catchAsync(async(req, res) => {
 })
 
 const getNewsById = catchAsync(async(req, res) => {
-    const validation = await newsValidation.getNews.validate(req.params.id)
-    if (validation.error) res.status(httpStatus.BAD_REQUEST).send(validation.error)
+    
     const newsSingle = await newsService.getNewsById(req.params.id)
 
     if (!newsSingle) {

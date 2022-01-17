@@ -10,7 +10,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import TourDetail from './page/TourDetail';
 import NewsDetail from './page/NewsDetail';
 // import PaymentConfirmation from './page/PaymentConfirmation';
-import { useStore } from './store';
+import { actions, useStore } from './store';
 import Result from './page/Result'
 import LoginForm from '../src/components/Forms/LoginForm';
 import BookingForm from './components/BookingForm/BookingForm';
@@ -22,14 +22,30 @@ import UpdateManager from './components/Forms/UpdateManager';
 import UpdateTour from './page/UpdateTour';
 import TourListTable from './components/Table/TourListTable';
 import SpinnerLoading from './components/SpinnerLoading/SpinnerLoading';
+import APIClient from './APIs/APIClient';
+import ManageTickets from './page/ManageTickets';
+import ManageTicketsTour from './page/ManageTicketsTour';
 
 function App() {
   const [state, dispatch] = useStore();
-  useEffect(() => {
-    console.log(state)
-    console.log(localStorage.getItem("token"));
-    
-  },[]);
+  useEffect(async () => {
+    console.log(state);
+    let token = localStorage.getItem("token");
+    console.log(token);
+    if (token) {
+      const info = await APIClient.checkLoginToken();
+      console.log("infor", info);
+      if (info.role == "admin" || info.role == "manage")
+        dispatch(actions.setLogin({
+          role: info.role,
+          name: info.name
+        }));
+      else dispatch(actions.setLogin({
+        role: "user",
+        name:''
+      }));
+    }
+  }, []);
   return (
     <div className="App">
       <Header />
@@ -52,6 +68,8 @@ function App() {
         <Route path="/cap-nhat-nhan-vien/:id" element={<UpdateManager />} />
         <Route path="/cap-nhat-tour/:id" element={<UpdateTour />} />
         <Route path="/quan-li-tour" element={<TourListTable />} />
+        <Route path="/quan-li-ve" element={<ManageTickets />} />
+        <Route path="/quan-li-ve-tour/:id" element={<ManageTicketsTour />} />
       </Routes>
       {state.openForm && <BookingForm />}
       {state.showNotify && <OrderSuccessfully />}

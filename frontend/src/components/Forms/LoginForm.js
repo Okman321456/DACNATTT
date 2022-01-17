@@ -23,14 +23,22 @@ function LoginForm(props) {
         const res = await APIClient.login(data);
         console.log(res)
         localStorage.setItem("token",res.token);
-        if (res.permission == 'admin') {
-            console.log(localStorage.getItem("token"));
-            dispatch(actions.setLogin('admin'));
+        const account = {
+            role: res.permission,
+            name: res.name
+        }
+        if (res.permission === 'admin') {
+            console.log(res.permission);
+            dispatch(actions.setLogin(account));
+            console.log(state.account);
             navigate('/quan-li-nhan-vien');
         }
-        if (res.permission == 'manage') {
-            console.log(localStorage.getItem("token"));
-            dispatch(actions.setLogin('manager'));
+
+        if (res.permission === 'manage') {
+            dispatch(actions.setLogin({
+                role: res.permission,
+                name: res.name
+            }));
             navigate('/quan-li-tour');
         }
         reset();

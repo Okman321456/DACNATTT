@@ -42,7 +42,7 @@ const updateUserById = async(userId, updateBody) => {
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
     }
-    if (updateBody.email && (await User.isEmailTaken(updateBody.email))) {
+    if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exists')
     }
     Object.assign(user, updateBody)

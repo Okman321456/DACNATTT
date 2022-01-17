@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 import { Container, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import TourCard from '../components/TourCard/TourCard';
 import { Divider } from '@material-ui/core';
-import RegardPrice from '../components/RegardPrice/RegardPrice';
 import APIClient from '../APIs/APIClient';
 import { useStore, actions } from '../store';
 
@@ -20,18 +18,18 @@ function TourList({ region, url }) {
     const { search } = useLocation();
     let searchParagram = new URLSearchParams(search);
     let pageIni = searchParagram.get("page") ? searchParagram.get("page").toString() : 1;
-    console.log("page: ", pageIni);
+
     let sortBy = searchParagram.get("sortBy") ? searchParagram.get("sortBy").toString() : "";
     let urltem = window.location.href;
     const [sort, setSort] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [load, onLoad] = React.useState(false);
     const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni));
+    console.log(pageIni)
     const [data, setData] = React.useState();
     const [newsList, setNewsList] = React.useState();
 
     const paramURL = { page: pageIni, sortBy };
-    console.log("param", paramURL)
 
     const handleChangePage = (event, value) => {
         setPageNumber(value);
@@ -45,8 +43,10 @@ function TourList({ region, url }) {
         const newsList = await APIClient.getNewsList();
         setData(result);
         setNewsList(newsList);
+        setPageNumber(parseInt(pageIni));
         dispatch(actions.setLoading(false));
-    }, [load, urltem]);
+        console.log('test')
+    }, [load,urltem]);
 
     const handleChange = (event) => {
         navigate(`/${url}?page=${pageNumber}&sortBy=${event.target.value}`);

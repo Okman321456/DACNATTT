@@ -85,6 +85,26 @@ const deleteTour = (id)=>{
   return axiosClient.delete(url);
 }
 
+const checkLoginToken = ()=>{
+  const url = '/auth/getrole';
+  return axiosClient.get(url);
+}
+
+const getAllTicket = ()=>{
+  const url = 'tickets/listTicket';
+  return axiosClient.get(url);
+}
+
+const getListTicketsTour = (id)=>{
+  const url = `/tickets/tour/${id}`;
+  return axiosClient.get(url);
+}
+
+const updateStatusTicket = (id, idStatus)=>{
+  const url = `/tickets/${id}/${idStatus}`;
+  return axiosClient.put(url);
+}
+
 const APIClient ={
   getDataHomePage,
   getTourDetail,
@@ -102,7 +122,11 @@ const APIClient ={
   updateManager,
   sendFeedback,
   updateTour,
-  deleteTour
+  deleteTour,
+  checkLoginToken,
+  getAllTicket,
+  getListTicketsTour,
+  updateStatusTicket
 }
 
 export default APIClient;

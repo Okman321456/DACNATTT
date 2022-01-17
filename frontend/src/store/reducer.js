@@ -4,7 +4,10 @@ const initialState = {
     openForm: false,
     showNotify: false,
     search:'',
-    role:'user',
+    account: {
+        role:'user',
+        name:'',
+    },
     loading:false,
 }
 
@@ -33,7 +36,7 @@ function reducer(state, action){
         case LOGIN:
             return {
                 ...initialState,
-                role: action.payload
+                account: action.payload
             };    
         case LOADING:
             return {
