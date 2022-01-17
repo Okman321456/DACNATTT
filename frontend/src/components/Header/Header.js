@@ -1,24 +1,25 @@
-import * as React from 'react';
+import { TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { SearchOutlined } from '@material-ui/icons';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
+import { MenuList, Paper } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import MenuIcon from '@mui/icons-material/Menu';
-import WorkOutlineOutlinedIcon from '@mui/icons-material/WorkOutlineOutlined';
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
-import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import { SearchOutlined } from '@material-ui/icons';
-import { TextField } from '@material-ui/core';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import { MenuList, Paper } from '@mui/material';
-import logo from '../image/logoBootcamp.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { useStore, actions } from '../../store';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import * as React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { actions, useStore } from '../../store';
+import logo from '../image/logoBootcamp.png';
 
 const pagesUser = [{
     title: 'TRANG CHỦ',
@@ -59,7 +60,7 @@ const pagesManager = [
     },
     {
         title: 'QUẢN LÍ VÉ',
-        path: '/them-nhan-vien'
+        path: '/quan-li-ve'
     },
 ];
 
@@ -106,11 +107,12 @@ const Header = () => {
     const classes = useStyles();
     const [state, dispatch] = useStore();
     // let menuList;
-    React.useEffect(()=>{
-        if (state.role == 'admin') menuList = pagesAdmin;
-        if (state.role == 'user') menuList = pagesUser;
-        if (state.role == 'manager') menuList = pagesManager;
-    },[state.role]);
+    // React.useEffect(()=>{
+    if (state.account.role == 'admin') menuList = pagesAdmin;
+    if (state.account.role == 'user') menuList = pagesUser;
+    if (state.account.role == 'manage') menuList = pagesManager;
+    console.log(state.account.role)
+    // },[state.role]);
 
     const [openSideBar, setOpenSideBar] = React.useState(false);
     const [searchBox, setSearchBox] = React.useState(false);
@@ -159,17 +161,21 @@ const Header = () => {
         }
     }
 
-    const handleToggleLogin = async () => {
+    const handleSwitchLoginPage = async () => {
         // console.log(localStorage.getItem("token"));
-        if (state.role == 'admin') {
-            dispatch(actions.setLogin('user'));
-            navigate('/');
-            const res = await axios.post(
-                'http://localhost:3001/auth/logout'
-            )
-        } else {
-            navigate('/dang-nhap')
-        }
+        navigate('/dang-nhap');
+    }
+    const handleLogout = async () => {
+        dispatch(actions.setLogin({
+            role:'user',
+            name:''
+        }));
+        navigate('/');
+        console.log("logout manager")
+        const res = await axios.post(
+            'http://localhost:3001/auth/logout'
+        )
+        localStorage.removeItem("token");
     }
     return (
         <AppBar position="fixed" className={classes.root} style={{ height: `${nav.height}`, backgroundColor: `${nav.color}` }}>
@@ -220,23 +226,48 @@ const Header = () => {
                     </Box>
                     <ClickAwayListener onClickAway={handleClickCloseSearch}>
                         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'end', position: 'relative', width: '50px' }}>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                onClick={handleOpenSearchField}
-                                color="inherit"
-                            >
-                                <SearchOutlined style={{ color: 'black' }} />
-                            </IconButton>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                color="inherit"
-                                sx={{ display: { xs: 'none', md: 'inline-block' } }}
-                                onClick={handleToggleLogin}
-                            >
-                                <ManageAccountsOutlinedIcon style={{ color: 'black' }} />
-                            </IconButton>
+                            {
+                                state.account.role == "user" &&
+                                <IconButton
+                                    size="large"
+                                    aria-label="account of current user"
+                                    onClick={handleOpenSearchField}
+                                    color="inherit"
+                                >
+                                    <SearchOutlined style={{ color: 'gray' }} />
+                                </IconButton>
+                            }
+                            {
+                                state.account.role == "user" &&
+                                    <IconButton
+                                        size="large"
+                                        aria-label="account of current user"
+                                        color="inherit"
+                                        sx={{ display: { xs: 'none', md: 'inline-block' } }}
+                                        onClick={handleSwitchLoginPage}
+                                    >
+                                        <LoginIcon style={{ color: 'gray' }} />
+                                    </IconButton>
+                            }
+                            {
+                                state.account.role != "user" &&
+                                <div style={{color:'blue', display:'flex', alignItems:'center', marginRight:'10px'}}>
+                                    {`Xin chào, ${state.account.name}!`} &nbsp;
+                                    <AccountCircleIcon color='disabled' fontSize='large'/>
+                                    </div>
+                            }
+                            {
+                                state.account.role !="user" &&
+                                <IconButton
+                                    size="large"
+                                    aria-label="account of current user"
+                                    color="inherit"
+                                    sx={{ display: { xs: 'none', md: 'inline-block' } }}
+                                    onClick={handleLogout}
+                                >
+                                    <LogoutIcon style={{ color: 'gray' }} />
+                                </IconButton>
+                            }
                             <TextField
                                 id='search-field'
                                 component="div"

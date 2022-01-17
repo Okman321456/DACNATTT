@@ -66,8 +66,8 @@ const Feedback = ({list, handleSendFeedback}) => {
                                 defaultValue={fb.rating}
                                 getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
                                 precision={0.1}
-                                icon={<FavoriteIcon fontSize="inherit" color="error" />}
-                                emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                                icon={<FavoriteIcon fontSize="inherit" style={{color:'red'}}/>}
+                                emptyIcon={<FavoriteBorderIcon fontSize="inherit" style={{color:'red'}}/>}
                                 readOnly
                                 size="small"
                             />

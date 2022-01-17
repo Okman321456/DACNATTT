@@ -35,6 +35,9 @@ function Result(props) {
     })
     useEffect(async () => {
         dispatch(actions.setLoading(true));
+        setTimeout(()=>{
+            dispatch(actions.setLoading(false));
+        },5000);
         const result = await APIClient.getResultFilter(paramURL);
         const newsList = await APIClient.getNewsList();
         setData(result);
@@ -122,7 +125,7 @@ function Result(props) {
                                 <Divider style={{ margin: '5px 0' }} />
                             </Grid>
                         </Grid>
-                        : <h1> KHÔNG TÌM THẤY TOUR PHỤ HỢP </h1>
+                        : <h1> KHÔNG TÌM THẤY TOUR PHÙ HỢP </h1>
                     }
                 </Box>
             </Container>

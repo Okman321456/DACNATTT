@@ -24,11 +24,13 @@ axiosClient.interceptors.response.use(
     }
     if (statusCode === 401) {
       window.location.href = '/dang-nhap';
+      localStorage.removeItem("token")
       return;
     }
     if (statusCode === 403) {
       console.log("Forbidden");
       window.location.href = '/dang-nhap';
+      localStorage.removeItem("token")
       return;
     }
     if (statusCode === 500) {

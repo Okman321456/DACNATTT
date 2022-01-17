@@ -57,7 +57,8 @@ const viewAllTicket = async() => {
             phone: element.phone,
             tourName: element.idTour.name,
             numberPeople: element.numberPeople,
-            status: element.status
+            status: element.status,
+            createdAt: element.createdAt,
         })
     });
     return allTickets
@@ -98,7 +99,8 @@ const showTicketPerTour = async(idTour) => {
                phone: element.phone,
                tourName: element.idTour.name,
                numberPeople: element.numberPeople,
-               status: element.status
+               status: element.status,
+               createdAt: element.createdAt,
            })
        }
    });

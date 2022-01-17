@@ -39,7 +39,7 @@ export default function TourListTable() {
         onLoad(!load);
     };
     const handleClickDetail = (id) => {
-
+        navigate(`/quan-li-ve-tour/${id}`);
     }
     const handleChangePage = (event, value) => {
         setPageNumber(value);
@@ -47,7 +47,7 @@ export default function TourListTable() {
 
     return (
         <div className='list-manager' style={{ marginTop: '120px', padding: '0 50px' }}>
-            <h2>DANH SÁCH TOUR</h2>
+            {/* <h2>DANH SÁCH TOUR</h2> */}
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
                     <TableHead>
