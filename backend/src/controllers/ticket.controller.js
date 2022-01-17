@@ -57,26 +57,6 @@ const sortTicket = catchAsync(async(req, res) => {
     }
 })
 
-const showTicketPerPhone = catchAsync(async(req, res) => {
-    const ticket = await ticketService.showTicketPerPhone(req.params.phone)
-    if(ticket){
-        res.status(200).send(ticket)
-    }
-    else {
-        res.send('Ticket not Found!')
-    }
-})
-
-const showTicketPerDate = catchAsync(async(req, res) => {
-    const ticket = await ticketService.showTicketPerDate(req.params.date)
-    if(ticket){
-        res.status(200).send({tickets: ticket})
-    }
-    else {
-        res.send('Ticket not Found!')
-    }
-})
-
 module.exports = {
     bookTicket,
     viewDetailTicket,
@@ -85,7 +65,5 @@ module.exports = {
     updateTicketStatus,
     getTicketRegion,
     showTicketPerTour,
-    sortTicket,
-    showTicketPerPhone,
-    showTicketPerDate
+    sortTicket
 }
