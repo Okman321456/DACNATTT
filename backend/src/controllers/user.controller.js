@@ -1,8 +1,16 @@
 const catchAsync = require('../utils/catchAsync');
 const httpStatus = require('http-status');
 const { userService } = require('../services')
+const { userValidation } = require('../validations')
 
 const createUser = catchAsync(async(req, res) => {
+    const validation = await userValidation.validate(req.body)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     const user = await userService.createUser(req.body)
 
     res.status(httpStatus.CREATED).send(user)
@@ -28,6 +36,13 @@ const getUserById = catchAsync(async(req, res) => {
 })
 
 const updateUserById = catchAsync(async(req, res) => {
+    const validation = await userValidation.validate(req.body)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     const user = await userService.updateUserById(req.params.id, req.body)
 
     res.status(200).send(user)

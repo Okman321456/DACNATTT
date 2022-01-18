@@ -42,7 +42,6 @@ const tourSchema = Joi.object({
         .required(),
     imageUrl: Joi.string()
         .max(500)
-        .required()
 })
 
 module.exports = tourSchema

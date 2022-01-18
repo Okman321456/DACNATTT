@@ -8,10 +8,19 @@ const { tourService, newsService, feedbackService } = require('../services')
 const { tourValidation } = require('../validations')
 
 const createTour = catchAsync(async(req, res) => {
-    const tourBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const image = req.file ? { imageUrl: req.file.path } : {}
+    const tourBody = Object.assign(req.body, image)
     const validation = await tourValidation.validate(tourBody)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
+        if (req.file) {
+            fs.unlink(`${req.file.path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
         return res.status(httpStatus.BAD_REQUEST).send({
             message: errorMessage
         })
@@ -97,8 +106,9 @@ const getTourById = catchAsync(async(req, res) => {
     const tourData = await tourService.getTourById(req.params.tourId)
     const remainingAmount = await tourService.caculateRemainingAmount(req.params.tourId)
     const rating = await tourService.caculateRatingTour(req.params.tourId) || 0
-    const similarTour = await tourService.similarTourByTypePlace(req.params.tourId)
+    const similarTourData = await tourService.similarTourByTypePlace(req.params.tourId)
     const listFeedback = await feedbackService.showFeedbackPerTour(req.params.tourId)
+    const similarTour = await handleRatingTour(similarTourData)
     const tour = Object.assign(tourData._doc, { rating })
     if (!tour) {
         res.status(httpStatus.NOT_FOUND).send("Product not found")
@@ -111,19 +121,30 @@ const getTourById = catchAsync(async(req, res) => {
 })
 
 const updateTourById = catchAsync(async(req, res) => {
-    const tourData = await tourService.getTourById(req.params.tourId)
-    const path = tourData.imageUrl.slice(14)
-    fs.unlink(`./public/uploads/${path}`, (err) => {
-        if (err) {
-            console.error(err)
-            res.status(httpStatus.BAD_REQUEST).send({ error: err })
-        }
-    })
+    if (req.file) {
+        const tourData = await tourService.getTourById(req.params.tourId)
+        const path = tourData.imageUrl.slice(14)
+        fs.unlink(`./public/uploads/${path}`, (err) => {
+            if (err) {
+                console.error(err)
+                res.status(httpStatus.BAD_REQUEST).send({ error: err })
+            }
+        })
+    }
 
-    const tourBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const image = req.file ? { imageUrl: req.file.path } : {}
+    const tourBody = Object.assign(req.body, image)
     const validation = await tourValidation.validate(tourBody)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
+        if (req.file) {
+            fs.unlink(`${req.file.path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
         return res.status(httpStatus.BAD_REQUEST).send({
             message: errorMessage
         })

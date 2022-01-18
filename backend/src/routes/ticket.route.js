@@ -5,7 +5,7 @@ const ticketController = require('../controllers/ticket.controller')
 const router = express.Router();
 
 router.post('/book/:tourId', ticketController.bookTicket)
-router.get('/tour/:idTour', ticketController.showTicketPerTour)
+router.get('/tour/:idTour', auth('manage'), ticketController.showTicketPerTour)
 router.get('/detail/:ticketId', auth('admin', 'manage'), ticketController.viewDetailTicket)
 router.delete('/delete/:ticketId', auth('manage'), ticketController.deleteTicket)
 router.put('/updateStatus/:ticketId/:ticketStatus', auth('manage'), ticketController.updateTicketStatus)

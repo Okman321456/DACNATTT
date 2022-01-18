@@ -5,10 +5,19 @@ const { newsValidation } = require('../validations')
 const fs = require('fs')
 
 const createNews = catchAsync(async(req, res) => {
-    const newsBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const image = req.file ? { imageUrl: req.file.path } : {}
+    const newsBody = Object.assign(req.body, image)
     const validation = await newsValidation.validate(newsBody)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
+        if (req.file) {
+            fs.unlink(`${req.file.path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
         return res.status(httpStatus.BAD_REQUEST).send({
             message: errorMessage
         })
@@ -28,8 +37,6 @@ const getNewsByPage = catchAsync(async(req, res) => {
 })
 
 const getNewsById = catchAsync(async(req, res) => {
-    const validation = await newsValidation.getNews.validate(req.params.id)
-    if (validation.error) res.status(httpStatus.BAD_REQUEST).send(validation.error)
     const newsSingle = await newsService.getNewsById(req.params.id)
 
     if (!newsSingle) {
@@ -38,19 +45,30 @@ const getNewsById = catchAsync(async(req, res) => {
 })
 
 const updateNewsById = catchAsync(async(req, res) => {
-    const newsSingle = await newsService.getNewsById(req.params.id)
-    const path = newsSingle.imageUrl.slice(14)
-    fs.unlink(`./public/uploads/${path}`, (err) => {
-        if (err) {
-            console.error(err)
-            res.status(httpStatus.BAD_REQUEST).send({ error: err })
-        }
-    })
+    if (req.file) {
+        const newsSingle = await newsService.getNewsById(req.params.id)
+        const path = newsSingle.imageUrl.slice(14)
+        fs.unlink(`./public/uploads/${path}`, (err) => {
+            if (err) {
+                console.error(err)
+                res.status(httpStatus.BAD_REQUEST).send({ message: err })
+            }
+        })
+    }
 
-    const newsBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const image = req.file ? { imageUrl: req.file.path } : {}
+    const newsBody = Object.assign(req.body, image)
     const validation = await newsValidation.validate(newsBody)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
+        if (req.file) {
+            fs.unlink(`${req.file.path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
         return res.status(httpStatus.BAD_REQUEST).send({
             message: errorMessage
         })
