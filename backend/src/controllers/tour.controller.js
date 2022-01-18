@@ -175,7 +175,7 @@ const getTourRegion = (regionId) => async(req, res) => {
                 typeSort = { priceDis: 1 }
                 break
             case 'price-dec':
-                typeSort = { priceDis: 1 }
+                typeSort = { priceDis: -1 }
                 break
             case 'name-asc':
                 typeSort = { name: 1 }
@@ -189,8 +189,7 @@ const getTourRegion = (regionId) => async(req, res) => {
     } else res.status(httpStatus.NOT_FOUND).send('Invalid query params')
     const toursData = await tourService.getTourRegion(regionId, perPage, page, search, typeSort)
     const tours = await handleRatingTour(toursData)
-    if (search == '') totalTourRegion = await tourService.countTourRegion(regionId)
-    else totalTourRegion = await tourService.countTourSearchRegion(regionId, search)
+    totalTourRegion = await tourService.countTourRegion(regionId, search)
     if (totalTourRegion == 0) {
         res.status(httpStatus.NOT_FOUND).send("Tour region not found")
     } else res.status(200).json({ tours, totalTourRegion })

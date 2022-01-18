@@ -44,20 +44,31 @@ const filterTour = async(regionId, typePlace, max, min, disValue, search, perPag
 }
 
 const countTourFilter = async(regionId, typePlace, max, min, disValue, search) => {
-    const tours = Tour
+    const tours = await Tour
         .aggregate([{
-            "$match": {
-                region: {
-                    "$in": regionId
-                },
-                typePlace: {
-                    "$in": typePlace
-                },
-                price: { $gte: min, $lte: max },
-                name: { $regex: new RegExp(search, "i") },
-                discount: { $gte: disValue[0], $lte: disValue[1] }
+                "$addFields": {
+                    "priceDis": {
+                        "$subtract": [
+                            "$price",
+                            { "$multiply": ["$price", "$discount"] }
+                        ]
+                    }
+                }
+            },
+            {
+                "$match": {
+                    region: {
+                        "$in": regionId
+                    },
+                    typePlace: {
+                        "$in": typePlace
+                    },
+                    "priceDis": { $gte: min, $lte: max },
+                    name: { $regex: new RegExp(search, "i") },
+                    discount: { $gte: disValue[0], $lte: disValue[1] }
+                }
             }
-        }])
+        ])
     return (await tours).length
 }
 
@@ -65,8 +76,22 @@ const getMinMaxPrice = async() => {
     return await Tour.aggregate([{
         "$group": {
             "_id": null,
-            "max": { "$max": "$price" },
-            "min": { "$min": "$price" }
+            "max": {
+                "$max": {
+                    "$subtract": [
+                        "$price",
+                        { "$multiply": ["$price", "$discount"] }
+                    ]
+                }
+            },
+            "min": {
+                "$min": {
+                    "$subtract": [
+                        "$price",
+                        { "$multiply": ["$price", "$discount"] }
+                    ]
+                }
+            }
         }
     }])
 }
@@ -100,11 +125,8 @@ const deleteTourById = async(id) => {
 }
 
 /* Get tour region*/
-const countTourRegion = async(regionId) => {
-    return await Tour.find({ region: regionId }).count()
-}
 
-const countTourSearchRegion = async(regionId, searchString) => {
+const countTourRegion = async(regionId, searchString) => {
     return await Tour
         .find({
             region: regionId,
@@ -148,16 +170,19 @@ const getTourRegion = async(regionId, perPage, page, searchString, typeSort) => 
         .limit(perPage)
 }
 
-//name: { $regex: searchString }
-// description: { $regex: new RegExp(searchString, "i") }
-
 const similarTourByTypePlace = async(id) => {
+    const similarTour = []
     const tourData = await Tour.find({ _id: id })
-    return await Tour
-        .find({
-            _id: { $ne: id },
-            typePlace: tourData[0].typePlace
-        })
+    const tours = await Tour
+        .aggregate([{
+            "$match": {
+                typePlace: tourData[0].typePlace
+            }
+        }])
+    tours.forEach(tour => {
+        if (tour._id != id) similarTour.push(tour)
+    })
+    return await similarTour
 }
 
 /* get average rating tour */
@@ -180,7 +205,6 @@ module.exports = {
     deleteTourById,
     getTourRegion,
     countTourRegion,
-    countTourSearchRegion,
     caculateRemainingAmount,
     countTourFilter,
     filterTour,
