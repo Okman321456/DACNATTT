@@ -69,7 +69,7 @@ const filterTour = catchAsync(async(req, res) => {
     const minmaxPrice = await minmaxValue()
     let page = parseInt(req.query.page) || 1;
     let search = req.query.search || ''
-    let typePlace = req.query.type || configFilter.typePlace
+    let typePlace = !![req.query.type][0] ? [req.query.type] : configFilter.typePlace
     let minPrice = parseInt(req.query.min) || minmaxPrice.min
     let maxPrice = parseInt(req.query.max) || minmaxPrice.max
     let discount = req.query.dis || false
@@ -78,17 +78,16 @@ const filterTour = catchAsync(async(req, res) => {
     if (req.query.region) {
         switch (req.query.region) {
             case 'bac':
-                regionId = 1
+                regionId = [1]
                 break
             case 'trung':
-                regionId = 2
+                regionId = [2]
                 break
             case 'nam':
-                regionId = 3
+                regionId = [3]
                 break
         }
     } else regionId = configFilter.regionId
-
     const toursData = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, disValue, search, perPage, page)
     const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice, disValue, search)
     const tours = await handleRatingTour(toursData)
@@ -165,7 +164,7 @@ const deleteTourById = catchAsync(async(req, res) => {
 /*Get tour region */
 const getTourRegion = (regionId) => async(req, res) => {
     const perPage = 6
-    var ObjSort = {}
+    var typeSort
     let totalTourRegion = 0
     let page = parseInt(req.query.page) || 1
     let search = req.query.search || ''
@@ -173,21 +172,22 @@ const getTourRegion = (regionId) => async(req, res) => {
     if (sortConstant.includes(sortBy)) {
         switch (sortBy) {
             case 'price-asc':
-                ObjSort = { price: 1 }
+                typeSort = { priceDis: 1 }
                 break
             case 'price-dec':
-                ObjSort = { price: -1 }
+                typeSort = { priceDis: 1 }
                 break
             case 'name-asc':
-                ObjSort = { name: 1 }
+                typeSort = { name: 1 }
                 break
             case 'name-dec':
-                ObjSort = { name: -1 }
+                typeSort = { name: -1 }
                 break
+            default:
+                typeSort = { name: 1 }
         }
     } else res.status(httpStatus.NOT_FOUND).send('Invalid query params')
-
-    const toursData = await tourService.getTourRegion(regionId, perPage, page, search, ObjSort)
+    const toursData = await tourService.getTourRegion(regionId, perPage, page, search, typeSort)
     const tours = await handleRatingTour(toursData)
     if (search == '') totalTourRegion = await tourService.countTourRegion(regionId)
     else totalTourRegion = await tourService.countTourSearchRegion(regionId, search)
