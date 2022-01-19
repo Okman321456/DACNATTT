@@ -7,6 +7,7 @@ const handleRatingTour = require('../utils/handleRatingTour')
 const { tourService, newsService, feedbackService } = require('../services')
 const { tourValidation, tourParamsValidation } = require('../validations')
 
+/* create new tour */
 const createTour = catchAsync(async(req, res) => {
     const image = req.file ? { imageUrl: req.file.path } : {}
     const tourBody = Object.assign(req.body, image)
@@ -30,6 +31,8 @@ const createTour = catchAsync(async(req, res) => {
     res.status(httpStatus.CREATED).send(tour)
 })
 
+
+/* get tour page home */
 const outstandingTour = catchAsync(async(req, res) => {
     const tours = await tourService.getAllTour();
     const minmaxPrice = await minmaxValue()
@@ -55,6 +58,7 @@ const outstandingTour = catchAsync(async(req, res) => {
         })
 })
 
+/* get min max price in list tour */
 const minmaxValue = async() => {
     const arrayMinMax = await tourService.getMinMaxPrice()
     return {
@@ -63,6 +67,7 @@ const minmaxValue = async() => {
     }
 }
 
+/* filter tour with query parameter (region, typePlace, minmaxPrice, discount, search data)*/
 const filterTour = catchAsync(async(req, res) => {
     const perPage = 6;
     var regionId, disValue
@@ -101,6 +106,7 @@ const filterTour = catchAsync(async(req, res) => {
         });
 })
 
+/* get all information in page tour detail */
 const getTourById = catchAsync(async(req, res) => {
     const validation = await tourParamsValidation.validate(req.params)
     if (validation.error) {
@@ -129,6 +135,8 @@ const getTourById = catchAsync(async(req, res) => {
     });
 })
 
+
+/* update tour detail with params id */
 const updateTourById = catchAsync(async(req, res) => {
     const validationParams = await tourParamsValidation.validate(req.params)
     if (validationParams.error) {
@@ -175,6 +183,8 @@ const updateTourById = catchAsync(async(req, res) => {
     res.status(200).send(tour)
 })
 
+
+/* delete tour detail by params id */
 const deleteTourById = catchAsync(async(req, res) => {
     const validationParams = await tourParamsValidation.validate(req.params)
     if (validationParams.error) {
@@ -199,7 +209,7 @@ const deleteTourById = catchAsync(async(req, res) => {
     res.status(httpStatus.NO_CONTENT).send()
 })
 
-/*Get tour region */
+/*Get tour region (sort by name and price)*/
 const getTourRegion = (regionId) => async(req, res) => {
     const perPage = 6
     var typeSort

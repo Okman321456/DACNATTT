@@ -9,10 +9,13 @@ const ApiError = require('../utils/ApiError');
 const { userService } = require('../services')
 const { authValidation } = require('../validations')
 
+
+/* define options expires token */
 const options = {
     expiresIn: `${process.env.JWT_ACCESS_EXPIRATION_MINUTES}m`,
 };
 
+/* handle login with email and pass */
 const login = catchAsync(async(req, res) => {
     if (!validator.isEmail(req.body.email)) {
         res.status(httpStatus.BAD_REQUEST).send('Email không hợp lệ!')
@@ -44,6 +47,8 @@ const login = catchAsync(async(req, res) => {
     }
 })
 
+
+/* handle logout */
 const logout = catchAsync(async(req, res) => {
     localStorage.removeItem('token')
     return res
@@ -52,8 +57,8 @@ const logout = catchAsync(async(req, res) => {
         .json({ message: "Log out Successfully" });
 })
 
+/* get role for account */
 const getRole = catchAsync(async(req, res) => {
-
     if (!req.role) res.status(httpStatus.FORBIDDEN).send("Forbidden")
     res.status(200).json({
         role: req.role,

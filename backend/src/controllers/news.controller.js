@@ -4,6 +4,8 @@ const { newsService } = require('../services')
 const { newsValidation } = require('../validations')
 const fs = require('fs')
 
+
+/* create new news */
 const createNews = catchAsync(async(req, res) => {
     const image = req.file ? { imageUrl: req.file.path } : {}
     const newsBody = Object.assign(req.body, image)
@@ -26,6 +28,7 @@ const createNews = catchAsync(async(req, res) => {
     res.status(httpStatus.CREATED).send(news)
 })
 
+/* get all news */
 const getNewsByPage = catchAsync(async(req, res) => {
     const perPage = 6;
     let page = parseInt(req.query.page) || 1;
@@ -36,6 +39,8 @@ const getNewsByPage = catchAsync(async(req, res) => {
     } else res.status(200).json({ news, totalNews })
 })
 
+
+/* get news detail by params id */
 const getNewsById = catchAsync(async(req, res) => {
     const newsSingle = await newsService.getNewsById(req.params.id)
 
@@ -44,6 +49,7 @@ const getNewsById = catchAsync(async(req, res) => {
     } else res.send(newsSingle);
 })
 
+/* update news detail by params id*/
 const updateNewsById = catchAsync(async(req, res) => {
     if (req.file) {
         const newsSingle = await newsService.getNewsById(req.params.id)
@@ -83,6 +89,8 @@ const updateNewsById = catchAsync(async(req, res) => {
     res.status(200).send(news)
 })
 
+
+/* delete news by params id */
 const deleteNewsById = catchAsync(async(req, res) => {
     const newsData = await newsService.getNewsById(req.params.id)
     if (!newsData) {
