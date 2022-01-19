@@ -1,6 +1,7 @@
 require('dotenv').config()
 const httpStatus = require('http-status');
 const jwt = require('jsonwebtoken')
+const validator = require('validator')
 var localStorage = require('localStorage')
 
 const catchAsync = require('../utils/catchAsync');
@@ -13,6 +14,9 @@ const options = {
 };
 
 const login = catchAsync(async(req, res) => {
+    if (!validator.isEmail(req.body.email)) {
+        res.status(httpStatus.BAD_REQUEST).send('Email không hợp lệ!')
+    }
     const validation = await authValidation.validate(req.body)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message

@@ -5,7 +5,7 @@ const sortConstant = require('../config/sortConstant')
 const catchAsync = require('../utils/catchAsync')
 const handleRatingTour = require('../utils/handleRatingTour')
 const { tourService, newsService, feedbackService } = require('../services')
-const { tourValidation } = require('../validations')
+const { tourValidation, tourParamsValidation } = require('../validations')
 
 const createTour = catchAsync(async(req, res) => {
     const image = req.file ? { imageUrl: req.file.path } : {}
@@ -102,7 +102,17 @@ const filterTour = catchAsync(async(req, res) => {
 })
 
 const getTourById = catchAsync(async(req, res) => {
+    const validation = await tourParamsValidation.validate(req.params)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     const tourData = await tourService.getTourById(req.params.tourId)
+    if (!tourData) {
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
+    }
     const remainingAmount = await tourService.caculateRemainingAmount(req.params.tourId)
     const rating = await tourService.caculateRatingTour(req.params.tourId) || 0
     const similarTourData = await tourService.similarTourByTypePlace(req.params.tourId)
@@ -110,7 +120,7 @@ const getTourById = catchAsync(async(req, res) => {
     const similarTour = await handleRatingTour(similarTourData)
     const tour = Object.assign(tourData._doc, { rating })
     if (!tour) {
-        res.status(httpStatus.NOT_FOUND).send("Product not found")
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
     } else res.status(200).json({
         tour,
         remainingAmount,
@@ -120,15 +130,24 @@ const getTourById = catchAsync(async(req, res) => {
 })
 
 const updateTourById = catchAsync(async(req, res) => {
+    const validationParams = await tourParamsValidation.validate(req.params)
+    if (validationParams.error) {
+        const errorMessage = validationParams.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     if (req.file) {
         const tourData = await tourService.getTourById(req.params.tourId)
-        const path = tourData.imageUrl.slice(14)
-        fs.unlink(`./public/uploads/${path}`, (err) => {
-            if (err) {
-                console.error(err)
-                res.status(httpStatus.BAD_REQUEST).send({ error: err })
-            }
-        })
+        if (tourData.imageUrl) {
+            const path = tourData.imageUrl.slice(14)
+            fs.unlink(`./public/uploads/${path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ error: err })
+                }
+            })
+        }
     }
 
     const image = req.file ? { imageUrl: req.file.path } : {}
@@ -157,6 +176,25 @@ const updateTourById = catchAsync(async(req, res) => {
 })
 
 const deleteTourById = catchAsync(async(req, res) => {
+    const validationParams = await tourParamsValidation.validate(req.params)
+    if (validationParams.error) {
+        const errorMessage = validationParams.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+    const tourData = await tourService.getTourById(req.params.tourId)
+    if (!tourData) {
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
+    }
+    if (tourData.imageUrl) {
+        fs.unlink(`${tourData.imageUrl}`, (err) => {
+            if (err) {
+                console.error(err)
+                res.status(httpStatus.BAD_REQUEST).send({ message: err })
+            }
+        })
+    }
     await tourService.deleteTourById(req.params.tourId)
     res.status(httpStatus.NO_CONTENT).send()
 })

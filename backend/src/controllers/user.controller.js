@@ -1,9 +1,13 @@
-const catchAsync = require('../utils/catchAsync');
-const httpStatus = require('http-status');
+const catchAsync = require('../utils/catchAsync')
+const httpStatus = require('http-status')
+const validator = require('validator')
 const { userService } = require('../services')
 const { userValidation } = require('../validations')
 
 const createUser = catchAsync(async(req, res) => {
+    if (!validator.isEmail(req.body.email)) {
+        res.status(httpStatus.BAD_REQUEST).send('Email không hợp lệ!')
+    }
     const validation = await userValidation.validate(req.body)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
@@ -36,6 +40,9 @@ const getUserById = catchAsync(async(req, res) => {
 })
 
 const updateUserById = catchAsync(async(req, res) => {
+    if (!validator.isEmail(req.body.email)) {
+        res.status(httpStatus.BAD_REQUEST).send('Email không hợp lệ!')
+    }
     const validation = await userValidation.validate(req.body)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
