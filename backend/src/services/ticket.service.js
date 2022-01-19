@@ -52,12 +52,14 @@ const viewAllTicket = async() => {
     const ticket = await Ticket.find().populate({path: 'idTour'})
     ticket.forEach(element => {
         allTickets.push({
+          id: element._id,
             email: element.email,
             name: element.name,
             phone: element.phone,
             tourName: element.idTour.name,
             numberPeople: element.numberPeople,
-            status: element.status
+            status: element.status,
+            createdAt: element.createdAt,
         })
     });
     return allTickets
@@ -98,7 +100,8 @@ const showTicketPerTour = async(idTour) => {
                phone: element.phone,
                tourName: element.idTour.name,
                numberPeople: element.numberPeople,
-               status: element.status
+               status: element.status,
+               createdAt: element.createdAt,
            })
        }
    });
@@ -109,6 +112,21 @@ const sortTicket = async() => {
     return await Ticket.find().sort({createdAt: -1})
 }
 
+const showTicketPerPhone = async(phone) => {
+  return await Ticket.findOne({phone: phone});
+}
+
+const showTicketPerDate = async(date) => {
+  const result = []
+  const tickets = await Ticket.find();
+  tickets.forEach(element => {
+    if(JSON.stringify(element.createdAt).substring(1, 11) == date){
+      result.push(element)
+    }
+  })
+  return result
+}
+
 module.exports = {
     bookTicket,
     viewDetailTicket,
@@ -117,5 +135,7 @@ module.exports = {
     updateTicketStatus,
     getTicketRegion,
     showTicketPerTour,
-    sortTicket
+    sortTicket,
+    showTicketPerPhone,
+    showTicketPerDate
 }

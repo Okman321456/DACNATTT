@@ -106,6 +106,7 @@ function TourDetail(props) {
         dispatch(actions.setLoading(true));
         // const result = await APIClient.getTourDetail(id) 
         const result = await axios(`http://localhost:3001/tour/${id}`);
+        console.log("test")
         setData(result.data);
         dispatch(actions.setLoading(false));
     }, [load]);
@@ -175,11 +176,11 @@ function TourDetail(props) {
                                 <Typography gutterBottom component="div" variant="body1" align="left">
                                     <StyledRating
                                         name="customized-color"
-                                        value={data.rating}
+                                        value={data.tour.rating}
                                         getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
                                         precision={0.1}
-                                        icon={<FavoriteIcon fontSize="inherit" color="error"/>}
-                                        emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                                        icon={<FavoriteIcon fontSize="inherit" style={{color:'red'}}/>}
+                                        emptyIcon={<FavoriteBorderIcon fontSize="inherit" style={{color:'red'}}/>}
                                         readOnly
                                         size="medium"
                                     />
@@ -219,6 +220,7 @@ function TourDetail(props) {
                                 {
                                     data.similarTour.map((info, index) => (
                                         <TourCard
+                                        // rating={info.rating}
                                             load={load}
                                             onLoad={onLoad}
                                             link={`/tour/${info._id}`}

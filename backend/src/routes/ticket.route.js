@@ -12,5 +12,7 @@ router.put('/updateStatus/:ticketId/:ticketStatus', auth('manage'), ticketContro
 router.get('/listTicket', auth('admin', 'manage'), ticketController.viewAllTicket)
 router.get('/region/:idRegion', ticketController.getTicketRegion)
 router.get('/sort', ticketController.sortTicket)
+router.get("/phone/:phone", ticketController.showTicketPerPhone);
+router.get("/date/:date", ticketController.showTicketPerDate);
 
 module.exports = router;

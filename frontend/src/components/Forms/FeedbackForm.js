@@ -70,8 +70,8 @@ function FeedbackForm({handleSendFeedback}) {
                                     getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
                                     precision={1}
                                     value={rating}
-                                    icon={<FavoriteIcon fontSize="inherit" color="error" />}
-                                    emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                                    icon={<FavoriteIcon fontSize="inherit" color="error" style={{color:'red'}}/>}
+                                    emptyIcon={<FavoriteBorderIcon fontSize="inherit" style={{color:'red'}}/>}
                                     onChange={(e,newValue) => {
                                         field.onChange(newValue)
                                         setRating(newValue)
