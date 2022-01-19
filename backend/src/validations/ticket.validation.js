@@ -2,11 +2,10 @@ const Joi = require('joi');
 
 const ticketSchema = Joi.object({
     name: Joi.string()
-        .alphanum()
         .min(3)
         .max(30)
         .required(),
-    
+
     phone: Joi.string()
         .alphanum()
         .min(3)
@@ -19,7 +18,7 @@ const ticketSchema = Joi.object({
         .max(5),
 
     email: Joi.string()
-        .email({allowFullyQualified: true})
+        .email({ allowFullyQualified: true })
         .required()
 })
 

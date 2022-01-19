@@ -8,7 +8,6 @@ const authSchema = Joi.object({
         .required(),
     password: Joi.string()
         .min(5)
-        .max(32)
         .required()
 })
 
