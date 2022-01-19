@@ -1,10 +1,10 @@
-const {Feedback} = require('../models')
-const {feedbackValidation} = require('../validations')
+const { Feedback } = require('../models')
+const { feedbackValidation } = require('../validations')
 
 const createFeedback = async(idTour, feedbackBody) => {
     try {
         const validation = feedbackValidation.validate(feedbackBody)
-        if(!validation.error){
+        if (!validation.error) {
             const feedback = await Feedback.create({
                 idTour: idTour,
                 email: validation.value.email,
@@ -12,10 +12,8 @@ const createFeedback = async(idTour, feedbackBody) => {
                 comment: validation.value.comment
             })
             return feedback
-        }
-        else return null
-    }
-    catch (err) { 
+        } else return null
+    } catch (err) {
         console.log(err)
         return null
     }
@@ -27,10 +25,10 @@ const showListFeedback = async() => {
 }
 
 const showFeedbackPerTour = async(idTour) => {
-     const feedbackPerTour = []
-    const feedback = await Feedback.find().populate({path: 'idTour'})
+    const feedbackPerTour = []
+    const feedback = await Feedback.find().populate({ path: 'idTour' })
     feedback.forEach(element => {
-        if(element.idTour._id == idTour){
+        if (element.idTour._id == idTour) {
             feedbackPerTour.push({
                 email: element.email,
                 rating: element.rating,
@@ -42,7 +40,7 @@ const showFeedbackPerTour = async(idTour) => {
 }
 
 const deleteFeedback = async(idFeedback) => {
-    const res = await Feedback.deleteOne({ _id: idFeedback})
+    const res = await Feedback.deleteOne({ _id: idFeedback })
     return res.deletedCount
 }
 

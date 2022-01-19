@@ -5,17 +5,17 @@ const feedbackSchema = Joi.object({
         .min(5)
         .max(300)
         .required(),
-        
+
     idTour: Joi.string()
         .required(),
     rating: Joi.number()
         .integer()
-        .min(1)
+        .min(0)
         .max(5)
         .required(),
 
     email: Joi.string()
-        .email({allowFullyQualified: true})
+        .email({ allowFullyQualified: true })
         .required()
 })
 
