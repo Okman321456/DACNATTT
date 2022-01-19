@@ -27,6 +27,15 @@ const getAllTour = async() => {
 
 const filterTour = async(regionId, typePlace, max, min, disValue, search, perPage, page) => {
     return await Tour.aggregate([{
+            "$addFields": {
+                "priceDis": {
+                    "$subtract": [
+                        "$price",
+                        { "$multiply": ["$price", "$discount"] }
+                    ]
+                }
+            }
+        }, {
             "$match": {
                 region: {
                     "$in": regionId
@@ -34,7 +43,7 @@ const filterTour = async(regionId, typePlace, max, min, disValue, search, perPag
                 typePlace: {
                     "$in": typePlace
                 },
-                price: { $gte: min, $lte: max },
+                "priceDis": { $gte: min, $lte: max },
                 name: { $regex: new RegExp(search, "i") },
                 discount: { $gte: disValue[0], $lte: disValue[1] }
             }
