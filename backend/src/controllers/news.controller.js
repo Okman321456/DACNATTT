@@ -47,13 +47,15 @@ const getNewsById = catchAsync(async(req, res) => {
 const updateNewsById = catchAsync(async(req, res) => {
     if (req.file) {
         const newsSingle = await newsService.getNewsById(req.params.id)
-        const path = newsSingle.imageUrl.slice(14)
-        fs.unlink(`./public/uploads/${path}`, (err) => {
-            if (err) {
-                console.error(err)
-                res.status(httpStatus.BAD_REQUEST).send({ message: err })
-            }
-        })
+        if (tourData.imageUrl) {
+            const path = newsSingle.imageUrl.slice(14)
+            fs.unlink(`./public/uploads/${path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
     }
 
     const image = req.file ? { imageUrl: req.file.path } : {}
@@ -82,8 +84,20 @@ const updateNewsById = catchAsync(async(req, res) => {
 })
 
 const deleteNewsById = catchAsync(async(req, res) => {
+    const newsData = await newsService.getNewsById(req.params.id)
+    if (!newsData) {
+        res.status(httpStatus.NOT_FOUND).send("News not found")
+    }
+    if (newsData.imageUrl) {
+        fs.unlink(`${newsData.imageUrl}`, (err) => {
+            if (err) {
+                console.error(err)
+                res.status(httpStatus.BAD_REQUEST).send({ message: err })
+            }
+        })
+    }
     await newsService.deleteNewsById(req.params.id)
-    res.status(httpStatus.NO_CONTENT).send("News has been deleted")
+    res.status(httpStatus.NO_CONTENT).send()
 })
 
 

@@ -4,17 +4,15 @@ const { ticketService } = require('../services')
 const validator = require('validator')
 
 const bookTicket = catchAsync(async(req, res) => {
-    if(!validator.isEmail(req.body.email)){
-        res.json('Email không hợp lệ, hãy kiểm tra lại!')
-        return
+    if (!validator.isEmail(req.body.email)) {
+        res.status(httpStatus.BAD_REQUEST).json('Email không hợp lệ, hãy kiểm tra lại!')
     }
     const ticket = await ticketService.bookTicket(req.params.tourId, req.body)
-    if(ticket){
+    if (ticket) {
         res.status(httpStatus.CREATED).send(ticket)
+    } else {
+        res.status(httpStatus.BAD_REQUEST).json('Dữ liệu nhập vào chưa đầy đủ hoặc chưa chính xác, hãy kiểm tra lại!')
     }
-    else {
-        res.json('Dữ liệu nhập vào chưa đầy đủ hoặc chưa chính xác, hãy kiểm tra lại!')
-    } 
 })
 
 const viewDetailTicket = catchAsync(async(req, res) => {
@@ -24,7 +22,7 @@ const viewDetailTicket = catchAsync(async(req, res) => {
 
 const showTicketPerTour = catchAsync(async(req, res) => {
     const tickets = await ticketService.showTicketPerTour(req.params.idTour)
-    res.send({tickets})
+    res.send({ tickets })
 })
 
 const deleteTicket = catchAsync(async(req, res) => {
@@ -49,18 +47,17 @@ const getTicketRegion = catchAsync(async(req, res) => {
 
 const sortTicket = catchAsync(async(req, res) => {
     const tickets = await ticketService.sortTicket()
-    if(tickets){
+    if (tickets) {
         res.status(200).send(tickets)
-    }
-    else{
-        res.send('Ticket Not Found!')
+    } else {
+        res.status(httpStatus.NOT_FOUND).end('Ticket Not Found!')
     }
 })
 
 module.exports = {
     bookTicket,
     viewDetailTicket,
-    deleteTicket, 
+    deleteTicket,
     viewAllTicket,
     updateTicketStatus,
     getTicketRegion,
