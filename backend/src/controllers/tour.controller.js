@@ -31,7 +31,6 @@ const createTour = catchAsync(async(req, res) => {
     res.status(httpStatus.CREATED).send(tour)
 })
 
-
 /* get tour page home */
 const outstandingTour = catchAsync(async(req, res) => {
     const tours = await tourService.getAllTour();
@@ -47,9 +46,10 @@ const outstandingTour = catchAsync(async(req, res) => {
         return b.rating - a.rating;
     })
     for (let index = 0; index < 8; index++) {
-        outstandingTourTemp.push(await tourService.getTourById(arrayRating[index].id))
+        var tour = await tourService.getTourById(arrayRating[index].id)
+        outstandingTourTemp.push(Object.assign(tour._doc, { rating: arrayRating[index].rating }))
     }
-    const outstandingTour = await handleRatingTour(outstandingTourTemp)
+    const outstandingTour = outstandingTourTemp
     res.status(200)
         .json({
             outstandingTour,
