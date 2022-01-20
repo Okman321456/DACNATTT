@@ -20,6 +20,8 @@ const StyledRating = styled(Rating)({
 
 
 const styleForm = {
+    display:'flex',
+    marginTop:'20px',
     flexDirection: 'column',
     alignItems: 'start'
 }
@@ -43,7 +45,7 @@ function FeedbackForm({handleSendFeedback}) {
             <h3 style={{ fontWeight: 'bold', textAlign:'left'}}>GỬI ĐÁNH GIÁ</h3>
             <div className='form-box'>
                 <form action=" " onSubmit={handleSubmit(onHandleSubmit)}>
-                    <div className='form-group mb-2' style={styleForm}>
+                    <div className='form-group-fb mb-2' style={styleForm}>
                         <label style={{ margin: '5px 0', fontWeight: 'bold' }}>Email: </label>
                         <input 
                             {...register("email",
@@ -58,7 +60,7 @@ function FeedbackForm({handleSendFeedback}) {
                             placeholder='email...' />
                         {errors.email && <div className="alert">{errors.email.message}</div>}
                     </div>
-                    <div className="form-group mb-2" style={styleForm}>
+                    <div className="form-group-fb mb-2" style={styleForm}>
                         <Controller
                             name="rating"
                             control={control}
@@ -81,7 +83,7 @@ function FeedbackForm({handleSendFeedback}) {
                             )}
                         />
                     </div>
-                    <div className="form-group mb-2" style={styleForm}>
+                    <div className="form-group-fb mb-2" style={styleForm}>
                         <label style={{ margin: '5px 0', fontWeight: 'bold' }}>Comment </label>
                         <textarea
                             {...register("comment",
@@ -92,7 +94,7 @@ function FeedbackForm({handleSendFeedback}) {
                             placeholder='đánh giá...' />
                         {errors.comment && <div className="alert">{errors.comment.message}</div>}
                     </div>
-                    <div className="form-group mb-2">
+                    <div className="form-group-fb mb-2" style={{textAlign:'left', marginTop:'10px'}}>
                         <Button style={{backgroundColor:'orange'}} type='submit' variant="contained" endIcon={<ArrowForwardOutlinedIcon />}>
                             Gửi đánh giá
                         </Button>

@@ -31,7 +31,7 @@ function Filter({text, min, max ,load, onLoad}) {
     return (
         <div className='filter-box'>
             <Container>
-                <h1 style={{ margin: 0, marginBottom: '20px', fontFamily: "'Roboto Mono', monospace", fontWeight: 'initial', color: 'dimgray' }}>
+                <h1 style={{ margin: 0, marginBottom: '20px', fontFamily: "'Roboto Mono', monospace", fontWeight: 'initial', color: 'black' }}>
                     {text}
                 </h1>
                 <form action='' onSubmit={handleSubmit(onHandleSubmit)}>

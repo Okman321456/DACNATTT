@@ -25,27 +25,12 @@ import SpinnerLoading from './components/SpinnerLoading/SpinnerLoading';
 import APIClient from './APIs/APIClient';
 import ManageTickets from './page/ManageTickets';
 import ManageTicketsTour from './page/ManageTicketsTour';
+import StatisticPerMonth from './page/StatisticPerMonth';
 
 function App() {
   const [state, dispatch] = useStore();
-  useEffect(async () => {
-    console.log(state);
-    let token = localStorage.getItem("token");
-    console.log(token);
-    if (token) {
-      const info = await APIClient.checkLoginToken();
-      console.log("infor", info);
-      if (info.role == "admin" || info.role == "manage")
-        dispatch(actions.setLogin({
-          role: info.role,
-          name: info.name
-        }));
-      else dispatch(actions.setLogin({
-        role: "user",
-        name:''
-      }));
-    }
-  }, []);
+  
+
   return (
     <div className="App">
       <Header />
@@ -70,6 +55,7 @@ function App() {
         <Route path="/quan-li-tour" element={<TourListTable />} />
         <Route path="/quan-li-ve" element={<ManageTickets />} />
         <Route path="/quan-li-ve-tour/:id" element={<ManageTicketsTour />} />
+        <Route path="/thong-ke" element={<StatisticPerMonth />} />
       </Routes>
       {state.openForm && <BookingForm />}
       {state.showNotify && <OrderSuccessfully />}

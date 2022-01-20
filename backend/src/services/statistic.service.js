@@ -13,9 +13,8 @@ const showStatisticPerMonth = async(month) => {
         totalPrice += tickets[i].price * tickets[i].numberPeople
         data.push(tickets[i])
     }
-
-    return { data, totalPrice }
-}
+    return {data, totalPrice}
+} 
 
 module.exports = {
     showStatisticPerMonth

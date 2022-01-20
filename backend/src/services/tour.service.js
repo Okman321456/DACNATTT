@@ -113,6 +113,7 @@ const caculateRemainingAmount = async(id) => {
     const tour = await Tour.findById(id)
     let remainingAmount = tour.amount
     const ticket = await Ticket.find().populate({ path: 'idTour' })
+    console.log(ticket)
     ticket.forEach(element => {
         if (element.idTour._id == id) {
             remainingAmount -= element.numberPeople

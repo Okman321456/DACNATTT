@@ -28,7 +28,6 @@ axiosClient.interceptors.response.use(
       return;
     }
     if (statusCode === 403) {
-      console.log("Forbidden");
       window.location.href = '/dang-nhap';
       localStorage.removeItem("token")
       return;
@@ -37,7 +36,8 @@ axiosClient.interceptors.response.use(
       // show notification
       return;
     }
-    throw error;
+    // throw error;
+    return error;
   },
 );
 

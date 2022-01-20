@@ -25,3 +25,8 @@
     max-width: 500px;
     height: 30px;
 }
+.create-tour-formbody div label {
+    font-weight: bold;
+    color: cadetblue;
+    margin: 10px 0 5px 0;
+}

@@ -5,6 +5,7 @@ import { Button } from '@material-ui/core';
 import APIClient from '../../APIs/APIClient';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Alert from '../Notification/Alert';
 
 function UpdateManager(props) {
     let navigate = useNavigate();
@@ -19,21 +20,22 @@ function UpdateManager(props) {
     const [user, setUser] = useState();
     const { id } = useParams();
     useEffect(async () => {
-        const result = await APIClient.getManagerById(id)
+        const result = await APIClient.getManagerById(id);
         setUser(result);
     },[])
 
     const onHandleSubmit = async (data) => {
         const res = await APIClient.updateManager(id, data);
+        if(!res.response) Alert("success","Success! Cập nhật nhân viên thành công");
         navigate('/quan-li-nhan-vien')
     };
     return (
-        <div className='manager-form-wrapper' style={{ marginTop: '120px' }}>
+        <div className='manager-form-wrapper' style={{ marginTop: '90px' }}>
             {
                 user && <form action="" onSubmit={handleSubmit(onHandleSubmit)} className='manager-form-body'>
-                    <h4>THÔNG TIN QUẢN LÍ</h4>
+                    <h2>THÔNG TIN QUẢN LÍ</h2>
                     <div className='form-group mb-2'>
-                        <label className='label-title'>Tên quản lý: </label>
+                        <label className='label-title'>Tên quản lý (*): </label>
                         <input {...register("name", {
                             required: "* Vui lòng nhập quản lí",
                             maxLength: 50
@@ -43,7 +45,7 @@ function UpdateManager(props) {
                     </div>
                     {errors.name && <div className="alert">{errors.name.message}</div>}
                     <div className="form-group mb-2">
-                        <label className='label-title'>SĐT: </label>
+                        <label className='label-title'>SĐT (*): </label>
                         <input {...register("phone", {
                             required: "* Vui lòng nhập SĐT!",
                             maxLength: {
@@ -60,7 +62,7 @@ function UpdateManager(props) {
                     </div>
                     {errors.phone && <div className="alert">{errors.phone.message}</div>}
                     <div className="form-group mb-2">
-                        <label className='label-title'>Email: </label>
+                        <label className='label-title'>Email (*): </label>
                         <input {...register("email", {
                             required: "* Vui lòng nhập email!",
                             pattern: {
@@ -73,7 +75,7 @@ function UpdateManager(props) {
                     </div>
                     {errors.email && <div className="alert">{errors.email.message}</div>}
                     <div className="form-group mb-2">
-                        <label className='label-title'>Mật khẩu: </label>
+                        <label className='label-title'>Mật khẩu (*): </label>
                         <input type="password" {...register("password", {
                             required: "* Vui lòng nhập email!",
                             minLength: {
@@ -85,13 +87,12 @@ function UpdateManager(props) {
                                 message: "* Mật khẩu quá dài",
                             }
                         })}
-                            defaultValue={user.password}
                         />
                     </div>
                     {errors.password && <div className="alert">{errors.password.message}</div>}
                     <div className="form-group mb-2" style={{ justifyContent: 'center' }}>
-                        <div className="form-group mb-2">
-                            <Button type='submit' color="primary" variant="contained">Lưu</Button>
+                        <div className="form-group mb-2" style={{alignItems:'center'}}>
+                            <Button type='submit' color="primary" variant="contained" style={{width:'70px', backgroundColor:'orange'}}>Lưu</Button>
                         </div>
                     </div>
                 </form>
