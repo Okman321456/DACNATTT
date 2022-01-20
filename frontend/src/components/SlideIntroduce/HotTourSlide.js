@@ -108,8 +108,8 @@ function HotTourSlide({tourlist}) {
         <div className="hot-tour-slide-wrapper">
             <Container maxWidth="lg">
                 <div className="container-slide-hot-tour">
-                    <h2> TOUR ĐƯỢC ƯA THÍCH NHẤT</h2>
-                    <h4>ĐƠN GIẢN HÓA LỊCH TRÌNH KHÁM PHÁ</h4>
+                    <h2 style={{color:"black"}}> TOUR ĐƯỢC ƯA THÍCH NHẤT</h2>
+                    <h4 style={{color:"black"}}>ĐƠN GIẢN HÓA LỊCH TRÌNH KHÁM PHÁ</h4>
                     <Slider {...settings} style={{ padding: '30px'}}>
                         {
                             tourlist.map((info, index) => (

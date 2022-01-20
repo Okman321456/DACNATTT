@@ -8,7 +8,9 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const styleForm = {
     flexDirection: 'column',
-    alignItems: 'start'
+    alignItems: 'start',
+    textAlign:'left',
+    paddingTop:'10px'
 }
 function LoginForm(props) {
     let navigate = useNavigate();
@@ -21,16 +23,13 @@ function LoginForm(props) {
     } = useForm();
     const onHandleSubmit = async (data) => {
         const res = await APIClient.login(data);
-        console.log(res)
         localStorage.setItem("token",res.token);
         const account = {
             role: res.permission,
             name: res.name
         }
         if (res.permission === 'admin') {
-            console.log(res.permission);
             dispatch(actions.setLogin(account));
-            console.log(state.account);
             navigate('/quan-li-nhan-vien');
         }
 
@@ -45,11 +44,11 @@ function LoginForm(props) {
     };
     return (
         <div className='login-form-wrapper' style={{ marginTop: '120px' }}>
-            <h2 style={{ fontWeight: 'bold' }}>ĐĂNG NHẬP</h2>
+            <h2 style={{ fontWeight: 'bold', color:'orange', margin: '10px 0 auto'}}>ĐĂNG NHẬP</h2>
             <div className='form-box' style={{ maxWidth: '300px', margin: 'auto' }}>
                 <form action=" " onSubmit={handleSubmit(onHandleSubmit)}>
-                    <div className='form-group mb-2' style={styleForm}>
-                        <label style={{ margin: '5px 0', fontWeight: 'bold' }}>Email: </label>
+                    <div className='form-group-login mb-2' style={styleForm}>
+                        <label style={{ lineHeight:'30px    ', fontWeight: 'bold' }}>Email: </label>
                         <input {...register("email",
                             {
                                 required: "* Vui lòng nhập email",
@@ -62,8 +61,8 @@ function LoginForm(props) {
                             placeholder='email...' />
                         {errors.email && <div className="alert">{errors.email.message}</div>}
                     </div>
-                    <div className="form-group mb-2" style={styleForm}>
-                        <label style={{ margin: '5px 0', fontWeight: 'bold' }}>Mật khẩu: </label>
+                    <div className="form-group-login mb-2" style={styleForm}>
+                        <label style={{ lineHeight:'30px    ', fontWeight: 'bold' }}>Mật khẩu: </label>
                         <input
                             type="password"
                             {...register("password",
@@ -74,7 +73,7 @@ function LoginForm(props) {
                             placeholder='Mật khẩu...' />
                         {errors.password && <div className="alert">{errors.password.message}</div>}
                     </div>
-                    <div className="form-group mb-2">
+                    <div className="form-group-login mb-2" style={styleForm}>
                         <Button type='submit' variant="contained" endIcon={<ArrowForwardOutlinedIcon />}>
                             Đăng nhập
                         </Button>

@@ -1,6 +1,11 @@
 import {BOOK_TOUR, CLOSE_FORM, SHOW_NOTIFY, SEARCH, LOGIN, LOADING} from './constants'
 const initialState = {
-    tourID: 0,
+    tourInfo:{
+        id: 0,
+        name:'',
+        price: 0,
+        discount:0,
+    },
     openForm: false,
     showNotify: false,
     search:'',
@@ -15,11 +20,13 @@ function reducer(state, action){
     switch (action.type) {
         case BOOK_TOUR:
             return {
+                ...initialState,
                 openForm: true,
-                tourID:action.payload
+                tourInfo:action.payload
             };    
         case CLOSE_FORM:
             return {
+                ...initialState,
                 openForm: false,
                 tourID: 0
             };    

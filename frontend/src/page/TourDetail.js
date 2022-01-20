@@ -95,32 +95,36 @@ const ConvertToImageURL = (url) => {
 }
 function TourDetail(props) {
     const [state, dispatch] = useStore()
-    
+
     const classes = useStyles();
     const { id } = useParams();
     const [data, setData] = useState();
     const [load, onLoad] = useState();
-    
+
     useEffect(async () => {
         document.title = "Bootcamp Travel | Chi tiết";
         dispatch(actions.setLoading(true));
         // const result = await APIClient.getTourDetail(id) 
         const result = await axios(`http://localhost:3001/tour/${id}`);
-        console.log("test")
         setData(result.data);
         dispatch(actions.setLoading(false));
     }, [load]);
 
-    const handleOnClick = (_id) => {
-        dispatch(actions.setBookTour(_id));
+    const handleOnClick = (_id, name, price, discount) => {
+        dispatch(actions.setBookTour({
+            id: _id,
+            name,
+            price,
+            discount
+        }));
     }
-    const onHandleSendFeedback = async (data)=>{
+    const onHandleSendFeedback = async (data) => {
         const dataSubmit = {
             ...data,
             idTour: id,
         }
         onLoad(!load);
-        const res = await APIClient.sendFeedback(id,dataSubmit);
+        const res = await APIClient.sendFeedback(id, dataSubmit);
     }
     const settings = {
         className: classes.sliderContainer,
@@ -179,14 +183,18 @@ function TourDetail(props) {
                                         value={data.tour.rating}
                                         getLabelText={(value) => `${value} Heart${value !== 1 ? "s" : ""}`}
                                         precision={0.1}
-                                        icon={<FavoriteIcon fontSize="inherit" style={{color:'red'}}/>}
-                                        emptyIcon={<FavoriteBorderIcon fontSize="inherit" style={{color:'red'}}/>}
+                                        icon={<FavoriteIcon fontSize="inherit" style={{ color: 'red' }} />}
+                                        emptyIcon={<FavoriteBorderIcon fontSize="inherit" style={{ color: 'red' }} />}
                                         readOnly
                                         size="medium"
                                     />
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
                                     {`"${data.tour.description}"`}
+                                </Typography>
+                                <Typography gutterBottom variant="body1" component="div" align='left'>
+                                    <span style={{ color: 'darkblue' }}>Thời gian: </span>
+                                    {new Date(data.tour.timeStart.slice(0, 10)).toLocaleDateString("en-GB")} &#10137; {new Date(data.tour.timeEnd.slice(0, 10)).toLocaleDateString("en-GB")}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
                                     <span style={{ color: 'darkblue' }}>Khách sạn: </span>{data.tour.hotelName}
@@ -198,7 +206,7 @@ function TourDetail(props) {
                                     <span style={{ color: 'darkblue' }}>Số lượng còn: </span>{data.remainingAmount}
                                 </Typography>
                                 <Typography gutterBottom variant="button" component="div" align='left'>
-                                    <Button variant="contained" color="secondary" onClick={() => handleOnClick(data.tour._id)}>Đặt Tour</Button>
+                                    <Button variant="contained" color="secondary" onClick={() => handleOnClick(data.tour._id, data.tour.name, data.tour.price, data.tour.discount)}>Đặt Tour</Button>
                                 </Typography>
                                 <Divider style={{ margin: '10px 0' }} />
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
@@ -211,7 +219,7 @@ function TourDetail(props) {
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Grid>
-                            <Tabs detail={data.tour.schedule} feedback={data.listFeedback} onHandleSendFeedback={onHandleSendFeedback}/>
+                            <Tabs detail={data.tour.schedule} feedback={data.listFeedback} onHandleSendFeedback={onHandleSendFeedback} />
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Box sx={{ padding: '20px' }}>
@@ -220,7 +228,7 @@ function TourDetail(props) {
                                 {
                                     data.similarTour.map((info, index) => (
                                         <TourCard
-                                        // rating={info.rating}
+                                            rating={info.rating}
                                             load={load}
                                             onLoad={onLoad}
                                             link={`/tour/${info._id}`}

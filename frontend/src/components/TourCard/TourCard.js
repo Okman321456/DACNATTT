@@ -28,8 +28,14 @@ export default function TourCard({ _id, name, description, image, rating, price,
     const onMouseOut = () => setShadow(false);
     const [state, dispatch] = useStore();
 
-    const handleOnClick = (_id) => {
-        dispatch(actions.setBookTour(_id));
+    const handleOnClick = (_id, name, price, discount) => {
+        console.log(_id,name,price,discount)
+        dispatch(actions.setBookTour({
+            id: _id,
+            name,
+            price,
+            discount
+        }));
     }
     const handleLoad = () => {
         if (onLoad) onLoad(!load);
@@ -108,7 +114,7 @@ export default function TourCard({ _id, name, description, image, rating, price,
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="info" variant="outlined" onClick={() => handleOnClick(_id)}>Đặt</Button>
+                <Button size="small" color="info" variant="outlined" onClick={() => handleOnClick(_id, name, price, discount)}>Đặt</Button>
                 <Link to={link} style={{ textDecoration: 'none' }} onClick={handleLoad}><Button size="small" color="info" variant="outlined">Xem thêm</Button></Link>
             </CardActions>
         </Card>

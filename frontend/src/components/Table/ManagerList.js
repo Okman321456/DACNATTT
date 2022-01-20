@@ -9,16 +9,27 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import APIClient from '../../APIs/APIClient';
+import ConfirmDialog from '../Notification/ConfirmDialog';
 import { useNavigate } from 'react-router-dom';
+import Alert from '../Notification/Alert';
+import { useStore, actions } from '../../store';
 
 export default function ManagerList() {
     let navigate = useNavigate();
-    const [users, setUsers] = useState()
-    const [load, onLoad] = useState(true)
+    const [users, setUsers] = useState();
+    const [load, onLoad] = useState(true);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, content: '' });
+    const [state, dispatch] = useStore()
+
     useEffect(async () => {
+        dispatch(actions.setLoading(true));
+        setTimeout(()=>{
+            dispatch(actions.setLoading(false));
+        },5000);
         const result = await APIClient.getAllManager();
         console.log(result)
         setUsers(result);
+        dispatch(actions.setLoading(false));
     }, [load]);
 
     const handleUpdate = (id) => {
@@ -27,8 +38,9 @@ export default function ManagerList() {
     const handleDelete = async (id) => {
         let res = await APIClient.deleteManager(id);
         onLoad(!load);
+        setConfirmDialog({ isOpen: false, content: '' });
+        Alert("success", "Success! Xóa Thành công")
     };
-
     return (
         <div className='list-manager' style={{ marginTop: '120px', padding: '0 50px' }}>
             <h2>DANH SÁCH QUẢN LÝ</h2>
@@ -59,7 +71,13 @@ export default function ManagerList() {
                                 <TableCell align="center">
                                     <ButtonGroup variant="outlined" color='primary' size="small" aria-label="outlined button group">
                                         <Button size="small" onClick={() => handleUpdate(user._id)}>CẬP NHẬT</Button>
-                                        <Button size="small" onClick={() => handleDelete(user._id)} >XÓA</Button>
+                                        <Button size="small"
+                                            onClick={()=>setConfirmDialog({
+                                                isOpen: true,
+                                                content: 'Bạn có muốn xóa nhân viên này?',
+                                                onConfirm: () => { handleDelete(user._id) }
+                                            })}
+                                        >XÓA</Button>
                                     </ButtonGroup>
                                 </TableCell>
                             </TableRow>
@@ -67,6 +85,11 @@ export default function ManagerList() {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </div>
+            <ConfirmDialog
+                confirmDialog={confirmDialog}
+                setConfirmDialog={setConfirmDialog}
+            >
+            </ConfirmDialog>
+        </div >
     );
 }

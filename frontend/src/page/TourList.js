@@ -25,7 +25,7 @@ function TourList({ region, url }) {
     const [open, setOpen] = React.useState(false);
     const [load, onLoad] = React.useState(false);
     const [pageNumber, setPageNumber] = React.useState(parseInt(pageIni));
-    console.log(pageIni)
+
     const [data, setData] = React.useState();
     const [newsList, setNewsList] = React.useState();
 

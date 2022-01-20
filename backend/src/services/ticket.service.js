@@ -1,7 +1,7 @@
 const { Ticket } = require('../models')
 const { ticketValidation } = require('../validations')
 
-const bookTicket = async(id, ticketBody) => {
+const bookTicket = async (id, ticketBody) => {
     try {
         const validation = ticketValidation.validate(ticketBody)
         if (!validation.error) {
@@ -23,7 +23,7 @@ const bookTicket = async(id, ticketBody) => {
 
 }
 
-const viewDetailTicket = async(id) => {
+const viewDetailTicket = async (id) => {
     const ticketDetail = {}
     const ticket = await Ticket.findById(id)
     const ticketTour = await Ticket.findById(id).populate({ path: 'idTour' })
@@ -46,7 +46,7 @@ const deleteTicket = async(id) => {
     return res.deletedCount
 }
 
-const viewAllTicket = async() => {
+const viewAllTicket = async () => {
     let allTickets = []
     const ticket = await Ticket.find().populate({ path: 'idTour' })
     ticket.forEach(element => {
@@ -112,6 +112,7 @@ const showTicketPerTour = async(idTour, date, phone) => {
     return ticketPerTour
 }
 
+
 const sortTicket = async() => {
     return await Ticket.find().sort({ createdAt: -1 })
 }
@@ -155,6 +156,7 @@ const showTicketPerDate = async(date) => {
     })
     return result
 }
+
 
 module.exports = {
     bookTicket,

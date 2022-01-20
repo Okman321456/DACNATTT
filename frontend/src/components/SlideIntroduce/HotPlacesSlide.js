@@ -106,8 +106,8 @@ function HotPlacesSlide() {
     return (
         <Container maxWidth="lg" style={{marginTop:'90px'}}>
             <div className="container-slide-hot-place">
-                <h2> ĐIỂM ĐẾN KHÔNG THỂ BỎ QUA</h2>
-                <h4>CHIÊM NGƯỠNG TUYỆT TÁC THIÊN</h4>
+                <h2 style={{color:"black"}}> ĐIỂM ĐẾN KHÔNG THỂ BỎ QUA</h2>
+                <h4 style={{color:"black"}}>CHIÊM NGƯỠNG TUYỆT TÁC THIÊN</h4>
                 <Slider {...settings} style={{marginTop:'60px', padding:'0 30px'}}>
                     {
                         data.map((text, index) => (
