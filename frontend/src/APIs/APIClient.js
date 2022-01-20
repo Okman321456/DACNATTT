@@ -6,7 +6,6 @@ const getDataHomePage =  () => {
 };
 
 const getTourDetail = (id)=>{
-  // console.log(typeof id)
   const url = `/tour/${id}`;
   return axiosClient.get(url)
 }
@@ -100,9 +99,33 @@ const getListTicketsTour = (id)=>{
   return axiosClient.get(url);
 }
 
-const updateStatusTicket = (id, idStatus)=>{
-  const url = `/tickets/${id}/${idStatus}`;
+const updateStatusTicket = (idTicket, idStatus)=>{
+  const url = `/tickets/updateStatus/${idTicket}/${idStatus}`;
   return axiosClient.put(url);
+}
+
+const deleteTicket = (idTicket)=>{
+  const url = `/tickets/delete/${idTicket}`;
+  return axiosClient.delete(url);
+}
+
+const filterTicketsPerDate = (date)=>{
+  const url = `/tickets/date/${date}`;
+  return axiosClient.get(url);
+}
+
+const filterTicketsPerRegion = (idRegion)=>{
+  const url = `/tickets/region/${idRegion}`;
+  return axiosClient.get(url);
+}
+
+const getStatistic = (month)=>{
+  const url = `/statistic/${month}`;
+  return axiosClient.get(url);
+}
+const searchTicketByPhone = (phone)=>{
+  const url = `/tickets/phone/${phone}`;
+  return axiosClient.get(url);
 }
 
 const APIClient ={
@@ -126,7 +149,12 @@ const APIClient ={
   checkLoginToken,
   getAllTicket,
   getListTicketsTour,
-  updateStatusTicket
+  updateStatusTicket,
+  deleteTicket,
+  filterTicketsPerDate,
+  filterTicketsPerRegion,
+  getStatistic,
+  searchTicketByPhone,
 }
 
 export default APIClient;

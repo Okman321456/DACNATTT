@@ -1,9 +1,9 @@
 import { TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { SearchOutlined } from '@material-ui/icons';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import { MenuList, Paper } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import APIClient from '../../APIs/APIClient';
 import { actions, useStore } from '../../store';
 import logo from '../image/logoBootcamp.png';
 
@@ -48,6 +49,10 @@ const pagesAdmin = [
         title: 'THÊM NHÂN VIÊN',
         path: '/them-nhan-vien'
     },
+    {
+        title: 'THỐNG KÊ',
+        path: '/thong-ke'
+    },
 ];
 const pagesManager = [
     {
@@ -68,12 +73,14 @@ let menuList = [{
     title: 'QUẢN LÍ TOUR',
     path: '/admin'
 }];
-const pagesMenu = ['TRANG CHỦ', 'MIỀN BẮC', 'MIỀN TRUNG', 'MIỀN NAM', 'TIN TỨC', 'GIỚI THIỆU', 'ĐĂNG NHẬP', 'VALI CÁ NHÂN'];
 
 const useStyles = makeStyles({
     root: {
         overflow: 'visible',
         transition: '0.4s'
+    },
+    activeTab: {
+        color: 'orange'
     },
     item: {
         "&:hover": {
@@ -94,7 +101,7 @@ const paperStyle = {
     position: 'absolute',
     top: '0',
     left: '-24px',
-    backgroundColor: '#000000ba',
+    backgroundColor: 'darkslategrey',
     transition: '0.4s',
     overflow: 'hidden',
     height: '100vh',
@@ -102,24 +109,47 @@ const paperStyle = {
     zIndex: 1000,
 };
 
+const getCurrentUrl = (url) => {
+    const index_1 = url.indexOf("/", 8);
+    let index_2 = url.indexOf("/", index_1 + 1);
+    if (index_2 === -1) index_2 = url.indexOf("?", index_1 + 1);
+    if (index_2 === -1) return url.slice(index_1);
+    return url.slice(index_1, index_2);
+}
+
 const Header = () => {
     let navigate = useNavigate();
     const classes = useStyles();
     const [state, dispatch] = useStore();
-    // let menuList;
-    // React.useEffect(()=>{
-    if (state.account.role == 'admin') menuList = pagesAdmin;
-    if (state.account.role == 'user') menuList = pagesUser;
-    if (state.account.role == 'manage') menuList = pagesManager;
-    console.log(state.account.role)
-    // },[state.role]);
-
     const [openSideBar, setOpenSideBar] = React.useState(false);
     const [searchBox, setSearchBox] = React.useState(false);
     const [nav, setNav] = React.useState({
         height: '90px',
         color: 'transparent'
     });
+
+    React.useEffect(async () => {
+        let token = localStorage.getItem("token");
+        // console.log("test")
+        if (token) {
+            const info = await APIClient.checkLoginToken();
+            if (info.role === "admin" || info.role === "manage")
+                dispatch(actions.setLogin({
+                    role: info.role,
+                    name: info.name
+                }));
+            else dispatch(actions.setLogin({
+                role: "user",
+                name: 'user'
+            }));
+            if (state.account.role === 'admin') menuList = pagesAdmin;
+            if (state.account.role === 'manage') menuList = pagesManager;
+        }
+        else menuList = pagesUser;
+    }, [state.account.role]);
+
+    let url = window.location.href;
+
     React.useEffect(() => {
         const setNavigation = () => {
             if (window.pageYOffset > 100) {
@@ -153,7 +183,6 @@ const Header = () => {
     };
     const search = (e) => {
         if (e.keyCode == 13) {
-            console.log(e.target.value);
             dispatch(actions.setSearch(e.target.value));
             navigate(`/cua-hang?search=${e.target.value}`);
             document.getElementById('search-field').value = '';
@@ -162,27 +191,27 @@ const Header = () => {
     }
 
     const handleSwitchLoginPage = async () => {
-        // console.log(localStorage.getItem("token"));
         navigate('/dang-nhap');
     }
     const handleLogout = async () => {
+        // navigate('/');
+        localStorage.removeItem("token");
         dispatch(actions.setLogin({
-            role:'user',
-            name:''
+            role: 'user',
+            name: ''
         }));
-        navigate('/');
-        console.log("logout manager")
         const res = await axios.post(
             'http://localhost:3001/auth/logout'
         )
-        localStorage.removeItem("token");
     }
     return (
         <AppBar position="fixed" className={classes.root} style={{ height: `${nav.height}`, backgroundColor: `${nav.color}` }}>
             <Container maxWidth="xl">
                 <Toolbar sx={{ height: `${nav.height}` }}>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        <img src={logo} height={nav.height} />
+                        <Link style={{ textDecoration: 'none' }} to='/'>
+                            <img src={logo} height={nav.height} />
+                        </Link>
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', minHeight: '60px' }}>
                         {menuList.map((page, index) => (
@@ -190,9 +219,11 @@ const Header = () => {
                                 <Button
                                     className={classes.item}
                                     key={index}
-                                    sx={{ color: 'darkslateblue', display: 'block', px: 1, mx: 1, fontFamily: "'Roboto Mono', monospace", fontWeight: 800 }}
+                                    sx={{ color: 'darkslateblue', display: 'block', px: 1, mx: 1, fontFamily: "cursive", fontWeight: 'bold' }}
                                 >
-                                    {page.title}
+                                    <span className={getCurrentUrl(url) === page.path ? classes.activeTab : 'link-tab'}>
+                                        {page.title}
+                                    </span>
                                 </Button>
                             </Link>
                         ))}
@@ -213,16 +244,20 @@ const Header = () => {
                             className={!openSideBar ? classes.hiddenSideBar : ''}
                         >
                             <MenuList>
-                                {pagesMenu.map((page, index) => (
-                                    <MenuItem key={index} onClick={handleOpenSideBar}>
-                                        <Typography textAlign="center" color="gray" component="div">{page}</Typography>
-                                    </MenuItem>
+                                {menuList.map((page, index) => (
+                                    <Link style={{ textDecoration: 'none' }} to={page.path} key={index}>
+                                        <MenuItem key={index} onClick={handleOpenSideBar}>
+                                            <Typography textAlign="center" color="gray" component="div">{page.title}</Typography>
+                                        </MenuItem>
+                                    </Link>
                                 ))}
                             </MenuList>
                         </Paper>
                     </Box>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'center' }}>
-                        <img src={logo} height={nav.height} />
+                        <Link style={{ textDecoration: 'none' }} to='/'>
+                            <img src={logo} height={nav.height} />
+                        </Link>
                     </Box>
                     <ClickAwayListener onClickAway={handleClickCloseSearch}>
                         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'end', position: 'relative', width: '50px' }}>
@@ -239,34 +274,34 @@ const Header = () => {
                             }
                             {
                                 state.account.role == "user" &&
-                                    <IconButton
-                                        size="large"
-                                        aria-label="account of current user"
-                                        color="inherit"
-                                        sx={{ display: { xs: 'none', md: 'inline-block' } }}
-                                        onClick={handleSwitchLoginPage}
-                                    >
-                                        <LoginIcon style={{ color: 'gray' }} />
-                                    </IconButton>
-                            }
-                            {
-                                state.account.role != "user" &&
-                                <div style={{color:'blue', display:'flex', alignItems:'center', marginRight:'10px'}}>
-                                    {`Xin chào, ${state.account.name}!`} &nbsp;
-                                    <AccountCircleIcon color='disabled' fontSize='large'/>
-                                    </div>
-                            }
-                            {
-                                state.account.role !="user" &&
                                 <IconButton
                                     size="large"
                                     aria-label="account of current user"
                                     color="inherit"
-                                    sx={{ display: { xs: 'none', md: 'inline-block' } }}
-                                    onClick={handleLogout}
+                                    onClick={handleSwitchLoginPage}
                                 >
-                                    <LogoutIcon style={{ color: 'gray' }} />
+                                    <LoginIcon style={{ color: 'gray' }} />
                                 </IconButton>
+                            }
+                            {
+                                state.account.role != "user" &&
+                                <div style={{ color: 'blue', display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+                                    {`Chào, ${state.account.name}!`} &nbsp;
+                                    <AccountCircleIcon color='disabled' fontSize='large' />
+                                </div>
+                            }
+                            {
+                                state.account.role != "user" &&
+                                <Link to="/dang-nhap">
+                                    <IconButton
+                                        size="large"
+                                        aria-label="account of current user"
+                                        color="inherit"
+                                        onClick={handleLogout}
+                                    >
+                                        <LogoutIcon style={{ color: 'gray' }} />
+                                    </IconButton>
+                                </Link>
                             }
                             <TextField
                                 id='search-field'

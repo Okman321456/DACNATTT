@@ -1,14 +1,13 @@
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { Button } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import axios from 'axios';
+import frLocale from 'date-fns/locale/fr';
 import './Form.css';
-import APIClient from '../../APIs/APIClient';
-
 
 const Regions = ['Bắc', 'Trung', 'Nam'];
 const Types = ["Núi", "Biển", "Đảo", "Văn Hóa", "Sông Nước"];
@@ -31,8 +30,6 @@ function TourForm({ handleAddTour, tour }) {
     const [end, setEnd] = React.useState(tour ? tour.timeEnd : new Date());
     const [dataPrevious, setDataPrevios] = React.useState(tour);
     const [imagePreview, setImagePreview] = React.useState();
-    // const [image, setImage]
-    console.log(start, end)
     useEffect(() => {
         return () => {
             imagePreview && URL.revokeObjectURL(imagePreview.preview);
@@ -50,9 +47,10 @@ function TourForm({ handleAddTour, tour }) {
     };
     return (
         <div className='create-tour-form-wrapper' style={{ marginTop: '120px' }}>
-            <form className='create-tour-formbody' action=" " onSubmit={handleSubmit(onHandleSubmit)}>
+            <h2 style={{fontWeight:'bold', marginBottom:'0px'}}>THÔNG TIN TOUR</h2>
+            <form className='create-tour-formbody' action=" " onSubmit={handleSubmit(onHandleSubmit)} >
                 <div className='form-group mb-2'>
-                    <label>name: </label>
+                    <label>Tên tour: </label>
                     <input {...register("name", {
                         required: "* Nhập tên tour.",
                         maxLength: {
@@ -65,7 +63,7 @@ function TourForm({ handleAddTour, tour }) {
                     {errors.name && <div className="alert">{errors.name.message}</div>}
                 </div>
                 <div className="form-group mb-2">
-                    <label>Description: </label>
+                    <label>Mô tả: </label>
                     <textarea style={{ height: '150px' }}  {...register("description", {
                         minLength: {
                             value: 20,
@@ -81,7 +79,7 @@ function TourForm({ handleAddTour, tour }) {
                     {errors.description && <div className="alert">{errors.description.message}</div>}
                 </div>
                 <div className="form-group mb-2">
-                    <label>Price: </label>
+                    <label>Giá: </label>
                     <input type='text' {...register("price",
                         {
                             required: "* Nhập giá tiền",
@@ -104,32 +102,32 @@ function TourForm({ handleAddTour, tour }) {
                     {errors.price && <div className="alert">{errors.price.message}</div>}
                 </div>
                 <div className="form-group mb-2">
-                    <label>Region:</label>
+                    <label>Vùng miền:</label>
                     <select {...register("region", { required: "* Chọn vùng miền" })} placeholder='category' defaultValue={tour && tour.region}>
                         <option value="" hidden>Choose...</option>
                         {
                             Regions.map((value, index) => (
-                                <option value={index + 1} key={index} selected = {tour ? tour.region===index+1 : false}>{value}</option>
+                                <option value={index + 1} key={index} selected={tour ? tour.region === index + 1 : false}>{value}</option>
                             ))
                         }
                     </select>
                     {errors.region && <div className="alert">{errors.region.message}</div>}
                 </div>
                 <div className="form-group mb-2">
-                    <label>Type:</label>
+                    <label>Loại hình:</label>
                     <select {...register("typePlace", { required: "* Chọn loại hình" })} placeholder='category' defaultValue={tour && tour.typePlace}>
                         <option value="" hidden>Choose...</option>
                         {
                             Types.map((value, index) => (
-                                <option value={value} key={index}  key={index} selected = {tour ? tour.typePlace=== value : false}>{value}</option>
+                                <option value={value} key={index} key={index} selected={tour ? tour.typePlace === value : false}>{value}</option>
                             ))
                         }
                     </select>
                     {errors.region && <div className="alert">{errors.region.message}</div>}
                 </div>
-                <div className="form-group mb-2">
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <Typography sx={{ mt: 2, mb: 1 }}>Ngày bắt đầu</Typography>
+                <div className="form-group-date mb-2" style={{ textAlign: 'left', margin: '0 5px' }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                        <Typography sx={{ mt: 2, mb: 1, color: 'cadetblue', fontWeight: 'bold' }}>Ngày bắt đầu</Typography>
                         <Controller
                             name="timeStart"
                             control={control}
@@ -140,6 +138,7 @@ function TourForm({ handleAddTour, tour }) {
                                     label="Start"
                                     value={start}
                                     minDate={new Date()}
+                                    format="DD-MM-YYYY"
                                     {...field}
                                     onChange={(newValue) => {
                                         field.onChange(newValue)
@@ -149,7 +148,7 @@ function TourForm({ handleAddTour, tour }) {
                                 />
                             )}
                         />
-                        <Typography sx={{ mt: 2, mb: 1 }}>Ngày kết thúc</Typography>
+                        <Typography sx={{ mt: 2, mb: 1, color: 'cadetblue', fontWeight: 'bold' }}>Ngày kết thúc</Typography>
                         <Controller
                             name="timeEnd"
                             control={control}
@@ -159,6 +158,7 @@ function TourForm({ handleAddTour, tour }) {
                                     label="End"
                                     value={end}
                                     minDate={start}
+                                    format="DD-MM-YYYY"
                                     onChange={(newValue) => {
                                         field.onChange(newValue)
                                         setEnd(newValue);
@@ -170,7 +170,7 @@ function TourForm({ handleAddTour, tour }) {
                     </LocalizationProvider>
                 </div>
                 <div className="form-group mb-2">
-                    <label>Amount: </label>
+                    <label>Số lượng khách: </label>
                     <input type='text' defaultValue={tour && tour.amount} {...register("amount",
                         {
                             required: "* Nhập giá số lượng",
@@ -191,19 +191,19 @@ function TourForm({ handleAddTour, tour }) {
                     {errors.amount && <div className="alert">{errors.amount.message}</div>}
                 </div>
                 <div className="form-group mb-2">
-                    <label>Discount:</label>
+                    <label>Giảm giá:</label>
                     <select {...register("discount", { required: "* Chọn mức giảm giá" })} placeholder='discount' defaultValue={tour && tour.discount}>
                         <option value={0}>0%</option>
                         {
                             Discounts.map((value, index) => (
-                                <option value={value/100} key={index} selected = {tour ? tour.discount== value/100 : false}>{value}%</option>
+                                <option value={value / 100} key={index} selected={tour ? tour.discount == value / 100 : false}>{value}%</option>
                             ))
                         }
                     </select>
                     {errors.discount && <div className="alert">{errors.discount.message}</div>}
                 </div>
                 <div className="form-group mb-2">
-                    <label>Hotel: </label>
+                    <label>Khách sạn: </label>
                     <input defaultValue={tour && tour.hotelName} {...register("hotelName", {
                         required: "* Nhập tên khách sạn!",
                         minLength: {
@@ -232,14 +232,14 @@ function TourForm({ handleAddTour, tour }) {
                     })} />
                     {errors.schedule && <div className="alert">{errors.schedule.message}</div>}
                 </div>
-                <div className="form-group mb-2">
-                    <label>Image: </label>
+                <div className="form-group-img mb-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <label>Hình ảnh: </label>
                     <input type='file' {...register("imageUrl")} onChange={handleChangePreview} />
-                    {imagePreview && <img src={imagePreview.preview} alt="" width={200} />}
-                    {(!imagePreview && tour) && <img src={ConvertToImageURL(tour.imageUrl)} alt="" width={200} />}
+                    {imagePreview && <img src={imagePreview.preview} alt="" style={{ width: '200px' }} />}
+                    {(!imagePreview && tour) && <img src={ConvertToImageURL(tour.imageUrl)} alt="" style={{ width: '200px' }} />}
                 </div>
                 <div className="form-group mb-2" style={{ width: '50px' }}>
-                    <button type='submit'>LƯU</button>
+                    <Button type='submit' color="primary" variant="contained" style={{ width: '70px', backgroundColor: 'orange' }}>Lưu</Button>
                 </div>
             </form>
 

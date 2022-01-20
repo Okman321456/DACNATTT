@@ -1,12 +1,11 @@
+import { Button, ButtonGroup } from '@mui/material';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { Button, ButtonGroup } from '@mui/material';
+import { actions, useStore } from '../../store';
+import Alert from '../Notification/Alert';
+import PriceDiscount from '../RegardPrice/PriceDiscount';
 import './BookingForm.css';
-import { useStore, actions } from '../../store';
-import APIClient from '../../APIs/APIClient';
-import axios from 'axios';
 
 // const schema = yup.object().shape({
 //     name: yup
@@ -26,7 +25,7 @@ function BookingForm(props) {
     const max = 5;//Gia su so luong con lai
     const [count, setCount] = useState(1);
     const [state, dispatch] = useStore();
-
+    console.log(state.tourInfo)
     const handleIncrement = (onChange) => {
         let countNext = count + 1;
         onChange(countNext);
@@ -57,23 +56,28 @@ function BookingForm(props) {
         // await APIClient.postBookingInfo(state.tourID, body);
         await axios({
             method: 'post',
-            url: `http://localhost:3001/tickets/book/${state.tourID}`,
+            url: `http://localhost:3001/tickets/book/${state.tourInfo.id}`,
             data: {
                 ...body
             }
         });
 
         dispatch(actions.setCloseForm());
-        dispatch(actions.setShowNofify(true));
+        // dispatch(actions.setShowNofify(true));
+        Alert("success", "Success! Đặt tour thành công!");
         reset();
     };
     return (
         <div className='booking-form-wrapper'>
             <div className='booking-box'>
                 <form action="" onSubmit={handleSubmit(onHandleSubmit)} className='booking-form-body'>
-                    <h4>PHIẾU ĐẶT TOUR</h4>
+                    <h3 style={{margin:0, padding:'0', fontWeight:'bold', color:'orange'}}>PHIẾU ĐẶT TOUR</h3>
                     <div className='form-group mb-2'>
-                        <label className='label-title'>Tên KH: </label>
+                        <label className='label-title'>Tour của bạn: </label>
+                        <input type="text" value={state.tourInfo.name} disabled />
+                    </div>
+                    <div className='form-group mb-2'>
+                        <label className='label-title'>Tên của bạn: </label>
                         <input {...register("name", {
                             required: "* Vui lòng nhập tên KH",
                             maxLength: 50
@@ -87,7 +91,7 @@ function BookingForm(props) {
                             control={control}
                             defaultValue={1}
                             render={({ field }) => (
-                                <ButtonGroup size="small">
+                                <ButtonGroup size="small" style={{ width: '100px' }}>
                                     <Button disabled={count <= 1}
                                         {...field}
                                         onClick={() => handleDecrement(field.onChange)}
@@ -102,17 +106,20 @@ function BookingForm(props) {
                             )}
                         />
                     </div>
+                    <div style={{ textAlign: "left" }}>
+                        <PriceDiscount valuePrice={state.tourInfo.price*count} valueDiscount={state.tourInfo.discount} />
+                    </div>
                     <div className="form-group mb-2">
-                        <label className='label-title'>SĐT: </label>
+                        <label className='label-title'>Số điện thoại: </label>
                         <input {...register("phone", {
                             required: "* Vui lòng nhập SĐT!",
-                            maxLength:{
-                                value:11,
-                                message:"* SĐT không đúng!"
+                            maxLength: {
+                                value: 11,
+                                message: "* SĐT không đúng!"
                             },
-                            minLength:{
-                                value:10,
-                                message:"* SĐT không đúng!"
+                            minLength: {
+                                value: 10,
+                                message: "* SĐT không đúng!"
                             },
                         })} />
                     </div>
@@ -127,10 +134,10 @@ function BookingForm(props) {
                             }
                         })} />
                     </div>
-                        {errors.email && <div className="alert">{errors.email.message}</div>}  
-                    <div className="form-group mb-2">
-                        <button type='submit' style={{ margin: 'auto' }}>XÁC NHẬN</button>
-                        <button style={{ margin: 'auto' }} onClick={() => { dispatch(actions.setCloseForm()) }}>HỦY</button>
+                    {errors.email && <div className="alert">{errors.email.message}</div>}
+                    <div className="form-group mb-2" style={{flexDirection:'row'}}>
+                            <Button type="submit" variant='contained' style={{ margin: '0 10px', backgroundColor:'orange', color:'white'}}>XÁC NHẬN</Button>
+                            <Button variant='contained' style={{ margin: '0 10px', backgroundColor:'orange', color:'white'}} onClick={() => { dispatch(actions.setCloseForm()) }}>HỦY</Button>
                     </div>
                 </form>
             </div>

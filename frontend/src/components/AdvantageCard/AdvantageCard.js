@@ -12,8 +12,8 @@ function AdvantageCard(props) {
             padding:'50px 0'
             }}>
             <Container maxWidth="xl">
-                <h2>TẠI SAO BẠN NÊN CHỌN CHÚNG TÔI?</h2>
-                <h4>NHỮNG ĐIỀU CHÚNG TÔI MANG ĐẾN CHO BẠN</h4>
+                <h2 style={{color:"black"}}>TẠI SAO BẠN NÊN CHỌN CHÚNG TÔI?</h2>
+                <h4 style={{color:"black"}}>NHỮNG ĐIỀU CHÚNG TÔI MANG ĐẾN CHO BẠN</h4>
                 <Box sx={{ flexGrow: 1, padding: '0 20px', marginTop: '50px' }}>
                     <Grid container spacing={2} justifyContent="center">
                         <Grid item xs={12} md={4} sm={6} >

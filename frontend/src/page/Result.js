@@ -48,12 +48,9 @@ function Result(props) {
 
     const handleChangePage = (event, value) => {
         const arrayParams = Object.keys(paramURL);
-        
-        console.log(arrayParams)
         let stringParams = arrayParams.reduce((previousValue, currentValue)=>
             currentValue=='page' ? previousValue : `${previousValue}${currentValue}=${paramURL[currentValue]}&`,"")
             .slice(0,-1);
-        console.log(stringParams)
         navigate(`/cua-hang?${stringParams}&page=${value}`);
         setPageNumber(value);
     };

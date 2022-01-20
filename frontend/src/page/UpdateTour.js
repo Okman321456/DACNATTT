@@ -3,23 +3,27 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import APIClient from '../APIs/APIClient';
 import TourForm from '../components/Forms/TourForm';
+import { actions, useStore } from '../store';
 
 function UpdateTour(props) {
     const { id } = useParams();
-    console.log(id)
     const [data, setData] = useState();
+    const [state, dispatch] = useStore()
+
     useEffect(async ()=>{
+        dispatch(actions.setLoading(true));
+        setTimeout(()=>{
+            dispatch(actions.setLoading(false));
+        },5000);
         const result = await axios(`http://localhost:3001/tour/${id}`);
-        console.log(result.data.tour)
-        setData(result.data)
+        setData(result.data);
+        dispatch(actions.setLoading(false));
     },[])
     const handleUpdateTour = async (data)=>{
-        console.log(data)
         let formData = new FormData();
         for (let key in data) {
             if (key == 'imageUrl') {
                 formData.append('imageUrl', data[key][0])
-                console.log(data[key][0])
             }
             else formData.append(key, data[key])
         }

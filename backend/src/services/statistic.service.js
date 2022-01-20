@@ -13,7 +13,6 @@ const showStatisticPerMonth = async(month) => {
         totalPrice += tickets[i].price
         data.push(tickets[i])
     }
-
     return {data, totalPrice}
 } 
 

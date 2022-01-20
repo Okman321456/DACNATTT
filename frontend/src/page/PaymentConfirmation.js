@@ -41,7 +41,6 @@ function PaymentConfirmation(props) {
     const handleIncrement = (index) => {
         if (count[index] < max[index])
             setCount([...count.slice(0, index), count[index] + 1, ...count.slice(index + 1)]);
-        console.log(count)
     }
     const handleDecrement = (index) => {
         if (count[index] > 0)
