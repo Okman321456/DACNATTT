@@ -5,13 +5,23 @@ const sortConstant = require('../config/sortConstant')
 const catchAsync = require('../utils/catchAsync')
 const handleRatingTour = require('../utils/handleRatingTour')
 const { tourService, newsService, feedbackService } = require('../services')
-const { tourValidation } = require('../validations')
+const { tourValidation, tourParamsValidation } = require('../validations')
 
+/* create new tour */
 const createTour = catchAsync(async(req, res) => {
-    const tourBody = Object.assign(req.body, { imageUrl: req.file.path })
+    const image = req.file ? { imageUrl: req.file.path } : {}
+    const tourBody = Object.assign(req.body, image)
     const validation = await tourValidation.validate(tourBody)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
+        if (req.file) {
+            fs.unlink(`${req.file.path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
         return res.status(httpStatus.BAD_REQUEST).send({
             message: errorMessage
         })
@@ -21,6 +31,7 @@ const createTour = catchAsync(async(req, res) => {
     res.status(httpStatus.CREATED).send(tour)
 })
 
+/* get tour page home */
 const outstandingTour = catchAsync(async(req, res) => {
     const tours = await tourService.getAllTour();
     const minmaxPrice = await minmaxValue()
@@ -35,9 +46,10 @@ const outstandingTour = catchAsync(async(req, res) => {
         return b.rating - a.rating;
     })
     for (let index = 0; index < 8; index++) {
-        outstandingTourTemp.push(await tourService.getTourById(arrayRating[index].id))
+        var tour = await tourService.getTourById(arrayRating[index].id)
+        outstandingTourTemp.push(Object.assign(tour._doc, { rating: arrayRating[index].rating }))
     }
-    const outstandingTour = await handleRatingTour(outstandingTourTemp)
+    const outstandingTour = outstandingTourTemp
     res.status(200)
         .json({
             outstandingTour,
@@ -46,6 +58,7 @@ const outstandingTour = catchAsync(async(req, res) => {
         })
 })
 
+/* get min max price in list tour */
 const minmaxValue = async() => {
     const arrayMinMax = await tourService.getMinMaxPrice()
     return {
@@ -54,13 +67,14 @@ const minmaxValue = async() => {
     }
 }
 
+/* filter tour with query parameter (region, typePlace, minmaxPrice, discount, search data)*/
 const filterTour = catchAsync(async(req, res) => {
     const perPage = 6;
     var regionId, disValue
     const minmaxPrice = await minmaxValue()
     let page = parseInt(req.query.page) || 1;
     let search = req.query.search || ''
-    let typePlace = req.query.type || configFilter.typePlace
+    let typePlace = !![req.query.type][0] ? [req.query.type] : configFilter.typePlace
     let minPrice = parseInt(req.query.min) || minmaxPrice.min
     let maxPrice = parseInt(req.query.max) || minmaxPrice.max
     let discount = req.query.dis || false
@@ -69,17 +83,16 @@ const filterTour = catchAsync(async(req, res) => {
     if (req.query.region) {
         switch (req.query.region) {
             case 'bac':
-                regionId = 1
+                regionId = [1]
                 break
             case 'trung':
-                regionId = 2
+                regionId = [2]
                 break
             case 'nam':
-                regionId = 3
+                regionId = [3]
                 break
         }
     } else regionId = configFilter.regionId
-
     const toursData = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, disValue, search, perPage, page)
     const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice, disValue, search)
     const tours = await handleRatingTour(toursData)
@@ -93,15 +106,27 @@ const filterTour = catchAsync(async(req, res) => {
         });
 })
 
+/* get all information in page tour detail */
 const getTourById = catchAsync(async(req, res) => {
+    const validation = await tourParamsValidation.validate(req.params)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     const tourData = await tourService.getTourById(req.params.tourId)
+    if (!tourData) {
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
+    }
     const remainingAmount = await tourService.caculateRemainingAmount(req.params.tourId)
     const rating = await tourService.caculateRatingTour(req.params.tourId) || 0
-    const similarTour = await tourService.similarTourByTypePlace(req.params.tourId)
+    const similarTourData = await tourService.similarTourByTypePlace(req.params.tourId)
     const listFeedback = await feedbackService.showFeedbackPerTour(req.params.tourId)
+    const similarTour = await handleRatingTour(similarTourData)
     const tour = Object.assign(tourData._doc, { rating })
     if (!tour) {
-        res.status(httpStatus.NOT_FOUND).send("Product not found")
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
     } else res.status(200).json({
         tour,
         remainingAmount,
@@ -110,20 +135,42 @@ const getTourById = catchAsync(async(req, res) => {
     });
 })
 
-const updateTourById = catchAsync(async(req, res) => {
-    const tourData = await tourService.getTourById(req.params.tourId)
-    const path = tourData.imageUrl.slice(14)
-    fs.unlink(`./public/uploads/${path}`, (err) => {
-        if (err) {
-            console.error(err)
-            res.status(httpStatus.BAD_REQUEST).send({ error: err })
-        }
-    })
 
-    const tourBody = Object.assign(req.body, { imageUrl: req.file.path })
+/* update tour detail with params id */
+const updateTourById = catchAsync(async(req, res) => {
+    const validationParams = await tourParamsValidation.validate(req.params)
+    if (validationParams.error) {
+        const errorMessage = validationParams.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+    if (req.file) {
+        const tourData = await tourService.getTourById(req.params.tourId)
+        if (tourData.imageUrl) {
+            const path = tourData.imageUrl.slice(14)
+            fs.unlink(`./public/uploads/${path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ error: err })
+                }
+            })
+        }
+    }
+
+    const image = req.file ? { imageUrl: req.file.path } : {}
+    const tourBody = Object.assign(req.body, image)
     const validation = await tourValidation.validate(tourBody)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
+        if (req.file) {
+            fs.unlink(`${req.file.path}`, (err) => {
+                if (err) {
+                    console.error(err)
+                    res.status(httpStatus.BAD_REQUEST).send({ message: err })
+                }
+            })
+        }
         return res.status(httpStatus.BAD_REQUEST).send({
             message: errorMessage
         })
@@ -136,15 +183,36 @@ const updateTourById = catchAsync(async(req, res) => {
     res.status(200).send(tour)
 })
 
+
+/* delete tour detail by params id */
 const deleteTourById = catchAsync(async(req, res) => {
+    const validationParams = await tourParamsValidation.validate(req.params)
+    if (validationParams.error) {
+        const errorMessage = validationParams.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
+    const tourData = await tourService.getTourById(req.params.tourId)
+    if (!tourData) {
+        res.status(httpStatus.NOT_FOUND).send("Tour not found")
+    }
+    if (tourData.imageUrl) {
+        fs.unlink(`${tourData.imageUrl}`, (err) => {
+            if (err) {
+                console.error(err)
+                res.status(httpStatus.BAD_REQUEST).send({ message: err })
+            }
+        })
+    }
     await tourService.deleteTourById(req.params.tourId)
     res.status(httpStatus.NO_CONTENT).send()
 })
 
-/*Get tour region */
+/*Get tour region (sort by name and price)*/
 const getTourRegion = (regionId) => async(req, res) => {
     const perPage = 6
-    var ObjSort = {}
+    var typeSort
     let totalTourRegion = 0
     let page = parseInt(req.query.page) || 1
     let search = req.query.search || ''
@@ -152,24 +220,24 @@ const getTourRegion = (regionId) => async(req, res) => {
     if (sortConstant.includes(sortBy)) {
         switch (sortBy) {
             case 'price-asc':
-                ObjSort = { price: 1 }
+                typeSort = { priceDis: 1 }
                 break
             case 'price-dec':
-                ObjSort = { price: -1 }
+                typeSort = { priceDis: -1 }
                 break
             case 'name-asc':
-                ObjSort = { name: 1 }
+                typeSort = { name: 1 }
                 break
             case 'name-dec':
-                ObjSort = { name: -1 }
+                typeSort = { name: -1 }
                 break
+            default:
+                typeSort = { name: 1 }
         }
     } else res.status(httpStatus.NOT_FOUND).send('Invalid query params')
-
-    const toursData = await tourService.getTourRegion(regionId, perPage, page, search, ObjSort)
+    const toursData = await tourService.getTourRegion(regionId, perPage, page, search, typeSort)
     const tours = await handleRatingTour(toursData)
-    if (search == '') totalTourRegion = await tourService.countTourRegion(regionId)
-    else totalTourRegion = await tourService.countTourSearchRegion(regionId, search)
+    totalTourRegion = await tourService.countTourRegion(regionId, search)
     if (totalTourRegion == 0) {
         res.status(httpStatus.NOT_FOUND).send("Tour region not found")
     } else res.status(200).json({ tours, totalTourRegion })

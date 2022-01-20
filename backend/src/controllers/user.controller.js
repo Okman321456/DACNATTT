@@ -1,18 +1,33 @@
-const catchAsync = require('../utils/catchAsync');
-const httpStatus = require('http-status');
+const catchAsync = require('../utils/catchAsync')
+const httpStatus = require('http-status')
+const validator = require('validator')
 const { userService } = require('../services')
+const { userValidation } = require('../validations')
 
+/* create new user */
 const createUser = catchAsync(async(req, res) => {
+    if (!validator.isEmail(req.body.email)) {
+        res.status(httpStatus.BAD_REQUEST).send('Email không hợp lệ!')
+    }
+    const validation = await userValidation.validate(req.body)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     const user = await userService.createUser(req.body)
 
     res.status(httpStatus.CREATED).send(user)
 })
 
+/* sign in with email */
 const signUp = catchAsync(async(req, res) => {
     const userAccount = await userService.signUp(req.body)
     res.send(userAccount);
 })
 
+/* get all user */
 const getAllUser = catchAsync(async(req, res) => {
     const users = await userService.getAllUser()
 
@@ -20,6 +35,7 @@ const getAllUser = catchAsync(async(req, res) => {
     else res.status(200).send(users)
 })
 
+/* get user detail by id */
 const getUserById = catchAsync(async(req, res) => {
     const user = await userService.getUserById(req.params.id)
 
@@ -27,12 +43,25 @@ const getUserById = catchAsync(async(req, res) => {
     else res.status(200).send(user)
 })
 
+
+/* update user detail by id */
 const updateUserById = catchAsync(async(req, res) => {
+    if (!validator.isEmail(req.body.email)) {
+        res.status(httpStatus.BAD_REQUEST).send('Email không hợp lệ!')
+    }
+    const validation = await userValidation.validate(req.body)
+    if (validation.error) {
+        const errorMessage = validation.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            message: errorMessage
+        })
+    }
     const user = await userService.updateUserById(req.params.id, req.body)
 
     res.status(200).send(user)
 })
 
+/* delete user detail by id */
 const deleteUserById = catchAsync(async(req, res) => {
     await userService.deleteUserById(req.params.id)
     res.status(httpStatus.NO_CONTENT).send()

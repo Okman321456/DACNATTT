@@ -13,13 +13,7 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         minlength: 5,
-        maxlength: 32,
         required: true,
-        validate(value) {
-            if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-                throw new Error('Password must contain at least one letter and one number');
-            }
-        },
     },
     email: {
         type: String,

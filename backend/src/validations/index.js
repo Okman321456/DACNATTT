@@ -3,4 +3,5 @@ module.exports.tourValidation = require('./tour.validation')
 module.exports.authValidation = require('./auth.validation')
 module.exports.ticketValidation = require('./ticket.validation')
 module.exports.feedbackValidation = require('./feedback.validation')
-
+module.exports.userValidation = require('./user.validation')
+module.exports.tourParamsValidation = require('./tour.params.validation')
