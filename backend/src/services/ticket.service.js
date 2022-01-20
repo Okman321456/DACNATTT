@@ -4,7 +4,6 @@ const { ticketValidation } = require('../validations')
 const bookTicket = async (id, ticketBody) => {
     try {
         const validation = ticketValidation.validate(ticketBody)
-        console.log(validation.error)
         if (!validation.error) {
             const ticket = await Ticket.create({
                 idTour: id,
@@ -15,11 +14,9 @@ const bookTicket = async (id, ticketBody) => {
                 numberPeople: validation.value.numberPeople
             })
             return ticket
-        }
-        else return null
+        } else return null
 
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err)
         return null
     }
@@ -30,20 +27,21 @@ const viewDetailTicket = async (id) => {
     const ticketDetail = {}
     const ticket = await Ticket.findById(id)
     const ticketTour = await Ticket.findById(id).populate({ path: 'idTour' })
+    ticketDetail.id = ticket._id
     ticketDetail.userName = ticket.name
     ticketDetail.userEmail = ticket.email
     ticketDetail.userPhone = ticket.phone
     ticketDetail.tourName = ticketTour.idTour.name
     ticketDetail.timeStart = ticketTour.idTour.timeStart
     ticketDetail.timeEnd = ticketTour.idTour.timeEnd
-    ticketDetail.price = ticketTour.idTour.price
+    ticketDetail.price = parseInt(ticketTour.idTour.price * (1 - ticketTour.idTour.discount) * ticket.numberPeople)
     ticketDetail.hotelName = ticketTour.idTour.hotelName
     ticketDetail.numberPeople = ticket.numberPeople
     ticketDetail.status = ticket.status
     return ticketDetail
 }
 
-const deleteTicket = async (id) => {
+const deleteTicket = async(id) => {
     const res = await Ticket.deleteOne({ _id: id })
     return res.deletedCount
 }
@@ -59,6 +57,7 @@ const viewAllTicket = async () => {
             phone: element.phone,
             tourName: element.idTour.name,
             numberPeople: element.numberPeople,
+            totalPrice: parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
             status: element.status,
             createdAt: element.createdAt,
         })
@@ -66,12 +65,12 @@ const viewAllTicket = async () => {
     return allTickets
 }
 
-const updateTicketStatus = async (id, status) => {
+const updateTicketStatus = async(id, status) => {
     const res = await Ticket.updateOne({ _id: id }, { status: status })
     return res.modifiedCount
 }
 
-const getTicketRegion = async (idRegion) => {
+const getTicketRegion = async(idRegion) => {
     const ticket = await Ticket.find().populate({ path: 'idTour' })
     const result = []
     ticket.forEach(element => {
@@ -82,16 +81,17 @@ const getTicketRegion = async (idRegion) => {
             temp.email = element.email
             temp.name = element.name
             temp.phone = element.phone
-            temp.numberPeople = element.numberPeople
-            temp.status = element.status
-            temp.createdAt = element.createdAt
-            result.push(temp)
+            temp.numberPeople = element.numberPeople,
+                temp.totalPrice = parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
+                temp.status = element.status
+            temp.createdAt = element.createdAt,
+                result.push(temp)
         }
     })
     return result
 }
 
-const showTicketPerTour = async (idTour) => {
+const showTicketPerTour = async(idTour, date, phone) => {
     let ticketPerTour = []
     const ticket = await Ticket.find().populate({ path: 'idTour' })
     ticket.forEach(element => {
@@ -102,6 +102,7 @@ const showTicketPerTour = async (idTour) => {
                 name: element.name,
                 phone: element.phone,
                 tourName: element.idTour.name,
+                totalPrice: parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
                 numberPeople: element.numberPeople,
                 status: element.status,
                 createdAt: element.createdAt,
@@ -111,33 +112,51 @@ const showTicketPerTour = async (idTour) => {
     return ticketPerTour
 }
 
-const sortTicket = async () => {
+
+const sortTicket = async() => {
     return await Ticket.find().sort({ createdAt: -1 })
 }
 
-const showTicketPerPhone = async (phone) => {
-    return await Ticket.findOne({ phone: phone });
+const showTicketPerPhone = async(phone) => {
+    let ticketPerPhone = []
+    const tickets = await Ticket.find({ phone: phone }).populate({ path: 'idTour' });
+    tickets.forEach(element => {
+        ticketPerPhone.push({
+            id: element._id,
+            email: element.email,
+            name: element.name,
+            phone: element.phone,
+            tourName: element.idTour.name,
+            totalPrice: parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
+            numberPeople: element.numberPeople,
+            status: element.status,
+            createdAt: element.createdAt,
+        })
+    });
+    return ticketPerPhone
 }
 
 const showTicketPerDate = async(date) => {
     const result = []
-    const tickets = await Ticket.find().populate({path: 'idTour'});
+    const tickets = await Ticket.find().populate({ path: 'idTour' });
     tickets.forEach(element => {
-      if(JSON.stringify(element.createdAt).substring(1, 11) == date){
-          const temp = {}
-          temp.id = element._id
-          temp.tourName = element.idTour.name
-          temp.name = element.name
-          temp.email = element.email
-          temp.phone = element.phone
-          temp.numberPeople = element.numberPeople
-          temp.createdAt = element.createdAt
-          temp.status = element.status
-          result.push(temp)
-      }
+        if (JSON.stringify(element.createdAt).substring(1, 11) == date) {
+            const temp = {}
+            temp.id = element._id
+            temp.tourName = element.idTour.name
+            temp.name = element.name
+            temp.email = element.email
+            temp.phone = element.phone
+            temp.totalPrice = parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount))
+            temp.numberPeople = element.numberPeople
+            temp.createdAt = element.createdAt
+            temp.status = element.status
+            result.push(temp)
+        }
     })
     return result
-  }
+}
+
 
 module.exports = {
     bookTicket,
