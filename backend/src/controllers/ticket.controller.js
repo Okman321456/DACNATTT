@@ -21,7 +21,9 @@ const viewDetailTicket = catchAsync(async(req, res) => {
 })
 
 const showTicketPerTour = catchAsync(async(req, res) => {
-    const tickets = await ticketService.showTicketPerTour(req.params.idTour)
+    let date = req.query.date || ''
+    let phone = req.query.phone || ''
+    const tickets = await ticketService.showTicketPerTour(req.params.idTour, date, phone)
     res.send({ tickets })
 })
 
@@ -56,21 +58,19 @@ const sortTicket = catchAsync(async(req, res) => {
 
 const showTicketPerPhone = catchAsync(async(req, res) => {
     const ticket = await ticketService.showTicketPerPhone(req.params.phone)
-    if(ticket){
+    if (ticket) {
         res.status(200).send(ticket)
-    }
-    else {
-        res.send('Ticket not Found!')
+    } else {
+        res.status(httpStatus.NOT_FOUND).send('Ticket not Found!')
     }
 })
 
 const showTicketPerDate = catchAsync(async(req, res) => {
     const ticket = await ticketService.showTicketPerDate(req.params.date)
-    if(ticket){
-        res.status(200).send({tickets: ticket})
-    }
-    else {
-        res.send('Ticket not Found!')
+    if (ticket) {
+        res.status(200).send({ tickets: ticket })
+    } else {
+        res.status(httpStatus.NOT_FOUND).send('Ticket not Found!')
     }
 })
 

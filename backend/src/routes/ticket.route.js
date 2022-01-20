@@ -10,9 +10,9 @@ router.get('/detail/:ticketId', auth('admin', 'manage'), ticketController.viewDe
 router.delete('/delete/:ticketId', auth('manage'), ticketController.deleteTicket)
 router.put('/updateStatus/:ticketId/:ticketStatus', auth('manage'), ticketController.updateTicketStatus)
 router.get('/listTicket', auth('admin', 'manage'), ticketController.viewAllTicket)
-router.get('/region/:idRegion', ticketController.getTicketRegion)
-router.get('/sort', ticketController.sortTicket)
-router.get("/phone/:phone", ticketController.showTicketPerPhone);
-router.get("/date/:date", ticketController.showTicketPerDate);
+router.get('/region/:idRegion', auth('manage'), ticketController.getTicketRegion)
+router.get('/sort', auth('manage'), ticketController.sortTicket)
+router.get("/phone/:phone", auth('manage'), ticketController.showTicketPerPhone);
+router.get("/date/:date", auth('manage'), ticketController.showTicketPerDate);
 
-module.exports = router;
+module.exports = router

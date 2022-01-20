@@ -27,13 +27,14 @@ const viewDetailTicket = async(id) => {
     const ticketDetail = {}
     const ticket = await Ticket.findById(id)
     const ticketTour = await Ticket.findById(id).populate({ path: 'idTour' })
+    ticketDetail.id = ticket._id
     ticketDetail.userName = ticket.name
     ticketDetail.userEmail = ticket.email
     ticketDetail.userPhone = ticket.phone
     ticketDetail.tourName = ticketTour.idTour.name
     ticketDetail.timeStart = ticketTour.idTour.timeStart
     ticketDetail.timeEnd = ticketTour.idTour.timeEnd
-    ticketDetail.price = ticketTour.idTour.price
+    ticketDetail.price = parseInt(ticketTour.idTour.price * (1 - ticketTour.idTour.discount) * ticket.numberPeople)
     ticketDetail.hotelName = ticketTour.idTour.hotelName
     ticketDetail.numberPeople = ticket.numberPeople
     ticketDetail.status = ticket.status
@@ -56,7 +57,7 @@ const viewAllTicket = async() => {
             phone: element.phone,
             tourName: element.idTour.name,
             numberPeople: element.numberPeople,
-            priceTotal: element.idTour.price * element.numberPeople,
+            totalPrice: parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
             status: element.status,
             createdAt: element.createdAt,
         })
@@ -75,30 +76,33 @@ const getTicketRegion = async(idRegion) => {
     ticket.forEach(element => {
         if (element.idTour.region == idRegion) {
             let temp = {}
+            temp.id = element._id
             temp.tourName = element.idTour.name
             temp.email = element.email
             temp.name = element.name
             temp.phone = element.phone
             temp.numberPeople = element.numberPeople,
-                temp.priceTotal = element.idTour.price * element.numberPeople,
+                temp.totalPrice = parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
                 temp.status = element.status
-            result.push(temp)
+            temp.createdAt = element.createdAt,
+                result.push(temp)
         }
     })
     return result
 }
 
-const showTicketPerTour = async(idTour) => {
+const showTicketPerTour = async(idTour, date, phone) => {
     let ticketPerTour = []
     const ticket = await Ticket.find().populate({ path: 'idTour' })
     ticket.forEach(element => {
         if (element.idTour._id == idTour) {
             ticketPerTour.push({
+                id: element._id,
                 email: element.email,
                 name: element.name,
                 phone: element.phone,
                 tourName: element.idTour.name,
-                priceTotal: element.idTour.price * element.numberPeople,
+                totalPrice: parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
                 numberPeople: element.numberPeople,
                 status: element.status,
                 createdAt: element.createdAt,
@@ -113,15 +117,40 @@ const sortTicket = async() => {
 }
 
 const showTicketPerPhone = async(phone) => {
-    return await Ticket.findOne({ phone: phone });
+    let ticketPerPhone = []
+    const tickets = await Ticket.find({ phone: phone }).populate({ path: 'idTour' });
+    tickets.forEach(element => {
+        ticketPerPhone.push({
+            id: element._id,
+            email: element.email,
+            name: element.name,
+            phone: element.phone,
+            tourName: element.idTour.name,
+            totalPrice: parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount)),
+            numberPeople: element.numberPeople,
+            status: element.status,
+            createdAt: element.createdAt,
+        })
+    });
+    return ticketPerPhone
 }
 
 const showTicketPerDate = async(date) => {
     const result = []
-    const tickets = await Ticket.find();
+    const tickets = await Ticket.find().populate({ path: 'idTour' });
     tickets.forEach(element => {
         if (JSON.stringify(element.createdAt).substring(1, 11) == date) {
-            result.push(element)
+            const temp = {}
+            temp.id = element._id
+            temp.tourName = element.idTour.name
+            temp.name = element.name
+            temp.email = element.email
+            temp.phone = element.phone
+            temp.totalPrice = parseInt(element.idTour.price * element.numberPeople * (1 - element.idTour.discount))
+            temp.numberPeople = element.numberPeople
+            temp.createdAt = element.createdAt
+            temp.status = element.status
+            result.push(temp)
         }
     })
     return result
