@@ -42,8 +42,13 @@ function ManageTickets(props) {
             month: "2-digit",
             day: "2-digit",
         });
-        let dateFormat = date.replaceAll(". ", "-").slice(0, -1);
-        const res = await APIClient.filterTicketsPerDate(dateFormat);
+        // let date = new Date(newValue).toLocaleDateString('ko-KR', {
+        //     year: "numeric",
+        //     month: "2-digit",
+        //     day: "2-digit",
+        // });
+        // let dateFormat = date.replaceAll(". ", "-").slice(0, -1);
+        const res = await APIClient.filterTicketsPerDate(date);
         console.log(res)
         setListTickets(res.tickets);
         setValue(newValue);
@@ -62,6 +67,7 @@ function ManageTickets(props) {
         setListTickets(result);
         setRegion(null);
         setValue(null);
+        setSearchValue();
     }
     return (
         <div className='manage-ticket-wrapper' style={{ marginTop: '100px' }}>

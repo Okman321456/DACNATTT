@@ -37,12 +37,12 @@ export default function TourListTable() {
     useEffect(async () => {
         let paramFilter = { page: pageNumber, ...param, search: search };
         dispatch(actions.setLoading(true));
-        setTimeout(()=>{
+        setTimeout(() => {
             dispatch(actions.setLoading(false));
-        },5000);
+        }, 5000);
         const result = await APIClient.getResultFilter(paramFilter);
-       
-        if(result.response){
+
+        if (result.response) {
             setTourList();
         }
         else setTourList(result);
@@ -86,17 +86,17 @@ export default function TourListTable() {
             <FilterTourList handleFilter={handleFilterTourList} handleSearch={handleSearchTourList} />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-                    <TableHead>
+                    <TableHead style={{ backgroundColor: '#9e9e9eb3' }}>
                         <TableRow>
-                            <TableCell align="center" >STT</TableCell>
-                            <TableCell >Tên tour du lịch</TableCell>
-                            <TableCell align="center" >Ngày bắt đầu</TableCell>
-                            <TableCell align="center">Ngày kết thúc</TableCell>
-                            <TableCell align="center" >Giá</TableCell>
-                            <TableCell align="center" >Giảm giá</TableCell>
-                            <TableCell align="center" >Miền</TableCell>
-                            <TableCell align="center" >Loại hình</TableCell>
-                            <TableCell align="center" ></TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >STT</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} >Tên tour du lịch</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Ngày bắt đầu</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center">Ngày kết thúc</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Giá</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Giảm giá</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Miền</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Loại hình</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" ></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -109,8 +109,8 @@ export default function TourListTable() {
                                 <TableCell component="th" scope="row">
                                     {tour.name}
                                 </TableCell>
-                                <TableCell align="center">{new Date(tour.timeStart.slice(0,10)).toLocaleDateString("en-GB")}</TableCell>
-                                <TableCell align="center">{new Date(tour.timeEnd.slice(0,10)).toLocaleDateString("en-GB")}</TableCell>
+                                <TableCell align="center">{new Date(tour.timeStart).toLocaleDateString("en-GB")}</TableCell>
+                                <TableCell align="center">{new Date(tour.timeEnd).toLocaleDateString("en-GB")}</TableCell>
                                 <TableCell align="center">{RegardPrice(tour.price)}</TableCell>
                                 <TableCell align="center">{`${tour.discount * 100}%`}</TableCell>
                                 <TableCell align="center">{RegionsString[tour.region]}</TableCell>

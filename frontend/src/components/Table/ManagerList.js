@@ -23,9 +23,9 @@ export default function ManagerList() {
 
     useEffect(async () => {
         dispatch(actions.setLoading(true));
-        setTimeout(()=>{
+        setTimeout(() => {
             dispatch(actions.setLoading(false));
-        },5000);
+        }, 5000);
         const result = await APIClient.getAllManager();
         console.log(result)
         setUsers(result);
@@ -46,14 +46,13 @@ export default function ManagerList() {
             <h2>DANH SÁCH QUẢN LÝ</h2>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-
-                    <TableHead>
+                    <TableHead style={{ backgroundColor: '#9e9e9eb3' }}>
                         <TableRow>
-                            <TableCell align="center" >STT</TableCell>
-                            <TableCell >Tên nhân viên</TableCell>
-                            <TableCell align="center" >SĐT</TableCell>
-                            <TableCell align="center">Email</TableCell>
-                            <TableCell align="center" ></TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >STT</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} >Tên nhân viên</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >SĐT</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center">Email</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Cập nhật | Xóa</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -72,7 +71,7 @@ export default function ManagerList() {
                                     <ButtonGroup variant="outlined" color='primary' size="small" aria-label="outlined button group">
                                         <Button size="small" onClick={() => handleUpdate(user._id)}>CẬP NHẬT</Button>
                                         <Button size="small"
-                                            onClick={()=>setConfirmDialog({
+                                            onClick={() => setConfirmDialog({
                                                 isOpen: true,
                                                 content: 'Bạn có muốn xóa nhân viên này?',
                                                 onConfirm: () => { handleDelete(user._id) }

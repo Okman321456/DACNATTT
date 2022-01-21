@@ -44,7 +44,7 @@ const Detail = ({ detail }) => {
     return (
         <div className='detail-tab' style={{ padding: '0 30px' }}>
             <h5 style={{ margin: '0', textAlign: 'left' }}>LỘ TRÌNH</h5>
-            <Typography gutterBottom variant="body1" component="div" align='left'>
+            <Typography gutterBottom variant="body1" component="div" align='left' style={{fontFamily:'Roboto Mono'}}>
                 {detail}
             </Typography>
         </div>
@@ -57,7 +57,7 @@ const Feedback = ({list, handleSendFeedback}) => {
             {   list.length === 0 ? <h2>HÃY LÀ NGƯỜI ĐẦU TIÊN ĐÁNH GIÁ!</h2>:
                 list.map((fb, index) => (
                     <Box key={index} style={{ marginBottom:'10px',padding:'10px'}}>
-                        <Typography gutterBottom variant="body1" component="div" align='left' style={{margin:'0 0px', display:'flex', fontSize:'larger', color:'#747474'}}>
+                        <Typography gutterBottom variant="body1" component="div" align='left' style={{margin:'0 0px', display:'flex', fontSize:'larger', color:'#106e99'}}>
                            <PersonIcon color='inherit' fontSize='large'/> {fb.email}
                         </Typography>
                         <Typography gutterBottom component="div" variant="body1" color="blueviolet" align="left" style={{margin:'0 30px'}}>

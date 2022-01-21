@@ -59,9 +59,9 @@
   
   .noty_theme__bootstrap-v4.noty_type__success {
     background-color: #ffffff;
-    color: #03a9f4;
-    border-color: #03a9f4;
-    border-left: 6px #03a9f4 solid;
+    color: orange;
+    border-color: orange;
+    border-left: 6px orange solid;
   }
   
   .success {

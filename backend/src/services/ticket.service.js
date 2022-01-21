@@ -137,10 +137,16 @@ const showTicketPerPhone = async(phone) => {
 }
 
 const showTicketPerDate = async(date) => {
+    console.log(date);
     const result = []
     const tickets = await Ticket.find().populate({ path: 'idTour' });
     tickets.forEach(element => {
-        if (JSON.stringify(element.createdAt).substring(1, 11) == date) {
+        let tem = new Date(element.createdAt).toLocaleDateString('ko-KR', {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
+        if (tem == date) {
             const temp = {}
             temp.id = element._id
             temp.tourName = element.idTour.name
