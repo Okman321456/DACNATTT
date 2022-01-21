@@ -27,16 +27,16 @@ export default function Statistic({list}) {
         <div className='list-manager' style={{ padding: '0 50px' }}>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-                    <TableHead>
+                <TableHead style={{backgroundColor:'#9e9e9eb3'}}>
                         <TableRow>
-                            <TableCell align="center" >STT</TableCell>
-                            <TableCell >Tên khách </TableCell>
-                            <TableCell >Tên tour </TableCell>
-                            <TableCell >Email</TableCell>
-                            <TableCell align="center" >Ngày thanh toán</TableCell>
-                            <TableCell align="center" >Số lượng</TableCell>
-                            <TableCell align="center" >Trạng thái</TableCell>
-                            <TableCell align="center">Tổng tiền</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >STT</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} >Tên khách </TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} >Tên tour </TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} >Email</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Ngày thanh toán</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Số lượng</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center" >Trạng thái</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}} align="center">Tổng tiền</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -47,27 +47,23 @@ export default function Statistic({list}) {
                             >
                                 <TableCell align="center">{index + 1}</TableCell>
                                 <TableCell component="th" scope="row">
-                                    Tên khách
-                                    {/* {data.tourName} */}
+                                    {data.name}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
-                                    Tên tour
-                                    {/* {data.tourName} */}
+                                    {data.tourName}
                                 </TableCell>
                                 <TableCell>{data.email}</TableCell>
-                                <TableCell align="center">
-                                    ngày thanh toán    
-                                    {/* {new Date(data.updatedAt.slice(0, 10)).toLocaleDateString("en-GB")} */}
+                                <TableCell align="center">  
+                                    {new Date(data.updatedAt.slice(0, 10)).toLocaleDateString("en-GB")}
                                 </TableCell>
                                 <TableCell align="center">
-                                    5
-                                    {/* {data.numberPeople} */}
+                                    {data.numberPeople}
                                 </TableCell>
                                 <TableCell align="center" sx={{ minWidth: '100px' }}>
                                     &#10004;Đã thanh toán
                                 </TableCell>
                                 <TableCell align="center">
-                                    {`${RegardPrice(data.price)} VNĐ`}
+                                    {`${RegardPrice(data.totalPrice)} VNĐ`}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -80,7 +76,7 @@ export default function Statistic({list}) {
                                 <TableCell align="center"></TableCell>
                                 <TableCell align="center"></TableCell>
                                 <TableCell align="center"></TableCell>
-                                <TableCell align="center" sx={{ minWidth: '100px', color:'orange' }}>Tổng doanh thu:</TableCell>
+                                <TableCell align="center" sx={{ minWidth: '100px', color: 'cornflowerblue'}}>Tổng doanh thu:</TableCell>
                                 <TableCell align="center" sx={{color:'tomato'}}>
                                     {`${RegardPrice(totalPrice)} VNĐ`}
                                 </TableCell>

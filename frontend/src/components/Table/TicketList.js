@@ -11,6 +11,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alert from '../Notification/Alert';
 import ConfirmDialog from '../Notification/ConfirmDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RegardPrice from '../RegardPrice/RegardPrice';
 
 export default function TicketList({ updateTicketStatus, deleteTicket, listTickets}) {
     let navigate = useNavigate();
@@ -37,17 +39,18 @@ export default function TicketList({ updateTicketStatus, deleteTicket, listTicke
         <div className='list-manager' style={{ padding: '0 50px' }}>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-                    <TableHead>
+                    <TableHead style={{backgroundColor:'#9e9e9eb3'}}>
                         <TableRow>
-                            <TableCell align="center" >STT</TableCell>
-                            <TableCell >Tên tour</TableCell>
-                            <TableCell >Ngày đặt</TableCell>
-                            <TableCell align="center" >Khách hàng</TableCell>
-                            <TableCell align="center" >Số lượng</TableCell>
-                            <TableCell align="center">SĐT</TableCell>
-                            <TableCell align="center">Email</TableCell>
-                            <TableCell align="center" >Trạng thái</TableCell>
-                            <TableCell align="center" ></TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}}>STT</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Tên tour</TableCell>
+                            <TableCell sx={{fontWeight:'bold'}}>Ngày đặt</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}} >Khách hàng</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}} >Số lượng</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}}>SĐT</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}}>Email</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}}>Tổng thanh toán</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}} >Trạng thái</TableCell>
+                            <TableCell align="center" sx={{fontWeight:'bold'}} >Xóa</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -60,11 +63,12 @@ export default function TicketList({ updateTicketStatus, deleteTicket, listTicke
                                 <TableCell component="th" scope="row">
                                     {ticket.tourName}
                                 </TableCell>
-                                <TableCell align="center">{new Date(ticket.createdAt.slice(0,10)).toLocaleDateString("en-GB")}</TableCell>
+                                <TableCell align="center">{new Date(ticket.createdAt).toLocaleDateString("en-GB")}</TableCell>
                                 <TableCell align="center">{ticket.name}</TableCell>
                                 <TableCell align="center">{ticket.numberPeople}</TableCell>
                                 <TableCell align="center">{ticket.phone}</TableCell>
                                 <TableCell align="center">{ticket.email}</TableCell>
+                                <TableCell align="center">{`₫ ${RegardPrice(ticket.totalPrice)}`}</TableCell>
                                 <TableCell align="center" sx={{ minWidth: '100px' }}>
                                     <Select
                                         // value={status ? status[index].status : ticket.status}
@@ -81,11 +85,12 @@ export default function TicketList({ updateTicketStatus, deleteTicket, listTicke
                                     </Select>
                                 </TableCell>
                                 <TableCell align="center">
-                                    <Button variant="outlined" color='primary' size="small" onClick={() => setConfirmDialog({
+
+                                    <DeleteIcon variant="outlined" style={{color:'tomato', cursor:'pointer'}} size="small" onClick={() => setConfirmDialog({
                                         isOpen: true,
                                         content: 'Bạn có muốn xóa vé này?',
                                         onConfirm: () => { handleDelete(ticket._id, index) }
-                                    })}>XÓA</Button>
+                                    })}/>
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -101,7 +101,7 @@ const paperStyle = {
     position: 'absolute',
     top: '0',
     left: '-24px',
-    backgroundColor: 'darkslategrey',
+    backgroundColor: '#262929',
     transition: '0.4s',
     overflow: 'hidden',
     height: '100vh',
@@ -194,7 +194,6 @@ const Header = () => {
         navigate('/dang-nhap');
     }
     const handleLogout = async () => {
-        // navigate('/');
         localStorage.removeItem("token");
         dispatch(actions.setLogin({
             role: 'user',
@@ -203,6 +202,7 @@ const Header = () => {
         const res = await axios.post(
             'http://localhost:3001/auth/logout'
         )
+        navigate('/');
     }
     return (
         <AppBar position="fixed" className={classes.root} style={{ height: `${nav.height}`, backgroundColor: `${nav.color}` }}>

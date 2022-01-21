@@ -26,8 +26,8 @@ function UpdateManager(props) {
 
     const onHandleSubmit = async (data) => {
         const res = await APIClient.updateManager(id, data);
-        if(!res.response) Alert("success","Success! Cập nhật nhân viên thành công");
         navigate('/quan-li-nhan-vien')
+        if(!res.response) Alert("success","Success! Cập nhật nhân viên thành công");
     };
     return (
         <div className='manager-form-wrapper' style={{ marginTop: '90px' }}>
