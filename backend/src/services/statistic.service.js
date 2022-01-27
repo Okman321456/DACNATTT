@@ -3,6 +3,7 @@ const { Ticket } = require('../models')
 const showStatisticPerMonth = async(month) => {
     let data = []
     let totalPrice = 0
+    let totalPeople = 0
     const tickets = await Ticket.aggregate([{
             $project: {
                 name: 1,
@@ -22,10 +23,11 @@ const showStatisticPerMonth = async(month) => {
         tickets[i].totalPrice = parseInt(ticketTour.idTour.price * ticketTour.numberPeople * (1 - ticketTour.idTour.discount))
         tickets[i].tourName = ticketTour.idTour.name
         totalPrice += tickets[i].totalPrice
+        totalPeople += tickets[i].numberPeople
         data.push(tickets[i])
     }
-    return {data, totalPrice}
-} 
+    return { data, totalPrice, totalPeople }
+}
 
 module.exports = {
     showStatisticPerMonth
