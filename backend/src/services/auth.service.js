@@ -9,7 +9,7 @@ const authoriPermissonAdmin = async(id) => {
 
 const changePass = async(email, password) => {
     const user = await userService.getUserByEmail(email)
-    Object.assign(user, password)
+    Object.assign(user, { password })
     await user.save()
     return user
 }
