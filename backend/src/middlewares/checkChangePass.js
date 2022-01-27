@@ -4,13 +4,14 @@ const ApiError = require('../utils/ApiError');
 const { userService } = require('../services');
 
 const checkChangePass = catchAsync(async(req, res, next) => {
-    const userId = req.userId
-    console.log(req.userId);
-    const user = await userService.getUserById(userId)
-    if (!user || !(await user.isPasswordMatch(password))) {
-        res.status(httpStatus.UNAUTHORIZED).send('Invalid password')
+    const user = await userService.getUserByEmail(req.body.email)
+    if (!user || !(await user.isPasswordMatch(req.body.oldpass))) {
+        res.status(httpStatus.UNAUTHORIZED)
+            .json({
+                status: 401,
+                message: "Mật khẩu cũ không đúng. Vui lòng thử lại!"
+            })
     }
-    req.email = user.email
     next()
 })
 

@@ -6,8 +6,8 @@ var localStorage = require('localStorage')
 
 const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
-const { userService } = require('../services')
-const { authValidation } = require('../validations')
+const { userService, authService } = require('../services')
+const { authValidation, changePassValidation } = require('../validations')
 
 
 /* define options expires token */
@@ -40,7 +40,7 @@ const login = catchAsync(async(req, res) => {
         localStorage.setItem('token', accessToken)
         res.status(200).json({
             name: user.name,
-            permission: user.role,
+            role: user.role,
             email: user.email,
             token: accessToken
         })
@@ -69,7 +69,23 @@ const getRole = catchAsync(async(req, res) => {
 })
 
 const changePass = catchAsync(async(req, res) => {
-    res.send(req.email);
+    const validationChangePass = await changePassValidation.validate(req.body)
+    if (validationChangePass.error) {
+        const errorMessage = validationChangePass.error.details[0].message
+        return res.status(httpStatus.BAD_REQUEST).send({
+            status: 400,
+            message: errorMessage
+        })
+    }
+    const { oldpass, newpass, confirmpass, email } = req.body
+    const user = await authService.changePass(email, newpass)
+    if (!user) res.status(httpStatus.BAD_REQUEST).json({
+        status: 500,
+        message: "Lỗi Server. Vui lòng thử lại!"
+    })
+    res.status(200).json({
+        message: "Đổi mật khẩu thành công!"
+    })
 })
 
 const refreshTokens = catchAsync(async(req, res) => {
