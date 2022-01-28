@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
-import { Container, FormControl, Grid, InputLabel, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
-import Filter from '../components/Filter/Filter';
-import { Box } from '@mui/system';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import TourCard from '../components/TourCard/TourCard';
 import { Divider } from '@material-ui/core';
-import RegardPrice from '../components/RegardPrice/RegardPrice';
+import { Container, Grid, Pagination, Stack, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import React, { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import APIClient from '../APIs/APIClient';
-import axios from 'axios';
-import { useStore, actions } from '../store';
+import Filter from '../components/Filter/Filter';
+import TourCard from '../components/TourCard/TourCard';
+import { actions, useStore } from '../store';
 
 const ConvertToImageURL = (url) => {
     if (url) return `http://localhost:3001/${url.slice(6)}`
@@ -39,12 +37,19 @@ function Result(props) {
             dispatch(actions.setLoading(false));
         },5000);
         const result = await APIClient.getResultFilter(paramURL);
-        const newsList = await APIClient.getNewsList();
-        setData(result);
-        setNews(newsList.news);
+        console.log(result);
+        if(result.response && result.response.status === 404)
+        setData(false);
+        else setData(result);
+        
         dispatch(actions.setLoading(false));
 
     }, [pageNumber, load,state.search]);
+
+    useEffect(async ()=>{
+        const newsList = await APIClient.getNewsList();
+        setNews(newsList.news);
+    },[]);
 
     const handleChangePage = (event, value) => {
         const arrayParams = Object.keys(paramURL);
@@ -56,7 +61,7 @@ function Result(props) {
     };
     return (
         <div className='tour-list' style={{ marginTop: '90px' }}>
-            <Filter text='KẾT QUẢ TÌM KIẾM' load={load} onLoad={onLoad} min={data && data.minmaxPrice.min} max={data && data.minmaxPrice.max} />
+            <Filter text='KẾT QUẢ TÌM KIẾM' load={load} onLoad={onLoad} min={data ? data.minmaxPrice.min : 0} max={data ? data.minmaxPrice.max : 30000000} />
             <Container maxWidth="lg">
                 <Box sx={{ flexGrow: 1, marginTop: '30px' }}>
                     {(data) ?

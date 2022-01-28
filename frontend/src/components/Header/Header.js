@@ -53,6 +53,10 @@ const pagesAdmin = [
         title: 'THỐNG KÊ',
         path: '/thong-ke'
     },
+    {
+        title: 'ĐỔI MẬT KHẨU',
+        path: '/doi-mat-khau'
+    },
 ];
 const pagesManager = [
     {
@@ -130,7 +134,6 @@ const Header = () => {
 
     React.useEffect(async () => {
         let token = localStorage.getItem("token");
-        // console.log("test")
         if (token) {
             const info = await APIClient.checkLoginToken();
             if (info.role === "admin" || info.role === "manage")

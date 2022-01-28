@@ -26,6 +26,7 @@ import APIClient from './APIs/APIClient';
 import ManageTickets from './page/ManageTickets';
 import ManageTicketsTour from './page/ManageTicketsTour';
 import StatisticPerMonth from './page/StatisticPerMonth';
+import ChangePasswordPage from './page/ChangePasswordPage';
 
 function App() {
   const [state, dispatch] = useStore();
@@ -56,6 +57,7 @@ function App() {
         <Route path="/quan-li-ve" element={<ManageTickets />} />
         <Route path="/quan-li-ve-tour/:id" element={<ManageTicketsTour />} />
         <Route path="/thong-ke" element={<StatisticPerMonth />} />
+        <Route path="/doi-mat-khau" element={<ChangePasswordPage/>} />
       </Routes>
       {state.openForm && <BookingForm />}
       {state.showNotify && <OrderSuccessfully />}
