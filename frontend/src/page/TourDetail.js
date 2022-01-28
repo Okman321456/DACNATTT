@@ -109,6 +109,7 @@ function TourDetail(props) {
         const result = await axios(`http://localhost:3001/tour/${id}`);
         setData(result.data);
         dispatch(actions.setLoading(false));
+        console.log(result.data.similarTour)
     }, [load]);
 
     const handleOnClick = (_id, name, price, discount) => {
@@ -174,13 +175,13 @@ function TourDetail(props) {
                                 </div>}
                             </Grid>
                             <Grid item md={6} xs={12}>
-                                <Typography gutterBottom variant="h4" component="div" align='left' style={{fontFamily:'Dosis' }}>
+                                <Typography gutterBottom variant="h4" component="div" align='left' style={{ fontFamily: 'Dosis' }}>
                                     {data.tour.name}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left' color="secondary">
                                     <PriceDiscount valueDiscount={data.tour.discount} valuePrice={data.tour.price} />
                                 </Typography>
-                                <Typography gutterBottom component="div" variant="body1" align="left" style={{display:'flex', fontFamily:'system-ui', color:'gray'}}>
+                                <Typography gutterBottom component="div" variant="body1" align="left" style={{ display: 'flex', fontFamily: 'system-ui', color: 'gray' }}>
                                     <StyledRating
                                         name="customized-color"
                                         value={data.tour.rating}
@@ -191,33 +192,33 @@ function TourDetail(props) {
                                         readOnly
                                         size="medium"
                                     />
-                                    &nbsp;{`${data.tour.rating} | ${data.listFeedback.length} đánh giá`}
+                                    &nbsp;{`${parseFloat(data.tour.rating).toFixed(1)} | ${data.listFeedback.length} đánh giá`}
                                 </Typography>
-                                <Typography gutterBottom variant="body1" component="div" align='left' style={{fontFamily:'Roboto Mono'}}>
+                                <Typography gutterBottom variant="body1" component="div" align='left' style={{ fontFamily: 'Roboto Mono' }}>
                                     {`"${data.tour.description}"`}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue', fontWeight:'bold' }}>Thời gian: </span>
+                                    <span style={{ color: 'darkblue', fontWeight: 'bold' }}>Thời gian: </span>
                                     {new Date(data.tour.timeStart.slice(0, 10)).toLocaleDateString("en-GB")} &#10137; {new Date(data.tour.timeEnd.slice(0, 10)).toLocaleDateString("en-GB")}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue', fontWeight:'bold' }}>Khách sạn: </span>{data.tour.hotelName}
+                                    <span style={{ color: 'darkblue', fontWeight: 'bold' }}>Khách sạn: </span>{data.tour.hotelName}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue', fontWeight:'bold' }}>Số lượng: </span>{data.tour.amount}
+                                    <span style={{ color: 'darkblue', fontWeight: 'bold' }}>Số lượng: </span>{data.tour.amount}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue', fontWeight:'bold' }}>Số lượng còn: </span>{data.remainingAmount}
+                                    <span style={{ color: 'darkblue', fontWeight: 'bold' }}>Số lượng còn: </span>{data.remainingAmount}
                                 </Typography>
                                 <Typography gutterBottom variant="button" component="div" align='left'>
                                     <Button variant="contained" color="secondary" onClick={() => handleOnClick(data.tour._id, data.tour.name, data.tour.price, data.tour.discount)}>Đặt Tour</Button>
                                 </Typography>
                                 <Divider style={{ margin: '10px 0' }} />
                                 <Typography gutterBottom variant="body1" component="div" align='left'>
-                                    <span style={{ color: 'darkblue', fontWeight:'bold' }}>Danh mục: </span> {data.tour.typePlace}
+                                    <span style={{ color: 'darkblue', fontWeight: 'bold' }}>Danh mục: </span> {data.tour.typePlace}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="div" align='left' style={{ display: 'flex', alignItems: 'center' }}>
-                                    <span style={{ color: 'darkblue', fontWeight:'bold' }}>Share on: </span> <FacebookIcon fontSize="large" color="primary" /> <InstagramIcon fontSize="large" color="primary" /> <LinkedInIcon fontSize="large" color='primary' />
+                                    <span style={{ color: 'darkblue', fontWeight: 'bold' }}>Share on: </span> <FacebookIcon fontSize="large" color="primary" /> <InstagramIcon fontSize="large" color="primary" /> <LinkedInIcon fontSize="large" color='primary' />
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -227,26 +228,32 @@ function TourDetail(props) {
                         </Grid>
                         <Divider style={{ margin: '10px 0' }} />
                         <Box sx={{ padding: '20px' }}>
-                            <h2 style={{ margin: '20px 0', textAlign: 'center', fontFamily:'monospace', color:'darkblue' }}>CÓ THỂ BẠN ĐANG TÌM KIẾM</h2>
-                            <Slider {...settings} style={{ padding: '20px' }}>
-                                {
-                                    data.similarTour.map((info, index) => (
-                                        <TourCard
-                                            rating={info.rating}
-                                            load={load}
-                                            onLoad={onLoad}
-                                            link={`/tour/${info._id}`}
-                                            _id={info._id}
-                                            name={info.name}
-                                            description={info.description}
-                                            image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
-                                            price={info.price}
-                                            key={index}
-                                            discount={info.discount}
-                                        />
-                                    ))
-                                }
-                            </Slider>
+                            {
+                                data.similarTour.length >0 &&
+                                <div>
+                                    <h2 style={{ margin: '20px 0', textAlign: 'center', fontFamily: 'monospace', color: 'darkblue' }}>CÓ THỂ BẠN ĐANG TÌM KIẾM</h2>
+
+                                    <Slider {...settings} style={{ padding: '20px' }}>
+                                        {
+                                            data.similarTour.map((info, index) => (
+                                                <TourCard
+                                                    rating={info.rating}
+                                                    load={load}
+                                                    onLoad={onLoad}
+                                                    link={`/tour/${info._id}`}
+                                                    _id={info._id}
+                                                    name={info.name}
+                                                    description={info.description}
+                                                    image={`http://localhost:3001/${info.imageUrl.slice(6)}`}
+                                                    price={info.price}
+                                                    key={index}
+                                                    discount={info.discount}
+                                                />
+                                            ))
+                                        }
+                                    </Slider>
+                                </div>
+                            }
                         </Box>
                     </Box>
                 </Container>

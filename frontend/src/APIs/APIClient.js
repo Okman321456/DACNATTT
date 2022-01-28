@@ -128,6 +128,11 @@ const searchTicketByPhone = (phone)=>{
   return axiosClient.get(url);
 }
 
+const changePassword = (data)=>{
+  const url = '/auth/changepass';
+  return axiosClient.post(url, data);
+}
+
 const APIClient ={
   getDataHomePage,
   getTourDetail,
@@ -155,6 +160,7 @@ const APIClient ={
   filterTicketsPerRegion,
   getStatistic,
   searchTicketByPhone,
+  changePassword
 }
 
 export default APIClient;
