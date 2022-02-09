@@ -12,6 +12,7 @@ function Home(props) {
     const [state, dispatch] = useStore()
     const [data, setData] = useState();
     useEffect(async () => {
+        document.title = "Bootcamp Travel | Trang chủ";
         dispatch(actions.setLoading(true));
         const result = await APIClient.getDataHomePage();
         setData(result);

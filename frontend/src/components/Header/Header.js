@@ -141,7 +141,7 @@ const Header = () => {
                     role: info.role,
                     name: info.name
                 }));
-            else dispatch(actions.setLogin({
+            else if(info.role === "user") dispatch(actions.setLogin({
                 role: "user",
                 name: 'user'
             }));

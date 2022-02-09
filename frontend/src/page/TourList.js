@@ -45,7 +45,7 @@ function TourList({ region, url }) {
         setNewsList(newsList);
         setPageNumber(parseInt(pageIni));
         dispatch(actions.setLoading(false));
-        console.log('test')
+        document.title = `Bootcamp Travel | ${region}`;
     }, [load,urltem]);
 
     const handleChange = (event) => {

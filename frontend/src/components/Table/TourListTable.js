@@ -49,6 +49,10 @@ export default function TourListTable() {
         dispatch(actions.setLoading(false));
     }, [load, pageNumber, param, search]);
 
+    useEffect(()=>{
+        document.title = "Bootcamp Travel | Quản lí tour";
+    },[]);
+
     const handleUpdate = (id) => {
         navigate(`/cap-nhat-tour/${id}`);
     };

@@ -14,6 +14,10 @@ function Manager(props) {
         formState: { errors },
     } = useForm();
 
+    useEffect(()=>{
+        document.title = "Bootcamp Travel | Thêm nhân viên";
+    },[]);
+
     const onHandleSubmit = async (data) => {
         const res = await APIClient.createManager(data);
         if(!res.response) Alert("success","Success! Thêm nhân viên thành công");

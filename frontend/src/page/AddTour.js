@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import APIClient from '../APIs/APIClient';
 import TourForm from '../components/Forms/TourForm';
 import Alert from '../components/Notification/Alert';
@@ -6,6 +6,11 @@ import {useNavigate} from 'react-router-dom';
 
 function AddTour(props) {
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        document.title = "Bootcamp Travel | Thêm tour";
+    },[]);
+
     const handleAddTour = async (data) => {
         let formData = new FormData();
         for (let key in data) {

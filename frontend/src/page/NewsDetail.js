@@ -18,6 +18,7 @@ function NewsDetail(props) {
     const [load, onLoad] = useState(false);
     const { id } = useParams();
     useEffect(async () => {
+        document.title = "Bootcamp Travel | Tin tức";
         dispatch(actions.setLoading(true));
         const result = await axios(`http://localhost:3001/news/${id}`);
         const list = await APIClient.getNewsList();

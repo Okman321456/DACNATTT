@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@material-ui/core';
 import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
@@ -14,7 +14,12 @@ const styleForm = {
 }
 function LoginForm(props) {
     let navigate = useNavigate();
-    const [state, dispatch] = useStore()
+    const [state, dispatch] = useStore();
+
+    useEffect(()=>{
+        document.title = "Bootcamp Travel | Đăng nhập";
+    },[]);
+
     const {
         register,
         handleSubmit,
@@ -25,17 +30,17 @@ function LoginForm(props) {
         const res = await APIClient.login(data);
         localStorage.setItem("token",res.token);
         const account = {
-            role: res.permission,
+            role: res.role,
             name: res.name
         }
-        if (res.permission === 'admin') {
+        if (res.role === 'admin') {
             dispatch(actions.setLogin(account));
             navigate('/quan-li-nhan-vien');
         }
 
-        if (res.permission === 'manage') {
+        if (res.role === 'manage') {
             dispatch(actions.setLogin({
-                role: res.permission,
+                role: res.role,
                 name: res.name
             }));
             navigate('/quan-li-tour');
