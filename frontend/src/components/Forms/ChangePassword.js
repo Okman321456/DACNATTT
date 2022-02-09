@@ -1,10 +1,11 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@material-ui/core';
 import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
-import APIClient from '../../APIs/APIClient';
-import { useStore, actions } from '../../store';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { useStore } from '../../store';
 
 const styleForm = {
     flexDirection: 'column',
@@ -15,14 +16,28 @@ const styleForm = {
 function ChangePassword({handleChangePassword}) {
     let navigate = useNavigate();
     const [state, dispatch] = useStore()
+
+    const validationSchema = Yup.object().shape({
+        newpass: Yup.string()
+            .required('Vui lòng nhập mật khẩu')
+            .min(5, 'Mật khẩu ít nhất 5 kí tự'),
+        confirmpass: Yup.string()
+            .required('Vui lòng xác nhận mật khẩu')
+            .oneOf([Yup.ref('newpass')], 'Mật khẩu không khớp'),
+        oldpass: Yup.string()
+            .required('Vui lòng nhập mật khẩu')         
+    });
+    const formOptions = { resolver: yupResolver(validationSchema) };
+
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm();
+    } = useForm(formOptions);
     const onHandleSubmit = async (data) => {
         await handleChangePassword(data);
+        reset();
     };
     return (
         <div className='change-password-form-wrapper' style={{ marginTop: '120px' }}>
@@ -31,14 +46,9 @@ function ChangePassword({handleChangePassword}) {
                 <form action=" " onSubmit={handleSubmit(onHandleSubmit)}>
                     <div className='form-group-change-password mb-2' style={styleForm}>
                         <label style={{ lineHeight: '30px', fontWeight: 'bold' }}>Mật khẩu mới: </label>
-                        <input {...register("newpass",
-                            {
-                                required: "* Vui lòng nhập password",
-                                pattern: {
-                                    // value: /^[a-z][a-z0-9_\.]{5,32}@[a-z0-9]{2,}(\.[a-z0-9]{2,4}){1,2}$/,
-                                    message: "* password không đúng!"
-                                }
-                            })}
+                        <input
+                            name='newpass'
+                            {...register("newpass")}
                             style={{ height: '30px', width: '100%' }}
                             placeholder='Mật khẩu mới...'
                             type="password"
@@ -47,14 +57,8 @@ function ChangePassword({handleChangePassword}) {
                     </div>
                     <div className='form-group-change-password mb-2' style={styleForm}>
                         <label style={{ lineHeight: '30px', fontWeight: 'bold' }}>Xác nhận mật khẩu: </label>
-                        <input {...register("confirmpass",
-                            {
-                                required: "* Vui lòng nhập password",
-                                pattern: {
-                                    // value: /^[a-z][a-z0-9_\.]{5,32}@[a-z0-9]{2,}(\.[a-z0-9]{2,4}){1,2}$/,
-                                    message: "* password không đúng!"
-                                }
-                            })}
+                        <input 
+                            {...register("confirmpass")}
                             style={{ height: '30px', width: '100%' }}
                             placeholder='Xác nhận mật khẩu mới...'
                             type="password" />

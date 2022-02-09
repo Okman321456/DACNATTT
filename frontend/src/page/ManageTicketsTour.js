@@ -22,6 +22,7 @@ function ManageTicketsTour(props) {
 
     useEffect(async () => {
         dispatch(actions.setLoading(true));
+        document.title = "Bootcamp Travel | Quản lí vé";
         setTimeout(() => {
             dispatch(actions.setLoading(false));
         }, 5000);

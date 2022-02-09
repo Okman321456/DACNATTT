@@ -18,6 +18,7 @@ function NewsList(props) {
     const [data, setData] = useState();
 
     useEffect(async () => {
+        document.title = "Bootcamp Travel | Tin tức";
         dispatch(actions.setLoading(true));
         const result = await APIClient.getNewsList();
         setData(result);

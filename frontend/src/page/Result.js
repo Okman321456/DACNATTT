@@ -47,6 +47,7 @@ function Result(props) {
     }, [pageNumber, load,state.search]);
 
     useEffect(async ()=>{
+        document.title = "Bootcamp Travel | Kết quả";
         const newsList = await APIClient.getNewsList();
         setNews(newsList.news);
     },[]);

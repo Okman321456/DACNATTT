@@ -14,6 +14,7 @@ function UpdateTour(props) {
 
     useEffect(async ()=>{
         dispatch(actions.setLoading(true));
+        document.title = "Bootcamp Travel | Cập nhật tour";
         setTimeout(()=>{
             dispatch(actions.setLoading(false));
         },5000);

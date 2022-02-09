@@ -32,6 +32,10 @@ export default function ManagerList() {
         dispatch(actions.setLoading(false));
     }, [load]);
 
+    useEffect(()=>{
+        document.title = "Bootcamp Travel | Quản lí nhân viên";
+    },[]);
+
     const handleUpdate = (id) => {
         navigate(`/cap-nhat-nhan-vien/${id}`)
     };

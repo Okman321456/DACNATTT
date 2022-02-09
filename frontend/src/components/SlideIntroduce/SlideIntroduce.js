@@ -78,7 +78,7 @@ function SlideIntroduce(props) {
             <Slider {...settings} style={{height:'100%'}}>
                 {
                     imageSlide.map((img,index) => (
-                        <Slides image={img} key={index}/>
+                            <Slides image={img} key={index}/>
                     ))
                 }
             </Slider>

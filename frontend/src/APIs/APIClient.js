@@ -133,6 +133,11 @@ const changePassword = (data)=>{
   return axiosClient.post(url, data);
 }
 
+const getTotalStatistic = ()=>{
+  const url ='/statistic/tours';
+  return axiosClient.get(url);
+}
+
 const APIClient ={
   getDataHomePage,
   getTourDetail,
@@ -160,7 +165,8 @@ const APIClient ={
   filterTicketsPerRegion,
   getStatistic,
   searchTicketByPhone,
-  changePassword
+  changePassword,
+  getTotalStatistic
 }
 
 export default APIClient;

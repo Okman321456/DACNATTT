@@ -3,7 +3,7 @@ import React from 'react';
 import Manager from '../components/Forms/Manager';
 import TourListTable from '../components/Table/TourListTable';
 
-function AdminTest(props) {
+function Managetour(props) {
     return (
         <div>
             <TourListTable/>
@@ -11,4 +11,4 @@ function AdminTest(props) {
     );
 }
 
-export default AdminTest;
+export default Managetour;

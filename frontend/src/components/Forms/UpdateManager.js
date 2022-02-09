@@ -20,6 +20,7 @@ function UpdateManager(props) {
     const [user, setUser] = useState();
     const { id } = useParams();
     useEffect(async () => {
+        document.title = "Bootcamp Travel | Cập nhật tour";
         const result = await APIClient.getManagerById(id);
         setUser(result);
     },[])

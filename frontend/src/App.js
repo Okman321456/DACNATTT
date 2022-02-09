@@ -44,9 +44,7 @@ function App() {
         <Route path="/tour/:id" exact element={<TourDetail />} />
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route path="/tin-tuc/:id" element={<NewsDetail />} />
-        {/* <Route path="/payment" element={<PaymentConfirmation/>} /> */}
         <Route path="/cua-hang" element={<Result />} />
-        <Route path="/dat-hang" element={<BookingForm />} />
         <Route path="/dang-nhap" element={<LoginForm />} />
         <Route path="/them-tour" element={<AddTour />} />
         <Route path="/quan-li-nhan-vien" element={<ManagerList />} />
