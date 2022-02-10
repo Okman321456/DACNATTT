@@ -23,6 +23,10 @@ const bookTicket = async(id, ticketBody) => {
 
 }
 
+const getTicketByEmail = async(email) => {
+    const tickets = await Ticket.find({ email: email, status: 2 })
+    return tickets
+}
 const viewDetailTicket = async(id) => {
     const ticketDetail = {}
     const ticket = await Ticket.findById(id)
@@ -173,5 +177,6 @@ module.exports = {
     showTicketPerTour,
     sortTicket,
     showTicketPerPhone,
-    showTicketPerDate
+    showTicketPerDate,
+    getTicketByEmail
 }

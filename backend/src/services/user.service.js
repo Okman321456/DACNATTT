@@ -13,12 +13,12 @@ const createUser = async(userBody) => {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exists')
     }
     // random va luu localstorage
-    transporter.sendMail({
-        to: userBody.email,
-        from: adminEmail,
-        subject: 'Confirm booking ticket',
-        text: 'Hello mother fucker'
-    });
+    // transporter.sendMail({
+    //     to: userBody.email,
+    //     from: adminEmail,
+    //     subject: 'Confirm booking ticket',
+    //     text: 'Hello mother fucker'
+    // });
     // check
     const user = await User.create(userBody)
     return user

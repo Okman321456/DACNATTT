@@ -29,6 +29,7 @@ export default function TicketList({ updateTicketStatus, deleteTicket, listTicke
         await updateTicketStatus(dataTickets[index].id, e.target.value);
     };
     const handleDelete = async (id, index) => {
+        console.log(id);
         await deleteTicket(id);
         setDataTickets([...dataTickets.slice(0, index), ...dataTickets.slice(index + 1)]);
         setConfirmDialog({ isOpen: false, content: '' });
@@ -89,7 +90,7 @@ export default function TicketList({ updateTicketStatus, deleteTicket, listTicke
                                     <DeleteIcon variant="outlined" style={{color:'tomato', cursor:'pointer'}} size="small" onClick={() => setConfirmDialog({
                                         isOpen: true,
                                         content: 'Bạn có muốn xóa vé này?',
-                                        onConfirm: () => { handleDelete(ticket._id, index) }
+                                        onConfirm: () => { handleDelete(ticket.id, index) }
                                     })}/>
                                 </TableCell>
                             </TableRow>
