@@ -10,7 +10,17 @@ const showStatisticPerMonth = catchAsync(async(req, res) => {
 
 const showStatisticPerTour = catchAsync(async(req, res) => {
     const result = await statisticService.showStatisticPerTour()
+    let totalTour = 0
+    const tourIdGr = result.reduce((tourIdGr, element) => {
+        if (!tourIdGr[element.idTour]) {
+            tourIdGr[element.idTour] = 1
+            totalTour += 1;
+        }
 
+        return tourIdGr;
+    }, [])
+
+    console.log(totalTour);
     const regionGr = result.reduce((regionGr, element) => {
         if (!regionGr[element.region]) regionGr[element.region] = 0;
 
@@ -25,11 +35,13 @@ const showStatisticPerTour = catchAsync(async(req, res) => {
         })
         res.status(200).send({
             result: rs,
-            region: regionGr
+            region: regionGr,
+            totalTour: totalTour
         })
     } else res.status(200).send({
         result,
-        region: regionGr
+        region: regionGr,
+        totalTour: totalTour
     })
 })
 

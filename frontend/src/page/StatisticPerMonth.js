@@ -143,7 +143,7 @@ function StatisticPerMonth(props) {
                             <Grid item sm={4} xs={12} style={{ padding: '10px' }}>
                                 <div style={styleCard}>
                                     <div style={styleTitle}>
-                                        <Typography variant='h4' component="div">{calTotalTour(totalData.result)}</Typography>
+                                        <Typography variant='h4' component="div">{totalData.totalTour}</Typography>
                                         <Typography variant='h5' component="body1">Tour</Typography>
                                     </div>
                                     <FlightIcon fontSize='large' />

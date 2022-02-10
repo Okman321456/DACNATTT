@@ -31,23 +31,35 @@ const showStatisticPerMonth = async(month) => {
 
 const showStatisticPerTour = async(month) => {
     return await Ticket.aggregate(
-        [{
-                $group: {
-                    _id: "$idTour",
-                    listNumberPeople: { $addToSet: "$numberPeople" },
-                },
-            },
+        [
+            { $match: { status: 2 } },
             {
-                "$addFields": {
-                    "totalPeople": {
-                        "$sum": "$listNumberPeople"
-                    }
-                }
+                $project: {
+                    name: 1,
+                    email: 1,
+                    idTour: 1,
+                    numberPeople: 1,
+                    status: 1,
+                },
+
             },
+            // {
+            //     $group: {
+            //         _id: "$idTour",
+            //         listNumberPeople: { $addToSet: "$numberPeople" },
+            //     },
+            // },
+            // {
+            //     "$addFields": {
+            //         "totalPeople": {
+            //             "$sum": "$listNumberPeople"
+            //         }
+            //     }
+            // },
             {
                 $lookup: {
                     from: "tours",
-                    localField: "_id",
+                    localField: "idTour",
                     foreignField: "_id",
                     as: "tour"
                 }
@@ -57,13 +69,13 @@ const showStatisticPerTour = async(month) => {
                 "$addFields": {
                     "totalSales": {
                         "$multiply": [
-                            "$totalPeople",
+                            "$numberPeople",
                             "$tour.price",
                         ]
                     },
                     "totalSalesTemp": {
                         "$multiply": [
-                            "$totalPeople",
+                            "$numberPeople",
                             "$tour.price",
                             "$tour.discount"
                         ]
@@ -75,6 +87,7 @@ const showStatisticPerTour = async(month) => {
                     "totalSalesDis": {
                         "$subtract": ["$totalSales", "$totalSalesTemp"]
                     },
+                    "totalPeople": "$numberPeople",
                     "tourName": "$tour.name",
                     "region": "$tour.region",
                     "typePlace": "$tour.typePlace"
@@ -83,6 +96,7 @@ const showStatisticPerTour = async(month) => {
             {
                 $project: {
                     _id: 1,
+                    idTour: 1,
                     totalPeople: 1,
                     tourName: 1,
                     region: 1,
