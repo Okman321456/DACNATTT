@@ -37,6 +37,18 @@ const getAllUser = catchAsync(async(req, res) => {
 
 /* get user detail by id */
 const getUserById = catchAsync(async(req, res) => {
+    var spawn = require('child_process').spawn;
+
+    // E.g : http://localhost:3000/name?firstname=van&lastname=nghia
+    var process = spawn('python', [
+        './process.py',
+        req.params.tourId
+    ]);
+    process.stdout.on('data', function(data) {
+        console.log(data.toString());
+
+        res.send(data.toString());
+    });
     const user = await userService.getUserById(req.params.id)
 
     if (!user) res.status(httpStatus.NOT_FOUND).send("User not found")

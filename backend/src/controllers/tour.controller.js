@@ -6,6 +6,8 @@ const catchAsync = require('../utils/catchAsync')
 const handleRatingTour = require('../utils/handleRatingTour')
 const { tourService, newsService, feedbackService } = require('../services')
 const { tourValidation, tourParamsValidation } = require('../validations')
+const { processreq } = require("./takefeature")
+const { processrq } = require("./talk")
 
 /* create new tour */
 const createTour = catchAsync(async(req, res) => {
@@ -69,45 +71,114 @@ const minmaxValue = async() => {
 
 /* filter tour with query parameter (region, typePlace, minmaxPrice, discount, search data)*/
 const filterTour = catchAsync(async(req, res) => {
-    const perPage = 6;
-    var regionId, disValue
-    const minmaxPrice = await minmaxValue()
-    let page = parseInt(req.query.page) || 1;
-    let search = req.query.search || ''
-    let typePlace = !![req.query.type][0] ? [req.query.type] : configFilter.typePlace
-    let minPrice = parseInt(req.query.min) || minmaxPrice.min
-    let maxPrice = parseInt(req.query.max) || minmaxPrice.max
-    let discount = req.query.dis || false
-    if (discount) disValue = [0.0001, 1]
-    else disValue = [0, 1]
-    if (req.query.region) {
-        switch (req.query.region) {
-            case 'bac':
-                regionId = [1]
-                break
-            case 'trung':
-                regionId = [2]
-                break
-            case 'nam':
-                regionId = [3]
-                break
-        }
-    } else regionId = configFilter.regionId
-    const toursData = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, disValue, search, perPage, page)
-    const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice, disValue, search)
-    const tours = await handleRatingTour(toursData)
-    if (totalTourFilter == 0) {
-        res.status(httpStatus.NOT_FOUND).send("Tour not found")
-    } else res.status(200)
-        .json({
-            tours,
-            totalTourFilter,
-            minmaxPrice
-        });
+
+    // var spawn = require('child_process').spawn;
+
+    var result = processreq(req)
+        // console.log(result)
+        // console.log(result["Len_of_rq"],
+        //         result["Len_of_argu"],
+        //         result["Num_of_argu"],
+        //         result["Num_of_digit_in_argu"],
+        //         result["Len_of_path"],
+        //         result["Num_of_let_in_argu"],
+        //         result["Num_of_let_char_in_path"],
+        //         result["Num_of_spea_char_in_path"])
+        //console.log(req.params.id.toString());
+        // console.log(req)
+        // console.log("")
+        // console.log(JSON.stringify(req.headers))
+        // console.log("")
+        // console.log(JSON.stringify(req.query))
+        // console.log("")
+        // console.log(req.method)
+        // console.log("")
+        // console.log(req.baseUrl)
+        // console.log("")
+        // console.log(req.httpVersion)
+        // console.log("")
+        // console.log(req.headers.connection)
+        // console.log("")
+        // console.log(req.headers.accept)
+        // console.log("")
+        // console.log(req.headers["accept-language"])
+        // console.log("")
+        // console.log(req.headers["user-agent"])
+        // console.log("")
+        // console.log(req.url)
+        //E.g : http://localhost:3000/name?firstname=van&lastname=nghia
+        // var process = spawn('python', [
+        //     './src/controllers/process.py',
+        //     result["Len_of_rq"],
+        //     result["Len_of_argu"],
+        //     result["Num_of_argu"],
+        //     result["Len_of_path"],
+        //     result["Num_of_digit_in_argu"],
+        //     result["Num_of_let_in_argu"],
+        //     result["Num_of_let_char_in_path"],
+        //     result["Num_of_spea_char_in_path"]
+        // ]);
+    const pred = await processrq(result)
+        // console.log("server ", pred)
+        // process.stdout.on('data', function(data) {
+        //     console.log(data.toString());
+        //     // console.log("2");
+
+    //     // res.send(data.toString());
+    // });
+    if (pred == 0) {
+        console.log("normal")
+        console.log(pred)
+        const perPage = 6;
+        var regionId, disValue
+        const minmaxPrice = await minmaxValue()
+        let page = parseInt(req.query.page) || 1;
+        let search = req.query.search || ''
+        let typePlace = !![req.query.type][0] ? [req.query.type] : configFilter.typePlace
+        let minPrice = parseInt(req.query.min) || minmaxPrice.min
+        let maxPrice = parseInt(req.query.max) || minmaxPrice.max
+        let discount = req.query.dis || false
+        if (discount) disValue = [0.0001, 1]
+        else disValue = [0, 1]
+        if (req.query.region) {
+            switch (req.query.region) {
+                case 'bac':
+                    regionId = [1]
+                    break
+                case 'trung':
+                    regionId = [2]
+                    break
+                case 'nam':
+                    regionId = [3]
+                    break
+            }
+        } else regionId = configFilter.regionId
+        const toursData = await tourService.filterTour(regionId, typePlace, maxPrice, minPrice, disValue, search, perPage, page)
+        const totalTourFilter = await tourService.countTourFilter(regionId, typePlace, maxPrice, minPrice, disValue, search)
+        const tours = await handleRatingTour(toursData)
+        if (totalTourFilter == 0) {
+            res.status(httpStatus.NOT_FOUND).send("Tour not found")
+        } else res.status(200)
+            .json({
+                tours,
+                totalTourFilter,
+                minmaxPrice
+            });
+    } else {
+        console.log("anomalous")
+        console.log(pred)
+    }
 })
 
 /* get all information in page tour detail */
 const getTourById = catchAsync(async(req, res) => {
+    var spawn = require('child_process').spawn;
+
+    // E.g : http://localhost:3000/name?firstname=van&lastname=nghia
+    var process = spawn('python', [
+        './src/controllers/process.py',
+        req.params.tourId
+    ]);
     const validation = await tourParamsValidation.validate(req.params)
     if (validation.error) {
         const errorMessage = validation.error.details[0].message
@@ -132,6 +203,11 @@ const getTourById = catchAsync(async(req, res) => {
         remainingAmount,
         similarTour,
         listFeedback
+    });
+    process.stdout.on('data', function(data) {
+        console.log(data.toString());
+
+        res.send(data.toString());
     });
 })
 

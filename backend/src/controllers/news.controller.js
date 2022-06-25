@@ -42,6 +42,31 @@ const getNewsByPage = catchAsync(async(req, res) => {
 
 /* get news detail by params id */
 const getNewsById = catchAsync(async(req, res) => {
+    //const { exec } = require('child_process');
+    var spawn = require('child_process').spawn;
+    //console.log(req.params.id.toString());
+    console.log(JSON.stringify(req.headers))
+        //E.g : http://localhost:3000/name?firstname=van&lastname=nghia
+    var process = spawn('python', [
+        './src/controllers/process.py ',
+        req.params.id
+    ]);
+    // var comand = "python ./src/controllers/process.py " + req.params.id.toString()
+    // exec(comand, (error, stdout, stderr) => {
+    //     if (error) {
+    //         console.error(`exec error: ${error}`);
+    //         return;
+    //     }
+    //     console.log(`stdout: ${stdout}`);
+    //     console.error(`stderr: ${stderr}`);
+    // });
+    process.stdout.on('data', function(data) {
+        console.log(data.toString());
+        console.log("2");
+
+        // res.send(data.toString());
+    });
+
     const newsSingle = await newsService.getNewsById(req.params.id)
 
     if (!newsSingle) {
